@@ -13,11 +13,15 @@ import javafx.stage.Stage;
 
 public class MainMenu extends Application {
 
-    //IMPORTANT: I HAVE INITIALIZED THE STATE MACHINE BUT IT IS NOT LINKED, PLEASE DESIGN THE GAME LOGIC ACCORDINGLY
+    private GameState gameState; // The game state machine
+    private BorderPane root; // The main layout
+
     @Override
     public void start(Stage primaryStage) {
+        gameState = new GameState(); // Initialize the state machine
+
         // Main layout
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
         root.setPadding(new Insets(20, 20, 20, 20));
 
         // Game title
@@ -26,6 +30,16 @@ public class MainMenu extends Application {
         root.setTop(gameTitle);
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
 
+        setupMainMenu(); // Setup the main menu
+
+        // Set up the stage
+        Scene scene = new Scene(root, 600, 400);
+        primaryStage.setTitle("Tombstone Tussle");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void setupMainMenu() {
         // Center Box for selections
         VBox centerBox = new VBox(50);
         centerBox.setAlignment(Pos.CENTER);
@@ -39,6 +53,7 @@ public class MainMenu extends Application {
         Button leftArrowChar = new Button("<");
         Button rightArrowChar = new Button(">");
         Button editButton = new Button("✎");
+        editButton.setOnAction(event -> switchToDrawingScreen()); // Handle the click on the pencil button
         Label characterPlaceholder = new Label("C"); // Placeholder for character
         HBox characterControls = new HBox(10, editButton, leftArrowChar, characterPlaceholder, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
@@ -60,16 +75,46 @@ public class MainMenu extends Application {
         // New Game and Continue buttons
         HBox buttonBox = new HBox(20);
         Button newGameButton = new Button("New Game");
+        newGameButton.setOnAction(event -> startNewGame()); // Handle the click on the "New Game" button
         Button continueButton = new Button("Continue");
         buttonBox.getChildren().addAll(newGameButton, continueButton);
         buttonBox.setAlignment(Pos.CENTER);
         root.setBottom(buttonBox);
+    }
 
-        // Set up the stage
-        Scene scene = new Scene(root, 600, 400);
-        primaryStage.setTitle("Tombstone Tussle");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    private void startNewGame() {
+        if (gameState.getCurrentState() == GameState.State.MENU) {
+            gameState.startPlaying(); // Update the game state to PLAYING
+            NewGameArea newGameArea = new NewGameArea();
+            root.setCenter(newGameArea); // Set the NewGameArea to the center of the root
+
+            // Add key listener to move the player
+            root.getScene().setOnKeyPressed(event -> {
+                switch (event.getCode()) {
+                    case W:
+                        newGameArea.getPlayer().moveUp();
+                        break;
+                    case S:
+                        newGameArea.getPlayer().moveDown();
+                        break;
+                    case A:
+                        newGameArea.getPlayer().moveLeft();
+                        break;
+                    case D:
+                        newGameArea.getPlayer().moveRight();
+                        break;
+                }
+            });
+        }
+    }
+
+
+    private void switchToDrawingScreen() {
+        if (gameState.getCurrentState() == GameState.State.MENU) {
+            gameState.startDrawing(); // Update the game state
+            DrawingArea drawingArea = new DrawingArea();
+            root.setCenter(drawingArea);
+        }
     }
 
     public static void main(String[] args) {
