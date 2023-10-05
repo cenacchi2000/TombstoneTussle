@@ -1,24 +1,23 @@
 package com.example.tombstonetussle;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class MainMenu extends Application {
+public class GameView {
 
-    private GameState gameState; // The game state machine
     private BorderPane root; // The main layout
+    private Button editButton; // The pencil emoticon button
 
-    @Override
-    public void start(Stage primaryStage) {
-        gameState = new GameState(); // Initialize the state machine
+    private Button newGameButton; // The button to start a new game
+    private GameController gameController; // Reference to the game controller
+
+    public GameView(GameController controller) {
+        this.gameController = controller;
 
         // Main layout
         root = new BorderPane();
@@ -29,17 +28,23 @@ public class MainMenu extends Application {
         gameTitle.setStyle("-fx-font-size: 24px;");
         root.setTop(gameTitle);
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
-
-        setupMainMenu(); // Setup the main menu
-
-        // Set up the stage
-        Scene scene = new Scene(root, 600, 400);
-        primaryStage.setTitle("Tombstone Tussle");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-    private void setupMainMenu() {
+    public BorderPane getRoot() {
+        return root;
+    }
+
+    public Button getEditButton() {
+        return editButton;
+    }
+
+    public Button getNewGameButton() {
+        return newGameButton;
+    }
+
+
+    // Create the main menu layout
+    public void setupMainMenu() {
         // Center Box for selections
         VBox centerBox = new VBox(50);
         centerBox.setAlignment(Pos.CENTER);
@@ -52,8 +57,7 @@ public class MainMenu extends Application {
         VBox characterBox = new VBox(10);
         Button leftArrowChar = new Button("<");
         Button rightArrowChar = new Button(">");
-        Button editButton = new Button("✎");
-        editButton.setOnAction(event -> switchToDrawingScreen()); // Handle the click on the pencil button
+        editButton = new Button("✎"); // Pencil emoticon button
         Label characterPlaceholder = new Label("C"); // Placeholder for character
         HBox characterControls = new HBox(10, editButton, leftArrowChar, characterPlaceholder, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
@@ -74,50 +78,10 @@ public class MainMenu extends Application {
 
         // New Game and Continue buttons
         HBox buttonBox = new HBox(20);
-        Button newGameButton = new Button("New Game");
-        newGameButton.setOnAction(event -> startNewGame()); // Handle the click on the "New Game" button
+        newGameButton = new Button("New Game");
         Button continueButton = new Button("Continue");
         buttonBox.getChildren().addAll(newGameButton, continueButton);
         buttonBox.setAlignment(Pos.CENTER);
         root.setBottom(buttonBox);
-    }
-
-    private void startNewGame() {
-        if (gameState.getCurrentState() == GameState.State.MENU) {
-            gameState.startPlaying(); // Update the game state to PLAYING
-            NewGameArea newGameArea = new NewGameArea();
-            root.setCenter(newGameArea); // Set the NewGameArea to the center of the root
-
-            // Add key listener to move the player
-            root.getScene().setOnKeyPressed(event -> {
-                switch (event.getCode()) {
-                    case W:
-                        newGameArea.getPlayer().moveUp();
-                        break;
-                    case S:
-                        newGameArea.getPlayer().moveDown();
-                        break;
-                    case A:
-                        newGameArea.getPlayer().moveLeft();
-                        break;
-                    case D:
-                        newGameArea.getPlayer().moveRight();
-                        break;
-                }
-            });
-        }
-    }
-
-
-    private void switchToDrawingScreen() {
-        if (gameState.getCurrentState() == GameState.State.MENU) {
-            gameState.startDrawing(); // Update the game state
-            DrawingArea drawingArea = new DrawingArea();
-            root.setCenter(drawingArea);
-        }
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

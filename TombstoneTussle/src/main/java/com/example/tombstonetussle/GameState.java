@@ -1,3 +1,4 @@
+
 package com.example.tombstonetussle;
 
 public class GameState {
@@ -80,6 +81,4 @@ public class GameState {
                 break;
         }
     }
-
-
 }
