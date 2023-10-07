@@ -34,6 +34,7 @@ public class GameController extends Application {
     public void switchToDrawingScreen() {
         if (gameState.getCurrentState() == GameState.State.MENU) {
             gameState.startDrawing(); // Update the game state to DRAWING
+            gameView.updateButtonVisibility(); // Update button visibility based on the new state
             DrawingModel drawingModel = new DrawingModel();
             DrawingView drawingView = new DrawingView();
             drawingController = new DrawingController(drawingModel, drawingView);
@@ -52,6 +53,7 @@ public class GameController extends Application {
 
             gameView.getRoot().setCenter(gameAreaView);
             gameAreaView.requestFocus();  // Request focus for the GameAreaView
+            gameView.updateButtonVisibility(); // Update button visibility based on the new state
         }
     }
 
@@ -59,6 +61,15 @@ public class GameController extends Application {
     private void setupEventHandlers() {
         gameView.getEditButton().setOnAction(event -> switchToDrawingScreen());
         gameView.getNewGameButton().setOnAction(event -> startNewGameArea());
+    }
+
+    public boolean isNewGameButtonVisible() {
+        return gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED;
+    }
+
+
+    public boolean isContinueButtonVisible() {
+        return gameState.getCurrentState() == GameState.State.PAUSED;
     }
 
     public static void main(String[] args) {

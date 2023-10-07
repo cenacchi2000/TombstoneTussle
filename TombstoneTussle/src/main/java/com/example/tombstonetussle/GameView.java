@@ -42,6 +42,9 @@ public class GameView {
         return newGameButton;
     }
 
+    public void updateButtonVisibility() {
+        newGameButton.setVisible(gameController.isNewGameButtonVisible());
+    }
 
     // Create the main menu layout
     public void setupMainMenu() {
@@ -79,7 +82,9 @@ public class GameView {
         // New Game and Continue buttons
         HBox buttonBox = new HBox(20);
         newGameButton = new Button("New Game");
+        newGameButton.setVisible(gameController.isNewGameButtonVisible());
         Button continueButton = new Button("Continue");
+        continueButton.setVisible(gameController.isContinueButtonVisible());
         buttonBox.getChildren().addAll(newGameButton, continueButton);
         buttonBox.setAlignment(Pos.CENTER);
         root.setBottom(buttonBox);
