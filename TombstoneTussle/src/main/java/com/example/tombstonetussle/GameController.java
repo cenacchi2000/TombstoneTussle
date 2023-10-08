@@ -64,7 +64,7 @@ public class GameController extends Application {
             gameState.startPlaying(); // Update the game state to PLAYING
 
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE);
-            gameAreaView = new GameAreaView(gameAreaModel, maze); // Pass the maze to GameAreaView
+            gameAreaView = new GameAreaView(gameAreaModel); // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
             gameView.getRoot().setCenter(gameAreaView);

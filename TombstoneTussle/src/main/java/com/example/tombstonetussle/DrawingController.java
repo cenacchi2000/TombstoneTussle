@@ -1,7 +1,20 @@
 package com.example.tombstonetussle;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DrawingController {
 
@@ -78,4 +91,6 @@ public class DrawingController {
             drawingModel.getDrawingImage(drawingView.getDrawingCanvas(), drawingView.getBackgroundCanvas());
         });
     }
+
+
 }

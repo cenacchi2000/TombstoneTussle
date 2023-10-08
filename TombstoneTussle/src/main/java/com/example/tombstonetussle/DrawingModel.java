@@ -63,17 +63,4 @@ public class DrawingModel {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

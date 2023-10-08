@@ -38,6 +38,7 @@ public class GameState {
 
     // Methods to handle state transitions
 
+
     public void goToMenu() {
         previousState = currentState;
         currentState = State.MENU;
