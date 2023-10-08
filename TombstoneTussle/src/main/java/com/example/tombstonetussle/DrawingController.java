@@ -5,17 +5,6 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class DrawingController {
 
     private DrawingModel drawingModel;
@@ -88,9 +77,13 @@ public class DrawingController {
 
     private void setupSaveEventHandler() {
         drawingView.getSaveButton().setOnAction(event -> {
-            drawingModel.getDrawingImage(drawingView.getDrawingCanvas(), drawingView.getBackgroundCanvas());
+            WritableImage currentImage = drawingModel.getDrawingImage(drawingView.getDrawingCanvas(), drawingView.getBackgroundCanvas());
+            drawingModel.save(currentImage);
+            gameController.setCurrentCharacterIndex(drawingModel.getAllCharacters().size() - 1); // Set the current index to the last saved character
+            gameController.handleBackFromDrawing();  // Return to the main menu after saving
         });
     }
+
 
 
 }

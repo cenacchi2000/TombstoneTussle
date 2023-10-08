@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameController extends Application {
+    private int currentCharacterIndex = 0;
 
     private GameState gameState; // The game state machine
     private GameView gameView;   // The game view
@@ -25,6 +26,10 @@ public class GameController extends Application {
     private char[][] maze;
     private int rows;
     private int columns;
+
+    public GameController() {
+        this.drawingModel = new DrawingModel();
+    }
 
 
     @Override
@@ -51,9 +56,10 @@ public class GameController extends Application {
         if (gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED) {
             gameState.startDrawing(); // Update the game state to DRAWING
             gameView.updateButtonVisibility(); // Update button visibility based on the new state
-            drawingModel = new DrawingModel();
-            drawingView = new DrawingView(this);
-            drawingController = new DrawingController(drawingModel, drawingView, this);
+            if (drawingView == null) {
+                drawingView = new DrawingView(this);
+                drawingController = new DrawingController(drawingModel, drawingView, this);
+            }
             gameView.getRoot().setCenter(drawingView);
         }
     }
@@ -95,9 +101,43 @@ public class GameController extends Application {
     public void handleBackFromDrawing(){
         gameState.goToPreviousState();
         gameView.setupMainMenu();
-        WritableImage characterImage = drawingModel.getDrawingImage(drawingView.getDrawingCanvas(), drawingView.getBackgroundCanvas());
-        gameView.setCharacterImage(characterImage);
+        if (!drawingModel.getAllCharacters().isEmpty()) {
+            WritableImage currentCharacter = drawingModel.getCharacter(currentCharacterIndex);
+            gameView.setCharacterImage(currentCharacter);
+        } else {
+            gameView.setDefaultCharacterImage();  // If no custom characters, set the default one
+        }
+        drawingView.clearCanvas();  // Clear the drawing canvas when going back
     }
+
+    public void previousCharacter() {
+        if (currentCharacterIndex > 0) {
+            currentCharacterIndex--;
+            updateCharacterView();
+        }
+    }
+
+    public void nextCharacter() {
+        if (currentCharacterIndex < drawingModel.getAllCharacters().size() - 1) {
+            currentCharacterIndex++;
+            updateCharacterView();
+        }
+    }
+
+    private void updateCharacterView() {
+        WritableImage currentCharacter;
+        if (currentCharacterIndex >= 0 && currentCharacterIndex < drawingModel.getAllCharacters().size()) {
+            currentCharacter = drawingModel.getCharacter(currentCharacterIndex);
+        } else {
+            currentCharacter = gameView.getDefaultCharacterImage();  // Get the default character image from GameView
+        }
+        gameView.setCharacterImage(currentCharacter);
+    }
+
+    public void setCurrentCharacterIndex(int index) {
+        this.currentCharacterIndex = index;
+    }
+
 
     public void selectMaze(String mazeName) {
         if (mazeName.equals("maze1")) {

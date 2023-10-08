@@ -1,12 +1,22 @@
 package com.example.tombstonetussle;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DrawingModel {
 
+    public DrawingModel() {
+        // Load and add the default character to the list as the first item
+        loadDefaultCharacter();
+    }
+
+    private List<WritableImage> characters = new ArrayList<>();
     // This method checks if the point (x,y) is inside any of the body parts.
     public boolean isInsideHumanFigure(DrawingView view, double x, double y) {
         int countInside = 0;
@@ -60,6 +70,34 @@ public class DrawingModel {
         }
 
         return writableImage;
+    }
+
+    private void loadDefaultCharacter() {
+        // Assuming your default character is in the specified location
+        Image defaultImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png"));
+        WritableImage writableDefault = new WritableImage(defaultImage.getPixelReader(),
+                (int) defaultImage.getWidth(),
+                (int) defaultImage.getHeight());
+        characters.add(writableDefault);
+    }
+
+    public void save(WritableImage image) {
+        this.characters.add(image);
+    }
+
+    public WritableImage getCharacter(int index) {
+        if (index >= 0 && index < characters.size()) {
+            return characters.get(index);
+        }
+        return null;
+    }
+
+    public List<WritableImage> getAllCharacters() {
+        return characters;
+    }
+
+    public int getNumberOfSavedCharacters() {
+        return characters.size();
     }
 
 

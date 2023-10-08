@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
@@ -68,7 +69,9 @@ public class GameView {
         // Character selection
         VBox characterBox = new VBox(10);
         Button leftArrowChar = new Button("<");
+        leftArrowChar.setOnAction(event -> gameController.previousCharacter());
         Button rightArrowChar = new Button(">");
+        rightArrowChar.setOnAction(event -> gameController.nextCharacter());
         if (editButton == null) {
             editButton = new Button("✎"); // Pencil emoticon button
         }
@@ -82,6 +85,7 @@ public class GameView {
         // Setting selection
         VBox settingBox = new VBox(10);
         Button leftArrowSetting = new Button("<");
+        this.setDefaultCharacterImage();
         Button rightArrowSetting = new Button(">");
         Label settingPlaceholder = new Label("M"); // Placeholder for maze selection
         HBox settingControls = new HBox(10, leftArrowSetting, settingPlaceholder, rightArrowSetting);
@@ -125,5 +129,16 @@ public class GameView {
     public void setCharacterImage(WritableImage image) {
         characterImageView.setImage(image);
     }
+
+    public WritableImage getDefaultCharacterImage() {
+        Image defaultImage =  new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png"));
+        WritableImage writableDefault = new WritableImage(defaultImage.getPixelReader(), (int) defaultImage.getWidth(), (int) defaultImage.getHeight());
+        return writableDefault;
+    }
+    public void setDefaultCharacterImage() {
+        Image defaultCharacter = getDefaultCharacterImage();
+        characterImageView.setImage(defaultCharacter);
+    }
+
 
 }

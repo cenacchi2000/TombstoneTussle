@@ -94,6 +94,11 @@ public class DrawingView extends BorderPane {
         return saveButton;
     }
 
+    public void clearCanvas() {
+        drawingCanvas.getGraphicsContext2D().clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+    }
+
+
     public Color getPixelColor(double x, double y) {
         if (x < 0 || x >= zombieImage.getWidth() || y < 0 || y >= zombieImage.getHeight()) {
             return Color.TRANSPARENT;
