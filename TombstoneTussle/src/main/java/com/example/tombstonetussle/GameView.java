@@ -14,6 +14,7 @@ public class GameView {
     private Button editButton; // The pencil emoticon button
 
     private Button newGameButton; // The button to start a new game
+    private Button continueButton; // The button to continue a game
     private GameController gameController; // Reference to the game controller
 
     public GameView(GameController controller) {
@@ -42,8 +43,13 @@ public class GameView {
         return newGameButton;
     }
 
+    public Button getContinueButton(){
+        return continueButton;
+    }
+
     public void updateButtonVisibility() {
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
+        continueButton.setVisible(gameController.isContinueButtonVisible());
     }
 
     // Create the main menu layout
@@ -60,7 +66,9 @@ public class GameView {
         VBox characterBox = new VBox(10);
         Button leftArrowChar = new Button("<");
         Button rightArrowChar = new Button(">");
-        editButton = new Button("✎"); // Pencil emoticon button
+        if (editButton == null) {
+            editButton = new Button("✎"); // Pencil emoticon button
+        }
         Label characterPlaceholder = new Label("C"); // Placeholder for character
         HBox characterControls = new HBox(10, editButton, leftArrowChar, characterPlaceholder, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
@@ -81,9 +89,13 @@ public class GameView {
 
         // New Game and Continue buttons
         HBox buttonBox = new HBox(20);
-        newGameButton = new Button("New Game");
+        if (newGameButton == null) {
+            newGameButton = new Button("New Game");
+        }
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
-        Button continueButton = new Button("Continue");
+        if (continueButton == null) {
+            continueButton = new Button("Continue");
+        }
         continueButton.setVisible(gameController.isContinueButtonVisible());
         buttonBox.getChildren().addAll(newGameButton, continueButton);
         buttonBox.setAlignment(Pos.CENTER);

@@ -7,12 +7,14 @@ public class DrawingController {
 
     private DrawingModel drawingModel;
     private DrawingView drawingView;
+    private GameController gameController;
     private GraphicsContext bgGc; // Graphics context for backgroundCanvas
     private GraphicsContext drawingGc; // Graphics context for drawingCanvas
 
-    public DrawingController(DrawingModel model, DrawingView view) {
+    public DrawingController(DrawingModel model, DrawingView view, GameController gameController) {
         this.drawingModel = model;
         this.drawingView = view;
+        this.gameController = gameController;
         bgGc = drawingView.getBackgroundCanvas().getGraphicsContext2D();
         drawingGc = drawingView.getDrawingCanvas().getGraphicsContext2D();
 

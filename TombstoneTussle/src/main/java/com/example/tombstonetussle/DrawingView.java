@@ -2,6 +2,7 @@ package com.example.tombstonetussle;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -9,17 +10,28 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
+import javafx.scene.text.Font;
 
 public class DrawingView extends BorderPane {
 
     private Canvas backgroundCanvas; // For grid and human contour
     private Canvas drawingCanvas; // For player drawing
+    private GameController gameController;
     private ColorPicker colorPicker;
     private ToggleButton drawButton;
     private ToggleButton eraseButton;
     private Image zombieImage;
+    private Label backArrowLabel;
 
-    public DrawingView() {
+    public DrawingView(GameController gameController) {
+        this.gameController = gameController;
+        // Adding a back arrow (emoticon) to the top left
+        backArrowLabel = new Label("⬅️");
+        backArrowLabel.setFont(new Font(24));
+        backArrowLabel.setId("backArrow"); // Setting an ID for easier access later
+        backArrowLabel.setOnMouseClicked(event -> gameController.handleBackFromDrawing());
+        setTop(backArrowLabel);
+
         // Setup the color picker
         colorPicker = new ColorPicker();
         colorPicker.setValue(Color.BLACK);

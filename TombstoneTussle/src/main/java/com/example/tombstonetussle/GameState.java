@@ -6,15 +6,17 @@ public class GameState {
     // Enumeration of possible game states
     public enum State {
         MENU,        // The main menu screen
-        DRAWING,     // Players are designing characters
+        DRAWING,     // Player is designing characters
         PLAYING,     // Active gameplay state
         PAUSED,      // Gameplay temporarily halted
         GAME_OVER,   // Game concluded without a winner
-        WIN          // Player or team wins
+        WIN          // Player wins
     }
 
     // Variable to track the current state
     private State currentState;
+    // Variable to track the previous state
+    private State previousState = State.MENU;
 
     // Constructor: sets the initial game state to MENU
     public GameState() {
@@ -28,39 +30,52 @@ public class GameState {
     // Methods to handle state transitions
 
     public void goToMenu() {
+        previousState = currentState;
         currentState = State.MENU;
         executeStateAction();
     }
 
     public void startDrawing() {
+        previousState = currentState;
         currentState = State.DRAWING;
         executeStateAction();
     }
 
     public void startPlaying() {
+        previousState = currentState;
         currentState = State.PLAYING;
         executeStateAction();
     }
 
     public void pauseGame() {
+        previousState = currentState;
         currentState = State.PAUSED;
         executeStateAction();
     }
 
     public void resumeGame() {
+        previousState = currentState;
         currentState = State.PLAYING;
         executeStateAction();
     }
 
     public void gameOver() {
+        previousState = currentState;
         currentState = State.GAME_OVER;
         executeStateAction();
     }
 
     public void winGame() {
+        previousState = currentState;
         currentState = State.WIN;
         executeStateAction();
     }
+
+    public void goToPreviousState() {
+        currentState = previousState;
+        executeStateAction();
+    }
+
 
     private void executeStateAction() {
         System.out.println("State changed to: " + currentState);

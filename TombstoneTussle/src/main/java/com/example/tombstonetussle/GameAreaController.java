@@ -1,4 +1,3 @@
-
 package com.example.tombstonetussle;
 
 import javafx.scene.input.KeyEvent;
@@ -7,12 +6,15 @@ public class GameAreaController {
 
     private GameAreaView gameAreaView;
     private GameAreaModel gameAreaModel;
+    private GameController gameController; // Reference to GameController
 
-    public GameAreaController(GameAreaView view, GameAreaModel model) {
+    public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
         this.gameAreaModel = model;
+        this.gameController = gameController;
 
         setupKeyListeners();
+        setupBackArrowListener();
     }
 
     private void setupKeyListeners() {
@@ -34,5 +36,11 @@ public class GameAreaController {
                 gameAreaModel.moveRight();
                 break;
         }
+    }
+
+    private void setupBackArrowListener() {
+        gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {
+            gameController.handleBackToMainMenu();
+        });
     }
 }

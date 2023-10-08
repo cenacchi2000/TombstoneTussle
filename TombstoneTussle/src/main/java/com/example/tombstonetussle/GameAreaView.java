@@ -12,10 +12,20 @@ public class GameAreaView extends Pane {
 
     private GameAreaModel gameAreaModel;
 
+
+
     public GameAreaView(GameAreaModel model) {
+
         // Set pane's size
         setPrefSize(W, H);
         this.setStyle("-fx-background-color: lightgray;");  // Set a background color
+
+        // Adding a back arrow (emoticon) to the top left
+        javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label("⬅️");
+        arrowLabel.setFont(new javafx.scene.text.Font(24));
+        arrowLabel.setId("backArrow"); // Setting an ID for easier access later
+        getChildren().addAll(arrowLabel);
+
 
         // Create and position the player
         this.gameAreaModel = model;
@@ -23,6 +33,7 @@ public class GameAreaView extends Pane {
         gameAreaModel.setTranslateY(H / 2);
 
         getChildren().add(gameAreaModel);
+
     }
 
     public GameAreaModel getGameAreaModel() {

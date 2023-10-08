@@ -19,7 +19,7 @@ public class DrawingModel {
             }
         }
 
-        return (double) countInside / totalPixels < 0.5;  // almeno il 50% dei pixel deve essere all'interno
+        return (double) countInside / totalPixels < 0.5;  // at least 50% of the pixels of the cell must be inside
     }
 
 
