@@ -83,6 +83,21 @@ public class GameView {
         settingControls.setAlignment(Pos.CENTER);
         settingBox.getChildren().addAll(new Label("Maze selection"), settingControls);
 
+        // Maze selection logic
+        final int[] mazeIndex = {0}; // Index to keep track of the selected maze
+        Label[] mazeLabels = { new Label("M1"), new Label("M2"), new Label("M3") }; // Labels for maze selection
+        settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Bind the placeholder to the selected maze label
+
+        leftArrowSetting.setOnAction(e -> {
+            mazeIndex[0] = (mazeIndex[0] - 1 + mazeLabels.length) % mazeLabels.length; // Decrement the maze index
+            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Update the placeholder
+        });
+
+        rightArrowSetting.setOnAction(e -> {
+            mazeIndex[0] = (mazeIndex[0] + 1) % mazeLabels.length; // Increment the maze index
+            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Update the placeholder
+        });
+
         selectionBox.getChildren().addAll(characterBox, settingBox);
         centerBox.getChildren().add(selectionBox);
         root.setCenter(centerBox);
