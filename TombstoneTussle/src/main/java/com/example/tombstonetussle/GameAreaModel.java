@@ -1,31 +1,49 @@
 
 package com.example.tombstonetussle;
 
-import javafx.scene.shape.Rectangle;
+public class GameAreaModel {
+    private int x;
+    private int y;
+    private final int tileSize;
 
-public class GameAreaModel extends Rectangle {
+    public GameAreaModel(int tileSize, int W, int H) {
+        this.tileSize = tileSize;
+        //Setup initial positioning
+        this.x = W / 2 - tileSize / 2;
+        this.y = H / 2 - tileSize / 2;
+    }
 
-    private final int tileSize; // Store the tileSize
+    // Getter and Setter for x and y
+    public int getX() {
+        return x;
+    }
 
-    public GameAreaModel(int tileSize) {
-        super(tileSize, tileSize);
-        this.tileSize = tileSize; // Initialize the tileSize
-        setFill(javafx.scene.paint.Color.BLUE); // Give it a color for now
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void moveUp() {
-        setTranslateY(getTranslateY() - tileSize);
+        y -= tileSize;
     }
 
     public void moveDown() {
-        setTranslateY(getTranslateY() + tileSize);
+        y += tileSize;
     }
 
     public void moveLeft() {
-        setTranslateX(getTranslateX() - tileSize);
+        x -= tileSize;
     }
 
     public void moveRight() {
-        setTranslateX(getTranslateX() + tileSize);
+        x += tileSize;
     }
 }
+

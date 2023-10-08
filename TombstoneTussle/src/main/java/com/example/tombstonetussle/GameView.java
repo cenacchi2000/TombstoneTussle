@@ -130,6 +130,11 @@ public class GameView {
         characterImageView.setImage(image);
     }
 
+    public WritableImage getCharacterImage() {
+        return (WritableImage) characterImageView.getImage();
+    }
+
+
     public WritableImage getDefaultCharacterImage() {
         Image defaultImage =  new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png"));
         WritableImage writableDefault = new WritableImage(defaultImage.getPixelReader(), (int) defaultImage.getWidth(), (int) defaultImage.getHeight());

@@ -36,7 +36,9 @@ public class GameAreaController {
                 gameAreaModel.moveRight();
                 break;
         }
+        gameAreaView.updatePlayerPosition();
     }
+
 
     private void setupBackArrowListener() {
         gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {

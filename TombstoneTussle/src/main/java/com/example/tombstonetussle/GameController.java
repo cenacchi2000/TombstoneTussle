@@ -69,8 +69,9 @@ public class GameController extends Application {
         if (gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED) {
             gameState.startPlaying(); // Update the game state to PLAYING
 
-            gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE);
-            gameAreaView = new GameAreaView(gameAreaModel); // Pass the maze to GameAreaView
+            gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
+            WritableImage selectedCharacter = gameView.getCharacterImage();
+            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter); // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
             gameView.getRoot().setCenter(gameAreaView);
