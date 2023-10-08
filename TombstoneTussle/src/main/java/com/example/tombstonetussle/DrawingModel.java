@@ -1,6 +1,9 @@
 package com.example.tombstonetussle;
 
+import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.image.WritableImage;
 
 public class DrawingModel {
 
@@ -21,6 +24,54 @@ public class DrawingModel {
 
         return (double) countInside / totalPixels < 0.5;  // at least 50% of the pixels of the cell must be inside
     }
+
+    public WritableImage getDrawingImage(Canvas drawingCanvas, Canvas backgroundCanvas) {
+        WritableImage writableImage = new WritableImage((int) drawingCanvas.getWidth(), (int) drawingCanvas.getHeight());
+
+        // Capture image snapshot from canvas as WritableImage
+        WritableImage drawingWritableImage = new WritableImage((int) drawingCanvas.getWidth(), (int) drawingCanvas.getHeight());
+        drawingCanvas.snapshot(null, drawingWritableImage);
+        WritableImage bgWritableImage = new WritableImage((int) backgroundCanvas.getWidth(), (int) backgroundCanvas.getHeight());
+        backgroundCanvas.snapshot(null, bgWritableImage);
+
+        // Get PixelReader from WritableImages
+        PixelReader bgPixelReader = bgWritableImage.getPixelReader();
+        PixelReader drawingPixelReader = drawingWritableImage.getPixelReader();
+
+        // Combine background and drawing canvas
+        for (int x = 0; x < writableImage.getWidth(); x++) {
+            for (int y = 0; y < writableImage.getHeight(); y++) {
+                Color bgColor = bgPixelReader.getColor(x, y);
+                Color drawingColor = drawingPixelReader.getColor(x, y);
+
+                // If the drawing color is different from white (or any default background color), use it
+                if (!drawingColor.equals(Color.WHITE)) {
+                    writableImage.getPixelWriter().setColor(x, y, drawingColor);
+                }
+                // If it is NOT the gray grid, use the background color
+                else if (!(bgColor.getRed() > 0.1 && bgColor.getGreen() > 0.1 && bgColor.getBlue() > 0.1)) {
+                    writableImage.getPixelWriter().setColor(x, y, bgColor);
+                }
+                // Otherwise, set transparent
+                else {
+                    writableImage.getPixelWriter().setColor(x, y, Color.TRANSPARENT);
+                }
+            }
+        }
+
+        return writableImage;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

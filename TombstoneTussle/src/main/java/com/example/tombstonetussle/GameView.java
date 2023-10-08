@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,6 +18,7 @@ public class GameView {
     private Button newGameButton; // The button to start a new game
     private Button continueButton; // The button to continue a game
     private GameController gameController; // Reference to the game controller
+    private ImageView characterImageView;
 
     public GameView(GameController controller) {
         this.gameController = controller;
@@ -69,8 +72,10 @@ public class GameView {
         if (editButton == null) {
             editButton = new Button("✎"); // Pencil emoticon button
         }
-        Label characterPlaceholder = new Label("C"); // Placeholder for character
-        HBox characterControls = new HBox(10, editButton, leftArrowChar, characterPlaceholder, rightArrowChar);
+        characterImageView = new ImageView();
+        characterImageView.setFitWidth(100); // Imposta la larghezza desiderata
+        characterImageView.setFitHeight(100); // Imposta l'altezza desiderata
+        HBox characterControls = new HBox(10, editButton, leftArrowChar, characterImageView, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
         characterBox.getChildren().addAll(new Label("Character"), characterControls);
 
@@ -101,4 +106,9 @@ public class GameView {
         buttonBox.setAlignment(Pos.CENTER);
         root.setBottom(buttonBox);
     }
+
+    public void setCharacterImage(WritableImage image) {
+        characterImageView.setImage(image);
+    }
+
 }

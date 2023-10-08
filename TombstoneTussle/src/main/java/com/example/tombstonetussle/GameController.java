@@ -2,6 +2,7 @@ package com.example.tombstonetussle;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
 public class GameController extends Application {
@@ -14,6 +15,8 @@ public class GameController extends Application {
     private GameAreaModel gameAreaModel;
     private GameAreaView gameAreaView;
     private GameAreaController gameAreaController;
+    private DrawingModel drawingModel;
+    private DrawingView drawingView;
 
     @Override
     public void start(Stage primaryStage) {
@@ -37,8 +40,8 @@ public class GameController extends Application {
         if (gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED) {
             gameState.startDrawing(); // Update the game state to DRAWING
             gameView.updateButtonVisibility(); // Update button visibility based on the new state
-            DrawingModel drawingModel = new DrawingModel();
-            DrawingView drawingView = new DrawingView(this);
+            drawingModel = new DrawingModel();
+            drawingView = new DrawingView(this);
             drawingController = new DrawingController(drawingModel, drawingView, this);
             gameView.getRoot().setCenter(drawingView);
         }
@@ -83,6 +86,8 @@ public class GameController extends Application {
     public void handleBackFromDrawing(){
         gameState.goToPreviousState();
         gameView.setupMainMenu();
+        WritableImage characterImage = drawingModel.getDrawingImage(drawingView.getDrawingCanvas(), drawingView.getBackgroundCanvas());
+        gameView.setCharacterImage(characterImage);
     }
 
     public static void main(String[] args) {

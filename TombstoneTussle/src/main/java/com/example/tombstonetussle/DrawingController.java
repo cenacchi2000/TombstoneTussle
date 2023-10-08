@@ -18,7 +18,7 @@ public class DrawingController {
         bgGc = drawingView.getBackgroundCanvas().getGraphicsContext2D();
         drawingGc = drawingView.getDrawingCanvas().getGraphicsContext2D();
 
-        bgGc.setStroke(Color.BLACK);
+        bgGc.setStroke(Color.GRAY);
         bgGc.setLineWidth(2);
 
         // Drawing a fine grid
@@ -26,6 +26,8 @@ public class DrawingController {
 
         // Event to handle drawing or erasing
         setupEventHandlers();
+        // Setup the save event handler
+        setupSaveEventHandler();
     }
 
     private void drawGrid() {
@@ -38,8 +40,6 @@ public class DrawingController {
             }
         }
     }
-
-
 
     private void setupEventHandlers() {
         drawingView.getDrawingCanvas().setOnMouseDragged(event -> {
@@ -60,9 +60,6 @@ public class DrawingController {
             }
         });
 
-
-
-
         drawingView.getDrawButton().setOnAction(event -> {
             if (drawingView.getDrawButton().isSelected()) {
                 drawingView.getEraseButton().setSelected(false);
@@ -76,4 +73,9 @@ public class DrawingController {
         });
     }
 
+    private void setupSaveEventHandler() {
+        drawingView.getSaveButton().setOnAction(event -> {
+            drawingModel.getDrawingImage(drawingView.getDrawingCanvas(), drawingView.getBackgroundCanvas());
+        });
+    }
 }

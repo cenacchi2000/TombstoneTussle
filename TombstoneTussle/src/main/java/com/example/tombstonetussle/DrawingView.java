@@ -1,6 +1,7 @@
 package com.example.tombstonetussle;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -20,23 +21,21 @@ public class DrawingView extends BorderPane {
     private ColorPicker colorPicker;
     private ToggleButton drawButton;
     private ToggleButton eraseButton;
+    private Button saveButton;
     private Image zombieImage;
     private Label backArrowLabel;
 
     public DrawingView(GameController gameController) {
         this.gameController = gameController;
-        // Adding a back arrow (emoticon) to the top left
         backArrowLabel = new Label("⬅️");
         backArrowLabel.setFont(new Font(24));
-        backArrowLabel.setId("backArrow"); // Setting an ID for easier access later
+        backArrowLabel.setId("backArrow");
         backArrowLabel.setOnMouseClicked(event -> gameController.handleBackFromDrawing());
         setTop(backArrowLabel);
 
-        // Setup the color picker
         colorPicker = new ColorPicker();
         colorPicker.setValue(Color.BLACK);
 
-        // Setup the canvases
         backgroundCanvas = new Canvas(500, 500);
         drawingCanvas = new Canvas(500, 500);
 
@@ -60,11 +59,11 @@ public class DrawingView extends BorderPane {
         backgroundCanvas.getGraphicsContext2D().drawImage(zombieImage,
                 (canvasWidth - newWidth) / 2, (canvasHeight - newHeight) / 2, newWidth, newHeight);
 
-        // Drawing and erasing buttons
         drawButton = new ToggleButton("✎");
         eraseButton = new ToggleButton("Eraser");
 
-        VBox rightControls = new VBox(10, colorPicker, drawButton, eraseButton);
+        saveButton = new Button("Save");
+        VBox rightControls = new VBox(10, colorPicker, drawButton, eraseButton, saveButton);
         setRight(rightControls);
 
         StackPane stackPane = new StackPane(backgroundCanvas, drawingCanvas);
@@ -91,6 +90,10 @@ public class DrawingView extends BorderPane {
         return eraseButton;
     }
 
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
     public Color getPixelColor(double x, double y) {
         if (x < 0 || x >= zombieImage.getWidth() || y < 0 || y >= zombieImage.getHeight()) {
             return Color.TRANSPARENT;
@@ -98,5 +101,4 @@ public class DrawingView extends BorderPane {
         PixelReader reader = zombieImage.getPixelReader();
         return reader.getColor((int) x, (int) y);
     }
-
 }
