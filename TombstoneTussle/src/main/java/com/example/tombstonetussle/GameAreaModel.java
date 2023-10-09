@@ -7,6 +7,23 @@ public class GameAreaModel {
     private final int tileSize;
     private Maze1 maze1;
 
+    private double lastX;
+    private double lastY;
+
+    public double getLastX() {
+        return lastX;
+    }
+
+    public double getLastY() {
+        return lastY;
+    }
+
+    // Method to update the lastX and lastY values
+    public void updateLastPosition(double x, double y) {
+        this.lastX = x;
+        this.lastY = y;
+    }
+
     public GameAreaModel(int tileSize, int W, int H) {
         this.tileSize = tileSize;
         //Setup initial positioning

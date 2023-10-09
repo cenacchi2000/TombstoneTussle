@@ -175,7 +175,6 @@ public class GameController extends Application {
     }
 
 
-
     private void initializeMaze() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
