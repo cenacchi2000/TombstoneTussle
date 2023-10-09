@@ -40,6 +40,29 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
 
+        // Draw the maze
+        char[][] maze = model.getMaze1().getMaze();
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                switch (maze[i][j]) {
+                    case '#':
+                        rect.setFill(javafx.scene.paint.Color.DARKGREY); // Wall color
+                        break;
+                    case ' ':
+                        rect.setFill(javafx.scene.paint.Color.LIGHTGRAY); // Path color
+                        break;
+                    case 'S':
+                        rect.setFill(javafx.scene.paint.Color.GREEN); // Start color
+                        break;
+                    case 'E':
+                        rect.setFill(javafx.scene.paint.Color.RED); // End color
+                        break;
+                }
+                getChildren().add(rect);
+            }
+        }
+
     }
 
     public GameAreaModel getGameAreaModel() {
