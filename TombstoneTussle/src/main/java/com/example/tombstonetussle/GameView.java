@@ -16,6 +16,7 @@ public class GameView {
     private BorderPane root; // The main layout
     private Button editButton; // The pencil emoticon button
 
+    private ImageView npcImageView;
     private Button newGameButton; // The button to start a new game
     private Button continueButton; // The button to continue a game
     private GameController gameController; // Reference to the game controller
@@ -28,11 +29,23 @@ public class GameView {
         root = new BorderPane();
         root.setPadding(new Insets(20, 20, 20, 20));
 
+        // Load NPC image (adjust the path as needed)
+        Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png"));
+
+        // Create the NPC ImageView
+        npcImageView = new ImageView(npcImage);
+        root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
+
         // Game title
         Label gameTitle = new Label("Tombstone Tussle");
         gameTitle.setStyle("-fx-font-size: 24px;");
         root.setTop(gameTitle);
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
+    }
+
+    public void updateNPCPosition(double x, double y) {
+        npcImageView.setX(x);
+        npcImageView.setY(y);
     }
 
     public BorderPane getRoot() {
