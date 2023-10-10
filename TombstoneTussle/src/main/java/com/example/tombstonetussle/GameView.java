@@ -30,7 +30,7 @@ public class GameView {
         root.setPadding(new Insets(20, 20, 20, 20));
 
         // Load NPC image (adjust the path as needed)
-        Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png"));
+        Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
 
         // Create the NPC ImageView
         npcImageView = new ImageView(npcImage);
