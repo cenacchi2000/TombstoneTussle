@@ -2,6 +2,7 @@ package com.example.tombstonetussle;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
@@ -36,7 +37,12 @@ public class GameController extends Application {
         int startX = 0;
         int startY = 0;
         npcCharacter = new NPCCharacter(startX, startY);
+
+        // Set the reference to this GameController in the GameView constructor
+        gameView = new GameView(this);
     }
+
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -201,13 +207,10 @@ public class GameController extends Application {
         startNewGameArea();
     }
 
-    // Add a method to update the NPC's position
     public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
         npcCharacter.updatePosition(playerModel, maze);
 
     }
-
-
 
     public char[][] generateMaze() {
         // Initialize the maze with walls
@@ -257,6 +260,11 @@ public class GameController extends Application {
 
     private boolean isValid(int row, int column) {
         return row >= 0 && row < rows && column >= 0 && column < columns;
+    }
+
+    public Node getScene() {
+        Node o = null;
+        return o;
     }
 
     private enum Direction {
