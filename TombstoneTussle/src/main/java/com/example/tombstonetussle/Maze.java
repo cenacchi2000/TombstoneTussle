@@ -11,8 +11,8 @@ public class Maze {
     private int startCol;
 
     public void generateMazeDesign() {
-        int rows = 10; // Number of rows in the maze
-        int cols = 10; // Number of columns in the maze
+        int rows = 18; // Number of rows in the maze
+        int cols = 30; // Number of columns in the maze
 
         // Initialize the maze with empty cells
         char[][] maze = new char[rows][cols];
