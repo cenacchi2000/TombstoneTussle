@@ -1,35 +1,55 @@
 package com.example.tombstonetussle;
 
-import java.util.*;
+
+import javafx.scene.Node;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public class NPCCharacter {
+    private int x;
+    private int y;
+    private char[][] maze;
+    private List<Node> path;
 
-    int x = 10; // Replace with your desired X-coordinate
-    int y = 20; // Replace with your desired Y-coordinate
-
-    private Queue<Node> path;
-
-    public NPCCharacter(int startX, int startY) {
-        this.x = startX;
-        this.y = startY;
-        this.path = new LinkedList<>();
+    public NPCCharacter(char[][] maze) {
+        this.maze = maze;
+        // Find the center of the maze
+        int centerX = maze.length / 2;
+        int centerY = maze[0].length / 2;
+        this.x = centerX;
+        this.y = centerY;
     }
 
-    public class Node {
-        private int x;
-        private int y;
+    public NPCCharacter(int startX, int startY) {
+    }
 
-        public Node(int x, int y) {
-            this.x = x;
-            this.y = y;
+    // Helper method to get a list of available movement directions
+    private List<int[]> getAvailableDirections() {
+        List<int[]> directions = new ArrayList<>();
+        int[][] possibleDirections = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
+
+        for (int[] dir : possibleDirections) {
+            int newX = x + dir[0];
+            int newY = y + dir[1];
+            if (newX >= 0 && newX < maze.length && newY >= 0 && newY < maze[0].length && maze[newX][newY] != '#') {
+                directions.add(dir);
+            }
         }
+        return directions;
+    }
 
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
+    // Method to make the NPC character move randomly
+    public void moveRandomly() {
+        List<int[]> availableDirections = getAvailableDirections();
+        if (!availableDirections.isEmpty()) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(availableDirections.size());
+            int[] randomDirection = availableDirections.get(randomIndex);
+            x += randomDirection[0];
+            y += randomDirection[1];
         }
     }
 
@@ -37,88 +57,41 @@ public class NPCCharacter {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
     }
 
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setPath(List<Node> newPath) {
-        this.path.clear();
-        this.path.addAll(newPath);
-    }
-
     public void updatePosition(GameAreaModel playerModel, char[][] maze) {
-        if (!path.isEmpty()) {
-            Node nextNode = path.poll();
-            this.setX(nextNode.getX());
-            this.setY(nextNode.getY());
-        } else {
-            // Calculate a new path to follow the player character
-            List<Node> newPath = calculatePathToPlayer(playerModel, maze);
-            setPath(newPath);
-        }
-    }
-
-    public List<Node> calculatePathToPlayer(GameAreaModel playerModel, char[][] maze) {
         int playerX = playerModel.getX();
         int playerY = playerModel.getY();
         int npcX = getX();
         int npcY = getY();
 
-        // If the NPC is already at the player's position, return an empty path
-        if (playerX == npcX && playerY == npcY) {
-            return new ArrayList<>();
+        int distanceToPlayer = Math.abs(playerX - npcX) + Math.abs(playerY - npcY);
+
+        if (distanceToPlayer <= 5) {
+            // If the player is within a certain range (e.g., 5), follow the player
+            List<Node> newPath = calculatePathToPlayer(playerModel, maze);
+            setPath(newPath);
+        } else {
+            // If the player is far away, move randomly
+            moveRandomly();
         }
+    }
 
-        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
+    private List<Node> calculatePathToPlayer(GameAreaModel playerModel, char[][] maze) {
+        List<Node> o = null;
+        List<Node> o1 = o;
+        return o1;
+    }
 
-        boolean[][] visited = new boolean[maze.length][maze[0].length];
-        Node[][] parent = new Node[maze.length][maze[0].length];
+    public void setPath(List<Node> path) {
+        this.path = path;
+    }
 
-        Queue<Node> queue = new LinkedList<>();
-        Node startNode = new Node(npcX, npcY);
-        visited[npcX][npcY] = true;
-        queue.add(startNode);
-
-        while (!queue.isEmpty()) {
-            Node currentNode = queue.poll();
-
-            for (int[] direction : directions) {
-                int newX = currentNode.getX() + direction[0];
-                int newY = currentNode.getY() + direction[1];
-
-                if (newX >= 0 && newX < maze.length && newY >= 0 && newY < maze[0].length
-                        && maze[newX][newY] != '#' && !visited[newX][newY]) {
-                    Node newNode = new Node(newX, newY);
-                    visited[newX][newY] = true;
-                    parent[newX][newY] = currentNode;
-
-                    if (newX == playerX && newY == playerY) {
-                        // Found the player, backtrack to construct the path
-                        List<Node> path = new ArrayList<>();
-                        Node node = newNode;
-                        while (node != null) {
-                            path.add(node);
-                            node = parent[node.getX()][node.getY()];
-                        }
-                        Collections.reverse(path);
-                        path.remove(0); // Remove the NPC's current position from the path
-                        return path;
-                    }
-
-                    queue.add(newNode);
-                }
-            }
-        }
-
-        // If no path is found, return an empty list (NPC stays in place)
-        return new ArrayList<>();
+    public List<Node> getPath() {
+        return path;
     }
 }
+
+

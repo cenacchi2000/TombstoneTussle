@@ -111,14 +111,17 @@ public class GameView {
         settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Bind the placeholder to the selected maze label
 
         leftArrowSetting.setOnAction(e -> {
-            mazeIndex[0] = (mazeIndex[0] - 1 + mazeLabels.length) % mazeLabels.length; // Decrement the maze index
-            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Update the placeholder
+            mazeIndex[0] = (mazeIndex[0] - 1 + mazeLabels.length) % mazeLabels.length;
+            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty());
+            gameController.selectMaze(mazeLabels[mazeIndex[0]].getText().toLowerCase());
         });
 
         rightArrowSetting.setOnAction(e -> {
-            mazeIndex[0] = (mazeIndex[0] + 1) % mazeLabels.length; // Increment the maze index
-            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Update the placeholder
+            mazeIndex[0] = (mazeIndex[0] + 1) % mazeLabels.length;
+            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty());
+            gameController.selectMaze(mazeLabels[mazeIndex[0]].getText().toLowerCase());
         });
+
 
         selectionBox.getChildren().addAll(characterBox, settingBox);
         centerBox.getChildren().add(selectionBox);

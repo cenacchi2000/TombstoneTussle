@@ -17,6 +17,8 @@ public class GameController extends Application {
     private GameState gameState;
     private GameView gameView;
 
+    private int m= 10;
+    private int n= 10;
     private DrawingController drawingController;
 
     // Reference to GameArea's MVC classes
@@ -83,7 +85,8 @@ public class GameController extends Application {
 
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
             WritableImage selectedCharacter = gameView.getCharacterImage();
-            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, npcCharacter); // Pass the maze to GameAreaView
+            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, npcCharacter, maze);
+            // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
             gameView.getRoot().setCenter(gameAreaView);
@@ -194,18 +197,20 @@ public class GameController extends Application {
     public void selectMaze(String mazeName) {
         if (mazeName.equals("maze1")) {
             Maze1 maze1 = new Maze1();
-            maze1.generateMazeDesign(); // Generate the maze design for M1
-            maze = maze1.getMaze(); // Get the generated maze
+            maze1.generateMazeDesign();
+            maze = maze1.getMaze();
         } else if (mazeName.equals("maze2")) {
-            // Generate maze2
+            Maze2 maze2 = new Maze2(m,n);
+            maze2.generateMazeDesign();
+            maze = maze2.getMaze();
         } else if (mazeName.equals("maze3")) {
-            // Generate maze3
+            Maze3 maze3 = new Maze3(m,n);
+            maze3.generateMazeDesign();
+            maze = maze3.getMaze();
         }
-        // Add more conditions for other maze options if needed
-
-        // After setting the maze, start the new game area
         startNewGameArea();
     }
+
 
     public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
         npcCharacter.updatePosition(playerModel, maze);
