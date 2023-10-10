@@ -63,6 +63,8 @@ public class GameAreaView extends Pane {
         playerImageView = new ImageView(avatar);
         playerImageView.setFitWidth(TILE_SIZE);
         playerImageView.setFitHeight(TILE_SIZE);
+        playerImageView.setTranslateX(model.getX());
+        playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
     }
 
@@ -73,20 +75,7 @@ public class GameAreaView extends Pane {
     public void updatePlayerPosition(int x, int y) {
         double playerX = gameAreaModel.getX();
         double playerY = gameAreaModel.getY();
-
-        // Check for collisions with walls
-        for (Node node : getChildren()) {
-            if (node instanceof Rectangle) {
-                Rectangle wall = (Rectangle) node;
-                if (wall.getFill() == javafx.scene.paint.Color.DARKGREY && playerImageView.getBoundsInParent().intersects(wall.getBoundsInParent())) {
-                    // Collision with a wall, adjust the player's position
-                    playerX = gameAreaModel.getLastX(); // Restore the previous X position
-                    playerY = gameAreaModel.getLastY(); // Restore the previous Y position
-                    break;
-                }
-            }
-        }
-
+/*
         // Clamp player position to within the maze bounds
         if (playerX < 0) {
             playerX = 0;
@@ -99,7 +88,7 @@ public class GameAreaView extends Pane {
         } else if (playerY + TILE_SIZE > H) {
             playerY = H - TILE_SIZE;
         }
-
+*/
         playerImageView.setTranslateX(playerX);
         playerImageView.setTranslateY(playerY);
 
@@ -109,7 +98,8 @@ public class GameAreaView extends Pane {
         gameAreaModel.setY((int) playerY);
     }
 
-    
+
+
 
     public void updateNPCPosition(int x, int y) {
         // Assuming you have an ImageView for the NPC character in your GameAreaView
@@ -129,7 +119,7 @@ public class GameAreaView extends Pane {
         ImageView npcImageView = new ImageView(); // You need to initialize it with an image
 
 
-        Image npcImage = new Image("/com/example/tombstonetussle/zombieOriginal.png"); // Replace 'npc_image.png' with your image path
+        Image npcImage = new Image("/com/example/tombstonetussle/police.jpg"); // Replace 'npc_image.png' with your image path
         npcImageView.setImage(npcImage);
 
         // Set the position of the NPC ImageView based on the NPCCharacter's coordinates
