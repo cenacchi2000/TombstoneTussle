@@ -11,8 +11,8 @@ public class GameState {
         currentState = State.MENU;
         // Initialize the mazes
         maze1 = new Maze1();
-        maze2 = new Maze2();
-        maze3 = new Maze3();
+        maze2 = new Maze2(19, 38); // Adjust the dimensions as needed
+        maze3 = new Maze3(19, 38); // Adjust the dimensions as needed
         selectedMaze = maze1; // Default selected maze is Maze1
     }
 

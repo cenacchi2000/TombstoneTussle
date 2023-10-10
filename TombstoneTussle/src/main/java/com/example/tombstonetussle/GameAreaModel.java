@@ -6,7 +6,6 @@ public class GameAreaModel {
     private int y;
     private final int tileSize;
     private Maze1 maze1;
-
     private double lastX;
     private double lastY;
 
