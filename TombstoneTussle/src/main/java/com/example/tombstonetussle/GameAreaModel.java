@@ -1,4 +1,3 @@
-
 package com.example.tombstonetussle;
 
 public class GameAreaModel {
@@ -26,11 +25,14 @@ public class GameAreaModel {
 
     public GameAreaModel(int tileSize, int W, int H) {
         this.tileSize = tileSize;
-        //Setup initial positioning
-        this.x = W / 2 - tileSize / 2;
-        this.y = H / 2 - tileSize / 2;
         this.maze1 = new Maze1();
         this.maze1.generateMazeDesign();
+
+        int[] endPoint = this.maze1.getEndPointCoordinates();
+        if (endPoint != null) {
+            this.x = endPoint[1] * tileSize; // Remember that the column is the x-coordinate
+            this.y = endPoint[0] * tileSize; // And the row is the y-coordinate
+        }
     }
 
     // Getter and Setter for x and y
@@ -51,23 +53,44 @@ public class GameAreaModel {
     }
 
     public void moveUp() {
-        y -= tileSize;
+        if (isValidMove(x, y - tileSize)) {
+            y -= tileSize;
+        }
     }
 
     public void moveDown() {
-        y += tileSize;
+        if (isValidMove(x, y + tileSize)) {
+            y += tileSize;
+        }
     }
 
     public void moveLeft() {
-        x -= tileSize;
+        if (isValidMove(x - tileSize, y)) {
+            x -= tileSize;
+        }
     }
 
     public void moveRight() {
-        x += tileSize;
+        if (isValidMove(x + tileSize, y)) {
+            x += tileSize;
+        }
+    }
+
+    private boolean isValidMove(int newX, int newY) {
+        // Check if the new position is outside the maze boundaries
+        if (newX < 0 || newY < 0 || newX >= maze1.getMaze()[0].length * tileSize || newY >= maze1.getMaze().length * tileSize) {
+            return false;
+        }
+
+        // Check if the new position is a wall
+        if (maze1.getMaze()[newY / tileSize][newX / tileSize] == '#') {
+            return false;
+        }
+
+        return true;
     }
 
     public Maze1 getMaze1() {
         return maze1;
     }
 }
-

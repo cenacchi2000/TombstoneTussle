@@ -15,7 +15,8 @@ public class GameAreaController {
         this.gameAreaView = view;
         this.gameAreaModel = model;
         this.gameController = gameController;
-        
+        this.playerModel = model; // Initialize playerModel here
+
         // Initialize npcCharacter here with appropriate values
         int startX = 0;
         int startY = 0;
@@ -23,6 +24,8 @@ public class GameAreaController {
 
         setupKeyListeners();
         setupBackArrowListener();
+        // Update the player's position to ensure it's correctly positioned at the start
+        gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
 
     public void gameLoop() {
@@ -68,4 +71,6 @@ public class GameAreaController {
             gameController.handleBackToMainMenu();
         });
     }
+
+
 }

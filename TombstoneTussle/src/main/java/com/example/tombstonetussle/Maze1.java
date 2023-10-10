@@ -144,5 +144,17 @@ public class Maze1 extends Maze {
         return validNeighbors;
     }
 
+    public int[] getEndPointCoordinates() {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j] == 'E') {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null; // If 'E' is not found, though it should never happen
+    }
+
+
 }
 
