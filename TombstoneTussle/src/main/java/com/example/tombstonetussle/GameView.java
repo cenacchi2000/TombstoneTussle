@@ -30,11 +30,11 @@ public class GameView {
         root.setPadding(new Insets(20, 20, 20, 20));
 
         // Load NPC image (adjust the path as needed)
-        Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
+       // Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
 
         // Create the NPC ImageView
-        npcImageView = new ImageView(npcImage);
-        root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
+        //npcImageView = new ImageView(npcImage);
+        //root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
 
         // Game title
         Label gameTitle = new Label("Tombstone Tussle");

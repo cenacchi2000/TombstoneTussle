@@ -77,7 +77,7 @@ public class GameController extends Application {
 
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
             WritableImage selectedCharacter = gameView.getCharacterImage();
-            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter); // Pass the maze to GameAreaView
+            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, npcCharacter); // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
             gameView.getRoot().setCenter(gameAreaView);
