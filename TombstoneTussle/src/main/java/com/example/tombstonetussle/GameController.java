@@ -1,5 +1,6 @@
 package com.example.tombstonetussle;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.WritableImage;
@@ -11,26 +12,31 @@ import java.util.List;
 
 public class GameController extends Application {
     private int currentCharacterIndex = 0;
+    private NPCCharacter npcCharacter;
+    private GameState gameState;
+    private GameView gameView;
 
-    private GameState gameState; // The game state machine
-    private GameView gameView;   // The game view
-    private DrawingController drawingController; // The drawing controller
+    private DrawingController drawingController;
 
-    // References to GameArea's MVC classes
+    // Reference to GameArea's MVC classes
     private GameAreaModel gameAreaModel;
     private GameAreaView gameAreaView;
     private GameAreaController gameAreaController;
     private DrawingModel drawingModel;
     private DrawingView drawingView;
-
     private char[][] maze;
     private int rows;
     private int columns;
 
+    // Declare playerModel field
+    private GameAreaModel playerModel;
+
     public GameController() {
         this.drawingModel = new DrawingModel();
+        int startX = 0;
+        int startY = 0;
+        npcCharacter = new NPCCharacter(startX, startY);
     }
-
 
     @Override
     public void start(Stage primaryStage) {
@@ -80,6 +86,43 @@ public class GameController extends Application {
         }
     }
 
+    public void gameLoop() {
+        // Update player's position and game logic
+        // Add your player character logic here, such as handling input and updating its position.
+        // Example: playerController.updatePosition();
+
+        // Update NPC's position
+        updateNPCPosition(gameAreaModel, maze);
+
+        // Render the game view
+        renderGameView(); // This method should handle rendering your entire game view, including player and NPC positions.
+
+        // Repeat the loop
+        // Use a game loop mechanism like JavaFX's AnimationTimer to continuously call the gameLoop method.
+        // Example:
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                gameLoop(); // Call the game loop recursively to keep the game running.
+            }
+        }.start();
+    }
+
+    private void renderGameView() {
+        // Assuming you have a GameAreaView or similar class for rendering the game
+        if (gameAreaView != null) {
+            // Update the position of the player character in the GameAreaView
+            gameAreaView.updatePlayerPosition(playerModel.getX(), playerModel.getY());
+
+            // Update the position of the NPC character in the GameAreaView
+            gameAreaView.updateNPCPosition(npcCharacter.getX(), npcCharacter.getY());
+
+            // Redraw the GameAreaView to reflect the updated positions
+            gameAreaView.redraw();
+        }
+    }
+
+
     private void setupEventHandlers() {
         gameView.getEditButton().setOnAction(event -> switchToDrawingScreen());
         gameView.getNewGameButton().setOnAction(event -> startNewGameArea());
@@ -125,6 +168,8 @@ public class GameController extends Application {
         }
     }
 
+
+
     private void updateCharacterView() {
         WritableImage currentCharacter;
         if (currentCharacterIndex >= 0 && currentCharacterIndex < drawingModel.getAllCharacters().size()) {
@@ -154,6 +199,12 @@ public class GameController extends Application {
 
         // After setting the maze, start the new game area
         startNewGameArea();
+    }
+
+    // Add a method to update the NPC's position
+    public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
+        npcCharacter.updatePosition(playerModel, maze);
+
     }
 
 
@@ -230,6 +281,7 @@ public class GameController extends Application {
             return columnOffset;
         }
     }
+
 
 
     public static void main(String[] args) {
