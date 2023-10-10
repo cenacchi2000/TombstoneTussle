@@ -7,6 +7,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Objects;
+
 public class GameAreaView extends Pane {
 
     private ImageView playerImageView; // Assuming you have a property to hold the player's ImageView
@@ -18,10 +20,12 @@ public class GameAreaView extends Pane {
     public static final int H = 800;
 
     private GameAreaModel gameAreaModel;
-    private GameAreaModel npcCharacter;
+    private NPCCharacter npcCharacter;
 
-    public GameAreaView(GameAreaModel model, WritableImage avatar) {
+    public GameAreaView(GameAreaModel model, WritableImage avatar, NPCCharacter npc) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
+        this.npcCharacter = npc;
+
 
         // Set pane's size
         setPrefSize(W, H);
@@ -58,6 +62,17 @@ public class GameAreaView extends Pane {
                 getChildren().add(rect);
             }
         }
+
+        // Draw NPCs
+        ImageView npcImageView = getNPCImageView();
+        npcImageView.setTranslateX(npcCharacter.getX());  // Set the NPC's position on the game pane
+        npcImageView.setTranslateY(npcCharacter.getY());
+        gamePane = new Pane();
+        gamePane.getChildren().add(npcImageView);
+
+        // Make sure to add gamePane to the main GameAreaView pane
+        getChildren().add(gamePane);
+
 
         // Create and position the player image view
         playerImageView = new ImageView(avatar);
@@ -119,7 +134,7 @@ public class GameAreaView extends Pane {
         ImageView npcImageView = new ImageView(); // You need to initialize it with an image
 
 
-        Image npcImage = new Image("/com/example/tombstonetussle/police.jpg"); // Replace 'npc_image.png' with your image path
+        Image npcImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
         npcImageView.setImage(npcImage);
 
         // Set the position of the NPC ImageView based on the NPCCharacter's coordinates

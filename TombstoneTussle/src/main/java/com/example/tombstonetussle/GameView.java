@@ -10,8 +10,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.input.KeyCode;
-
 
 public class GameView {
 
@@ -24,47 +22,25 @@ public class GameView {
     private GameController gameController; // Reference to the game controller
     private ImageView characterImageView;
 
-    private boolean holdingShield = false;
-    private WritableImage characterWithoutShieldImage;
-    private WritableImage characterWithShieldImage;
-
     public GameView(GameController controller) {
+        this.gameController = controller;
 
-        gameController = controller;
+        // Main layout
+        root = new BorderPane();
+        root.setPadding(new Insets(20, 20, 20, 20));
 
-        // Initialize characterImageView
-        characterImageView = new ImageView();
+        // Load NPC image (adjust the path as needed)
+       // Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
 
-        // Load the character images (adjust the paths as needed)
-        characterWithoutShieldImage = loadCharacterImage("/com/example/tombstonetussle/zombieOriginal.png");
-        characterWithShieldImage = loadCharacterImage("/com/example/tombstonetussle/Zombiewithshield.png");
+        // Create the NPC ImageView
+        //npcImageView = new ImageView(npcImage);
+        //root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
 
-        // Set the default character image to the one without the shield
-        setCharacterImage(characterWithoutShieldImage);
-
-        // Add a key press event handler to toggle the shield
-        gameController.getScene().setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.H) {
-                toggleShield();
-            }
-        });
-    }
-
-    // Load a character image from the resources folder
-    private WritableImage loadCharacterImage(String imageName) {
-        Image image =  new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png"));
-        return new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
-    }
-
-
-    // Toggle between character with and without shield
-    private void toggleShield() {
-        holdingShield = !holdingShield;
-        if (holdingShield) {
-            setCharacterImage(characterWithShieldImage);
-        } else {
-            setCharacterImage(characterWithoutShieldImage);
-        }
+        // Game title
+        Label gameTitle = new Label("Tombstone Tussle");
+        gameTitle.setStyle("-fx-font-size: 24px;");
+        root.setTop(gameTitle);
+        BorderPane.setAlignment(gameTitle, Pos.CENTER);
     }
 
     public void updateNPCPosition(double x, double y) {
