@@ -50,7 +50,7 @@ public class Maze1 extends Maze {
     }
 
     public void generateMazeDesign() {
-        int rows = 17; // Number of rows in the maze
+        int rows = 19; // Number of rows in the maze
         int cols = 31; // Number of columns in the maze
 
         // Initialize the maze with walls and additional information arrays
