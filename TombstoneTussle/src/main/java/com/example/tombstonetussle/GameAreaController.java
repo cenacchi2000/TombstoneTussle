@@ -3,12 +3,11 @@ package com.example.tombstonetussle;
 import javafx.scene.input.KeyEvent;
 
 public class GameAreaController {
-
-    private NPCCharacter npcCharacter; // Declare npcCharacter as an instance variable
-    
+    private char[][] maze;  // Add a field for the maze
+    private NPCCharacter npcCharacter;
     private GameAreaView gameAreaView;
     private GameAreaModel gameAreaModel;
-    private GameController gameController; // Reference to GameController
+    private GameController gameController;
     private GameAreaModel playerModel;
     private long lastClickTime = 0;
 
@@ -16,11 +15,12 @@ public class GameAreaController {
         this.gameAreaView = view;
         this.gameAreaModel = model;
         this.gameController = gameController;
-        this.playerModel = model; // Initialize playerModel here
+        this.playerModel = model;
+        this.maze = maze;  // Initialize the maze field
 
         // Initialize npcCharacter here with appropriate values
-        int startX = 0;
-        int startY = 0;
+        int startX = 8;
+        int startY = 9;
         npcCharacter = new NPCCharacter(startX, startY);
 
         setupKeyListeners();
@@ -44,13 +44,20 @@ public class GameAreaController {
         int playerX = playerModel.getX();
         int playerY = playerModel.getY();
 
-        // ... rest of your gameLoop code ...
+    }
+
+    public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
+        npcCharacter.updatePosition(playerModel, maze);
+
     }
 
     private void renderGameView() {
         // Example usage of playerModel method
         int playerX = playerModel.getX();
         int playerY = playerModel.getY();
+
+
+        updateNPCPosition(gameAreaModel, maze);
 
     }
 
@@ -98,7 +105,6 @@ public class GameAreaController {
             gameAreaView.removeBloodTrace(tileX, tileY);
         }
     }
-
 
 
     private void setupBackArrowListener() {

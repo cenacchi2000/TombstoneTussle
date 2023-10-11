@@ -36,8 +36,8 @@ public class GameController extends Application {
 
     public GameController() {
         this.drawingModel = new DrawingModel();
-        int startX = 0;
-        int startY = 0;
+        int startX = 8;
+        int startY = 9;
         npcCharacter = new NPCCharacter(startX, startY);
 
         // Set the reference to this GameController in the GameView constructor
@@ -101,10 +101,7 @@ public class GameController extends Application {
         // Example: playerController.updatePosition();
 
         // Update NPC's position
-        updateNPCPosition(gameAreaModel, maze);
 
-        // Render the game view
-        renderGameView(); // This method should handle rendering your entire game view, including player and NPC positions.
 
         // Repeat the loop
         // Use a game loop mechanism like JavaFX's AnimationTimer to continuously call the gameLoop method.
@@ -117,19 +114,7 @@ public class GameController extends Application {
         }.start();
     }
 
-    private void renderGameView() {
-        // Assuming you have a GameAreaView or similar class for rendering the game
-        if (gameAreaView != null) {
-            // Update the position of the player character in the GameAreaView
-            gameAreaView.updatePlayerPosition(playerModel.getX(), playerModel.getY());
 
-            // Update the position of the NPC character in the GameAreaView
-            gameAreaView.updateNPCPosition(npcCharacter.getX(), npcCharacter.getY());
-
-            // Redraw the GameAreaView to reflect the updated positions
-            gameAreaView.redraw();
-        }
-    }
 
 
     private void setupEventHandlers() {
@@ -177,8 +162,6 @@ public class GameController extends Application {
         }
     }
 
-
-
     private void updateCharacterView() {
         WritableImage currentCharacter;
         if (currentCharacterIndex >= 0 && currentCharacterIndex < drawingModel.getAllCharacters().size()) {
@@ -212,20 +195,9 @@ public class GameController extends Application {
     }
 
 
-    public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
-        npcCharacter.updatePosition(playerModel, maze);
 
-    }
 
-    public char[][] generateMaze() {
-        // Initialize the maze with walls
-        initializeMaze();
 
-        // Start the maze generation from the top-left corner
-        generate(0, 0);
-
-        return maze;
-    }
 
     public void MazeGenerator(int rows, int columns) {
         this.rows = rows;
