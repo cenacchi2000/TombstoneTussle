@@ -24,8 +24,10 @@ public class DrawingView extends BorderPane {
     private Button saveButton;
     private Image zombieImage;
     private Label backArrowLabel;
+    private DrawingModel drawingModel; // Add reference to the model
 
-    public DrawingView(GameController gameController) {
+    public DrawingView(DrawingModel drawingModel, GameController gameController) {
+        this.drawingModel = drawingModel;
         this.gameController = gameController;
         backArrowLabel = new Label("⬅️");
         backArrowLabel.setFont(new Font(24));
@@ -39,7 +41,7 @@ public class DrawingView extends BorderPane {
         backgroundCanvas = new Canvas(500, 500);
         drawingCanvas = new Canvas(500, 500);
 
-        zombieImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombie.png"));
+        Image zombieImage = drawingModel.getZombieImage();
 
         double canvasWidth = backgroundCanvas.getWidth();
         double canvasHeight = backgroundCanvas.getHeight();
@@ -98,12 +100,4 @@ public class DrawingView extends BorderPane {
         drawingCanvas.getGraphicsContext2D().clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
     }
 
-
-    public Color getPixelColor(double x, double y) {
-        if (x < 0 || x >= zombieImage.getWidth() || y < 0 || y >= zombieImage.getHeight()) {
-            return Color.TRANSPARENT;
-        }
-        PixelReader reader = zombieImage.getPixelReader();
-        return reader.getColor((int) x, (int) y);
-    }
 }

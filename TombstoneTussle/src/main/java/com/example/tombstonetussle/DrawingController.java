@@ -36,7 +36,7 @@ public class DrawingController {
         int cellSize = 10;
         for (int i = 0; i < drawingView.getBackgroundCanvas().getWidth(); i += cellSize) {
             for (int j = 0; j < drawingView.getBackgroundCanvas().getHeight(); j += cellSize) {
-                if (drawingModel.isInsideHumanFigure(drawingView, i, j)) {
+                if (drawingModel.isInsideHumanFigure(i, j)) {  // Call the model's method
                     bgGc.strokeRect(i, j, cellSize, cellSize);
                 }
             }
@@ -52,7 +52,7 @@ public class DrawingController {
             double x = cellX * cellSize;
             double y = cellY * cellSize;
 
-            if (drawingModel.isInsideHumanFigure(drawingView, x, y)) {
+            if (drawingModel.isInsideHumanFigure(x, y)) {
                 if (drawingView.getDrawButton().isSelected()) {
                     drawingGc.setFill(drawingView.getColorPicker().getValue());
                     drawingGc.fillRect(x, y, cellSize, cellSize);

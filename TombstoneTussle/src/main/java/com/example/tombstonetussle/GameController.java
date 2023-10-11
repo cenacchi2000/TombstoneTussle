@@ -71,7 +71,7 @@ public class GameController extends Application {
             gameState.startDrawing(); // Update the game state to DRAWING
             gameView.updateButtonVisibility(); // Update button visibility based on the new state
             if (drawingView == null) {
-                drawingView = new DrawingView(this);
+                drawingView = new DrawingView(drawingModel, this);
                 drawingController = new DrawingController(drawingModel, drawingView, this);
             }
             gameView.getRoot().setCenter(drawingView);
