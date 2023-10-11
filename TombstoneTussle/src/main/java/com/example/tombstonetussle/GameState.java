@@ -3,16 +3,13 @@ package com.example.tombstonetussle;
 
 public class GameState {
     private Maze1 maze1;
-    private Maze2 maze2;
-    private Maze3 maze3;
+
     private Maze selectedMaze;
 
     public GameState() {
         currentState = State.MENU;
         // Initialize the mazes
         maze1 = new Maze1();
-        maze2 = new Maze2(19, 38); // Adjust the dimensions as needed
-        maze3 = new Maze3(19, 38); // Adjust the dimensions as needed
         selectedMaze = maze1; // Default selected maze is Maze1
     }
 
@@ -88,15 +85,6 @@ public class GameState {
         executeStateAction();
     }
 
-    public void setSelectedMaze(String mazeSelection) {
-        if (mazeSelection.equals("M1")) {
-            selectedMaze = maze1;
-        } else if (mazeSelection.equals("M2")) {
-            selectedMaze = maze2;
-        } else if (mazeSelection.equals("M3")) {
-            selectedMaze = maze3;
-        }
-    }
 
 
     private void executeStateAction() {

@@ -182,20 +182,9 @@ public class GameController extends Application {
             Maze1 maze1 = new Maze1();
             maze1.generateMazeDesign();
             maze = maze1.getMaze();
-        } else if (mazeName.equals("maze2")) {
-            Maze2 maze2 = new Maze2(m,n);
-            maze2.generateMazeDesign();
-            maze = maze2.getMaze();
-        } else if (mazeName.equals("maze3")) {
-            Maze3 maze3 = new Maze3(m,n);
-            maze3.generateMazeDesign();
-            maze = maze3.getMaze();
         }
         startNewGameArea();
     }
-
-
-
 
 
 
