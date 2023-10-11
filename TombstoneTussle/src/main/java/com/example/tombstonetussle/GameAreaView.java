@@ -34,7 +34,9 @@ public class GameAreaView extends Pane {
         javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label("⬅️");
         arrowLabel.setFont(new javafx.scene.text.Font(24));
         arrowLabel.setId("backArrow"); // Setting an ID for easier access later
-        getChildren().addAll(arrowLabel);
+        // Set its position
+        arrowLabel.setLayoutY(-40);  // This sets the top margin to 20 pixels
+
 
         // Create and position the player
         this.gameAreaModel = model;
@@ -81,6 +83,7 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateX(model.getX());
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
+        getChildren().addAll(arrowLabel);
     }
 
     public GameAreaModel getGameAreaModel() {
