@@ -50,14 +50,13 @@ public class Maze1 extends Maze {
     }
 
     public void generateMazeDesign() {
-        int rows = 19; // Number of rows in the maze
-        int cols = 38; // Number of columns in the maze
+        int rows = 17; // Number of rows in the maze
+        int cols = 31; // Number of columns in the maze
 
         // Initialize the maze with walls and additional information arrays
         maze = new char[rows][cols];
         hasTrap = new boolean[rows][cols];   // Initialize the hasTrap array
         bloodTrace = new boolean[rows][cols];
-
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -80,6 +79,15 @@ public class Maze1 extends Maze {
         // Depth-first search algorithm for maze generation
         while (true) {
             maze[currentRow][currentCol] = ' '; // Mark the cell as a path
+
+            // Create labyrinthine structures by allowing backtracking
+            if (random.nextDouble() < 0.2) { // 40% chance of backtracking
+                if (!stack.isEmpty()) {
+                    currentCol = stack.pop();
+                    currentRow = stack.pop();
+                }
+            }
+
             // Randomly set some cells to contain traps (adjust probability as needed)
             if (random.nextDouble() < 0.1) { // Change 0.1 to your desired trap probability
                 hasTrap[currentRow][currentCol] = true;
@@ -89,7 +97,7 @@ public class Maze1 extends Maze {
             // Check neighboring cells
             List<int[]> neighbors = getRandomNeighbors(currentRow, currentCol, rows, cols, random);
             if (!neighbors.isEmpty()) {
-                int[] neighbor = neighbors.get(0);
+                int[] neighbor = neighbors.get(random.nextInt(neighbors.size()));
                 int newRow = neighbor[0];
                 int newCol = neighbor[1];
 
@@ -105,7 +113,13 @@ public class Maze1 extends Maze {
                 currentCol = stack.pop();
                 currentRow = stack.pop();
             } else {
-                break; // Maze generation complete
+                // Check if the starting position is reachable
+                if (maze[startRow][startCol] != ' ') {
+                    // The character cannot move from the spawn position; regenerate the maze
+                    generateMazeDesign();
+                } else {
+                    break; // Maze generation complete
+                }
             }
         }
 
@@ -113,8 +127,8 @@ public class Maze1 extends Maze {
         int endRow = random.nextInt(rows);
         int endCol = random.nextInt(cols);
         maze[endRow][endCol] = 'E';
-
     }
+
 
     private List<int[]> getRandomNeighbors(int row, int col, int rows, int cols, Random random) {
         int[][] neighbors = {{row - 2, col}, {row + 2, col}, {row, col - 2}, {row, col + 2}};

@@ -4,15 +4,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 public class Maze {
     private char[][] maze;
     private int startRow;
     private int startCol;
+    private int npcRow;
+    private int npcCol;
 
     public void generateMazeDesign() {
-        int rows = 18; // Number of rows in the maze
-        int cols = 30; // Number of columns in the maze
+        int rows = 10; // Number of rows in the maze
+        int cols = 10; // Number of columns in the maze
 
         // Initialize the maze with empty cells
         char[][] maze = new char[rows][cols];
@@ -28,6 +29,11 @@ public class Maze {
         int startCol = random.nextInt(cols);
         maze[startRow][startCol] = 'S';
 
+        // Set the NPC position
+        int npcRow = random.nextInt(rows);
+        int npcCol = random.nextInt(cols);
+        maze[npcRow][npcCol] = 'N';
+
         // Generate the maze design using a basic algorithm
         generateMaze(maze, startRow, startCol);
 
@@ -40,6 +46,8 @@ public class Maze {
         setMaze(maze);
         setStartRow(startRow);
         setStartCol(startCol);
+        setNpcRow(npcRow);
+        setNpcCol(npcCol);
     }
 
     public void setMaze(char[][] maze) {
@@ -54,6 +62,14 @@ public class Maze {
         this.startCol = startCol;
     }
 
+    public void setNpcRow(int npcRow) {
+        this.npcRow = npcRow;
+    }
+
+    public void setNpcCol(int npcCol) {
+        this.npcCol = npcCol;
+    }
+
     private void generateMaze(char[][] maze, int row, int col) {
         int rows = maze.length;
         int cols = maze[0].length;
@@ -62,7 +78,7 @@ public class Maze {
         maze[row][col] = '#';
 
         // Define the possible directions to move
-        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int[][] directions = {{-2, 0}, {2, 0}, {0, -2}, {0, 2}};
 
         // Randomly shuffle the directions
         List<int[]> directionList = Arrays.asList(directions);
@@ -74,12 +90,15 @@ public class Maze {
             int newCol = col + direction[1];
 
             // Check if the neighboring cell is within the maze boundaries
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && maze[newRow][newCol] == ' ') {
-                // Mark the wall between the current cell and the neighboring cell as empty
-                maze[row + direction[0] / 2][col + direction[1] / 2] = ' ';
-                // Recursively generate the maze design for the neighboring cell
-                generateMaze(maze, newRow, newCol);
+            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                if (maze[newRow][newCol] == ' ') {
+                    // Mark the wall between the current cell and the neighboring cell as empty
+                    maze[row + direction[0] / 2][col + direction[1] / 2] = ' ';
+                    // Recursively generate the maze design for the neighboring cell
+                    generateMaze(maze, newRow, newCol);
+                }
             }
         }
     }
+
 }
