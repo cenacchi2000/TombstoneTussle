@@ -1,6 +1,5 @@
 
 package com.example.tombstonetussle;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -25,7 +24,7 @@ public class GameAreaView extends Pane {
     public GameAreaView(GameAreaModel model, WritableImage avatar, NPCCharacter npc, char[][] selectedMaze) {        this.playerModel = playerModel; // Set the playerModel through the constructor
         this.npcCharacter = npc;
 
-        char[][] maze = selectedMaze;
+
 
         // Set pane's size
         setPrefSize(W, H);
@@ -41,7 +40,8 @@ public class GameAreaView extends Pane {
         this.gameAreaModel = model;
 
         // Draw the maze
-        char[][] maze = model.getMaze1().getMaze();
+        char[][] maze = selectedMaze;
+        maze = model.getMaze1().getMaze();
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
                 Rectangle rect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
