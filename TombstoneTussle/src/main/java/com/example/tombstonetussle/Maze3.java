@@ -7,6 +7,7 @@ public class Maze3 extends Maze {
     private char[][] maze;
     private int rows;
     private int cols;
+    private boolean[][] bloodTrace;
 
     public Maze3(int rows, int cols) {
         this.rows = rows;
@@ -23,6 +24,7 @@ public class Maze3 extends Maze {
 
     private void initializeMaze() {
         Random random = new Random();
+        bloodTrace = new boolean[rows][cols];
 
         // Initialize the maze with walls
         for (int i = 0; i < rows; i++) {
@@ -104,6 +106,10 @@ public class Maze3 extends Maze {
             }
         }
         return null; // If 'E' is not found, though it should never happen
+    }
+
+    public boolean[][] getBloodTrace() {
+        return bloodTrace;
     }
 
 

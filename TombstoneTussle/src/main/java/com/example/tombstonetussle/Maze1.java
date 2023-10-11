@@ -8,14 +8,14 @@ import java.util.Stack;
 
 public class Maze1 extends Maze {
     private char[][] maze;
-    private boolean[][] hasPassed; // To track if the character has passed through a cell
     private boolean[][] hasTrap;   // To track if a cell contains a trap
     private int startRow;
     private int startCol;
+    private boolean[][] bloodTrace;
+
 
     public Maze1() {
         this.maze = null;
-        this.hasPassed = null;
         this.hasTrap = null;
         this.startRow = -1;
         this.startCol = -1;
@@ -27,10 +27,6 @@ public class Maze1 extends Maze {
 
     public void setMaze(char[][] maze) {
         this.maze = maze;
-    }
-
-    public boolean[][] getHasPassed() {
-        return hasPassed;
     }
 
     public boolean[][] getHasTrap() {
@@ -59,13 +55,13 @@ public class Maze1 extends Maze {
 
         // Initialize the maze with walls and additional information arrays
         maze = new char[rows][cols];
-        hasPassed = new boolean[rows][cols]; // Initialize the hasPassed array
         hasTrap = new boolean[rows][cols];   // Initialize the hasTrap array
+        bloodTrace = new boolean[rows][cols];
+
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 maze[i][j] = '#';
-                hasPassed[i][j] = false; // Set all cells as not passed through initially
                 hasTrap[i][j] = false;  // Set all cells as not containing a trap initially
             }
         }
@@ -84,8 +80,6 @@ public class Maze1 extends Maze {
         // Depth-first search algorithm for maze generation
         while (true) {
             maze[currentRow][currentCol] = ' '; // Mark the cell as a path
-            hasPassed[currentRow][currentCol] = true; // Mark that the character has passed through this cell
-
             // Randomly set some cells to contain traps (adjust probability as needed)
             if (random.nextDouble() < 0.1) { // Change 0.1 to your desired trap probability
                 hasTrap[currentRow][currentCol] = true;
@@ -154,6 +148,11 @@ public class Maze1 extends Maze {
         }
         return null; // If 'E' is not found, though it should never happen
     }
+
+    public boolean[][] getBloodTrace() {
+        return bloodTrace;
+    }
+
 
 
 }

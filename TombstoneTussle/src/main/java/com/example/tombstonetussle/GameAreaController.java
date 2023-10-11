@@ -48,6 +48,8 @@ public class GameAreaController {
     }
 
     private void handleKeyInput(KeyEvent event) {
+        int prevX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
+        int prevY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
         switch (event.getCode()) {
             case W:
                 gameAreaModel.moveUp();
@@ -61,9 +63,23 @@ public class GameAreaController {
             case D:
                 gameAreaModel.moveRight();
                 break;
+            default:
+                return; // If it's not one of the movement keys, exit early.
         }
-        gameAreaView.updatePlayerPosition(playerModel.getX(), playerModel.getY());
+
+        int currentX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
+        int currentY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
+
+        // Check if player actually moved
+        if (prevX != currentX || prevY != currentY) {
+            gameAreaModel.getMaze1().getBloodTrace()[prevY][prevX] = true;
+            gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
+        }
     }
+
+
+
+
 
 
     private void setupBackArrowListener() {

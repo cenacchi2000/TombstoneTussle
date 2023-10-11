@@ -7,6 +7,7 @@ public class Maze2 extends Maze {
     private int rows;
     private int cols;
     private Random random;
+    private boolean[][] bloodTrace;
 
     public Maze2(int rows, int cols) {
         this.rows = rows;
@@ -17,6 +18,7 @@ public class Maze2 extends Maze {
     }
 
     private void initializeMaze() {
+        bloodTrace = new boolean[rows][cols];
         // Fill the entire maze with open passages
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -58,4 +60,10 @@ public class Maze2 extends Maze {
     public char[][] getMaze() {
         return maze;
     }
+
+    public boolean[][] getBloodTrace() {
+        return bloodTrace;
+    }
+
 }
+

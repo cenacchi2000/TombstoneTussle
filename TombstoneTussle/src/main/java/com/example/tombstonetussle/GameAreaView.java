@@ -93,20 +93,30 @@ public class GameAreaView extends Pane {
     public void updatePlayerPosition(int x, int y) {
         double playerX = gameAreaModel.getX();
         double playerY = gameAreaModel.getY();
-/*
-        // Clamp player position to within the maze bounds
-        if (playerX < 0) {
-            playerX = 0;
-        } else if (playerX + TILE_SIZE > W) {
-            playerX = W - TILE_SIZE;
+        int currentTileX = x / TILE_SIZE;
+        int currentTileY = y / TILE_SIZE;
+
+        // Get the previous position using the methods you've provided
+        int prevTileX = (int) gameAreaModel.getLastX() / TILE_SIZE;
+        int prevTileY = (int) gameAreaModel.getLastY() / TILE_SIZE;
+
+        // Check if a blood trace already exists before adding
+        if (!getChildren().stream().anyMatch(node ->
+                node instanceof ImageView &&
+                        ((ImageView) node).getX() == prevTileX * TILE_SIZE &&
+                        ((ImageView) node).getY() == prevTileY * TILE_SIZE)) {
+
+            if (gameAreaModel.getMaze1().getBloodTrace()[prevTileY][prevTileX]) {
+                ImageView bloodTraceView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/bloodTrace.png")));
+                bloodTraceView.setFitWidth(TILE_SIZE);
+                bloodTraceView.setFitHeight(TILE_SIZE);
+                bloodTraceView.setX(prevTileX * TILE_SIZE);
+                bloodTraceView.setY(prevTileY * TILE_SIZE);
+                getChildren().add(bloodTraceView);
+            }
         }
 
-        if (playerY < 0) {
-            playerY = 0;
-        } else if (playerY + TILE_SIZE > H) {
-            playerY = H - TILE_SIZE;
-        }
-*/
+
         playerImageView.setTranslateX(playerX);
         playerImageView.setTranslateY(playerY);
 
@@ -115,6 +125,8 @@ public class GameAreaView extends Pane {
         gameAreaModel.setX((int) playerX);
         gameAreaModel.setY((int) playerY);
     }
+
+
 
 
 
