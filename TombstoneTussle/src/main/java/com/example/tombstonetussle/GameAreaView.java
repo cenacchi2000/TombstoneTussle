@@ -1,5 +1,6 @@
 
 package com.example.tombstonetussle;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -108,6 +109,7 @@ public class GameAreaView extends Pane {
 
             if (gameAreaModel.getMaze1().getBloodTrace()[prevTileY][prevTileX]) {
                 ImageView bloodTraceView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/bloodTrace.png")));
+                bloodTraceView.setId("bloodTrace");
                 bloodTraceView.setFitWidth(TILE_SIZE);
                 bloodTraceView.setFitHeight(TILE_SIZE);
                 bloodTraceView.setX(prevTileX * TILE_SIZE);
@@ -126,10 +128,22 @@ public class GameAreaView extends Pane {
         gameAreaModel.setY((int) playerY);
     }
 
+    public void removeBloodTrace(int tileX, int tileY) {
+        ImageView bloodTraceToRemove = null;
+        for (Node node : getChildren()) {
+            if (node instanceof ImageView &&
+                    ((ImageView) node).getX() == tileX * TILE_SIZE &&
+                    ((ImageView) node).getY() == tileY * TILE_SIZE &&
+                    "bloodTrace".equals(node.getId())) {
+                bloodTraceToRemove = (ImageView) node;
+                break;
+            }
+        }
 
-
-
-
+        if (bloodTraceToRemove != null) {
+            getChildren().remove(bloodTraceToRemove);
+        }
+    }
 
     public void updateNPCPosition(int x, int y) {
         // Assuming you have an ImageView for the NPC character in your GameAreaView

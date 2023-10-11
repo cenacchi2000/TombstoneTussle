@@ -10,6 +10,7 @@ public class GameAreaController {
     private GameAreaModel gameAreaModel;
     private GameController gameController; // Reference to GameController
     private GameAreaModel playerModel;
+    private long lastClickTime = 0;
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
@@ -24,6 +25,16 @@ public class GameAreaController {
 
         setupKeyListeners();
         setupBackArrowListener();
+
+        //Listener to fast double click
+        gameAreaView.setOnMouseClicked(event -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastClickTime <= 500) {
+                handleDoubleClick(event.getX(), event.getY());
+            }
+            lastClickTime = currentTime;
+        });
+
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
@@ -77,8 +88,16 @@ public class GameAreaController {
         }
     }
 
+    private void handleDoubleClick(double x, double y) {
+        int tileX = (int) x / GameAreaView.TILE_SIZE;
+        int tileY = (int) y / GameAreaView.TILE_SIZE;
 
-
+        // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
+        if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
+            gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
+            gameAreaView.removeBloodTrace(tileX, tileY);
+        }
+    }
 
 
 
