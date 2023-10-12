@@ -2,14 +2,19 @@ package com.example.tombstonetussle;
 
 import javafx.scene.input.KeyEvent;
 
+import java.util.Random;
+import javafx.animation.AnimationTimer;
+
+
 public class GameAreaController {
     private char[][] maze;  // Add a field for the maze
-    private NPCCharacter npcCharacter;
     private GameAreaView gameAreaView;
     private GameAreaModel gameAreaModel;
     private GameController gameController;
     private GameAreaModel playerModel;
     private long lastClickTime = 0;
+    private EnemyModel enemyModel;
+
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
@@ -17,12 +22,10 @@ public class GameAreaController {
         this.gameController = gameController;
         this.playerModel = model;
         this.maze = maze;  // Initialize the maze field
+        this.enemyModel = new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1());
 
-        // Initialize npcCharacter here with appropriate values
-        int startX = 8;
-        int startY = 9;
-        npcCharacter = new NPCCharacter(startX, startY);
 
+        startEnemyMovement();
         setupKeyListeners();
         setupBackArrowListener();
 
@@ -39,29 +42,9 @@ public class GameAreaController {
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
 
-    public void gameLoop() {
-        // Example usage of playerModel method
-        int playerX = playerModel.getX();
-        int playerY = playerModel.getY();
-
-    }
-
-    public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
-        npcCharacter.updatePosition(playerModel, maze);
-
-    }
-
-    private void renderGameView() {
-        // Example usage of playerModel method
-        int playerX = playerModel.getX();
-        int playerY = playerModel.getY();
 
 
-        updateNPCPosition(gameAreaModel, maze);
-
-    }
-
-        private void setupKeyListeners() {
+    private void setupKeyListeners() {
         gameAreaView.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyInput);
     }
 
@@ -112,6 +95,46 @@ public class GameAreaController {
             gameController.handleBackToMainMenu();
         });
     }
+
+    private void moveEnemyRandomly() {
+        Random random = new Random();
+        int direction = random.nextInt(4); // 0 = up, 1 = down, 2 = left, 3 = right
+
+        int newX = enemyModel.getX();
+        int newY = enemyModel.getY();
+
+        switch (direction) {
+            case 0:
+                newY -= GameAreaView.TILE_SIZE;
+                break;
+            case 1:
+                newY += GameAreaView.TILE_SIZE;
+                break;
+            case 2:
+                newX -= GameAreaView.TILE_SIZE;
+                break;
+            case 3:
+                newX += GameAreaView.TILE_SIZE;
+                break;
+        }
+
+        if (enemyModel.isValidMove(newX, newY)) {
+            enemyModel.setX(newX);
+            enemyModel.setY(newY);
+        }
+    }
+
+    private void startEnemyMovement() {
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                moveEnemyRandomly();
+                gameAreaView.updateEnemyPosition(enemyModel.getX(), enemyModel.getY()); // Aggiorna la posizione nella vista
+            }
+        };
+        timer.start();
+    }
+
 
 
 }

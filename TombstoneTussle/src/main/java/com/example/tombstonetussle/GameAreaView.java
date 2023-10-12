@@ -12,18 +12,19 @@ import java.util.Objects;
 public class GameAreaView extends Pane {
 
     private ImageView playerImageView; // Assuming you have a property to hold the player's ImageView
-    private Pane gamePane;              // Assuming you have a Pane to render the game
+
     private GameAreaModel playerModel; // Define a playerModel field
 
     public static final int TILE_SIZE = 40;
     public static final int W = 800;
     public static final int H = 800;
+    private ImageView enemyImageView;
+
 
     private GameAreaModel gameAreaModel;
-    private NPCCharacter npcCharacter;
 
-    public GameAreaView(GameAreaModel model, WritableImage avatar, NPCCharacter npc, char[][] selectedMaze) {        this.playerModel = playerModel; // Set the playerModel through the constructor
-        this.npcCharacter = npc;
+    public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, EnemyModel enemyModel) {
+        this.playerModel = playerModel; // Set the playerModel through the constructor
 
         // Set pane's size
         setPrefSize(W, H);
@@ -64,16 +65,14 @@ public class GameAreaView extends Pane {
             }
         }
 
-        // Draw NPCs
-        ImageView npcImageView = getNPCImageView();
-        npcImageView.setTranslateX(npcCharacter.getX());  // Set the NPC's position on the game pane
-        npcImageView.setTranslateY(npcCharacter.getY());
-        gamePane = new Pane();
-        gamePane.getChildren().add(npcImageView);
 
-        // Make sure to add gamePane to the main GameAreaView pane
-        getChildren().add(gamePane);
-
+        //NPC creation
+        enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
+        enemyImageView.setFitWidth(TILE_SIZE);
+        enemyImageView.setFitHeight(TILE_SIZE);
+        enemyImageView.setTranslateX(enemyModel.getX());
+        enemyImageView.setTranslateY(enemyModel.getY());
+        getChildren().add(enemyImageView);
 
         // Create and position the player image view
         playerImageView = new ImageView(avatar);
@@ -83,6 +82,7 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
+
     }
 
     public GameAreaModel getGameAreaModel() {
@@ -143,54 +143,11 @@ public class GameAreaView extends Pane {
         }
     }
 
-    public void updateNPCPosition(int x, int y) {
-        // Assuming you have an ImageView for the NPC character in your GameAreaView
-        ImageView npcImageView = getNPCImageView(); // Replace with your actual method to get the NPC ImageView
-
-        // Update the position of the NPC ImageView
-        npcImageView.setTranslateX(x);
-        npcImageView.setTranslateY(y);
+    public void updateEnemyPosition(int x, int y) {
+        enemyImageView.setTranslateX(x);
+        enemyImageView.setTranslateY(y);
     }
 
-    private ImageView getNPCImageView() {
-        // Get the x and y coordinates of the NPC character from your NPCCharacter object
-        int npcX = npcCharacter.getX();
-        int npcY = npcCharacter.getY();
 
-        // Create an ImageView for the NPC character and set its properties
-        ImageView npcImageView = new ImageView(); // You need to initialize it with an image
-
-
-        Image npcImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
-        npcImageView.setImage(npcImage);
-
-        // Set the position of the NPC ImageView based on the NPCCharacter's coordinates
-        npcImageView.setX(npcX * GameAreaView.TILE_SIZE); // Adjust for tile size
-        npcImageView.setY(npcY * GameAreaView.TILE_SIZE); // Adjust for tile size
-
-        // Set the width and height of the NPC ImageView (adjust as needed)
-        npcImageView.setFitWidth(GameAreaView.TILE_SIZE);
-        npcImageView.setFitHeight(GameAreaView.TILE_SIZE);
-
-        // Set any other properties for the ImageView, such as scaling or rotation
-
-        return npcImageView;
-    }
-
-    public void redraw() {
-        // Assuming gamePane is your JavaFX Pane where you render the game
-        // Clear the existing content on the gamePane
-        gamePane.getChildren().clear();
-
-        // Draw or update the player character's image
-        playerImageView.setX(gameAreaModel.getX());
-        playerImageView.setY(gameAreaModel.getY());
-
-        // Get the NPC ImageView from the getNPCImageView method
-        ImageView npcImageView = getNPCImageView();
-
-        // Add the player and NPC images to the gamePane
-        gamePane.getChildren().addAll(playerImageView, npcImageView);
-    }
 
 }

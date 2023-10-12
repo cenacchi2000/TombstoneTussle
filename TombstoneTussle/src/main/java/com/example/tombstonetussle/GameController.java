@@ -13,7 +13,6 @@ import java.util.List;
 
 public class GameController extends Application {
     private int currentCharacterIndex = 0;
-    private NPCCharacter npcCharacter;
     private GameState gameState;
     private GameView gameView;
 
@@ -38,7 +37,6 @@ public class GameController extends Application {
         this.drawingModel = new DrawingModel();
         int startX = 8;
         int startY = 9;
-        npcCharacter = new NPCCharacter(startX, startY);
 
         // Set the reference to this GameController in the GameView constructor
         gameView = new GameView(this);
@@ -86,7 +84,9 @@ public class GameController extends Application {
 
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
             WritableImage selectedCharacter = gameView.getCharacterImage();
-            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, npcCharacter, maze);
+            // Inizializza enemyModel prima di creare gameAreaView
+            EnemyModel enemyModel = new EnemyModel(GameAreaView.TILE_SIZE, gameAreaModel.getMaze1());
+            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, maze, enemyModel);
             // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
@@ -95,28 +95,6 @@ public class GameController extends Application {
             gameView.updateButtonVisibility(); // Update button visibility based on the new state
         }
     }
-
-    public void gameLoop() {
-        // Update player's position and game logic
-        // Add your player character logic here, such as handling input and updating its position.
-        // Example: playerController.updatePosition();
-
-        // Update NPC's position
-
-
-        // Repeat the loop
-        // Use a game loop mechanism like JavaFX's AnimationTimer to continuously call the gameLoop method.
-        // Example:
-        new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                gameLoop(); // Call the game loop recursively to keep the game running.
-            }
-        }.start();
-    }
-
-
-
 
     private void setupEventHandlers() {
         gameView.getEditButton().setOnAction(event -> switchToDrawingScreen());
