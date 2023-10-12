@@ -10,6 +10,13 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.*;
+import javafx.scene.paint.Color;
+
 
 public class GameView {
 
@@ -21,6 +28,7 @@ public class GameView {
     private Button continueButton; // The button to continue a game
     private GameController gameController; // Reference to the game controller
     private ImageView characterImageView;
+    private Title gameTitle = new Title("TOMBSTONE TUSSLE");
 
     public GameView(GameController controller) {
         this.gameController = controller;
@@ -28,6 +36,7 @@ public class GameView {
         // Main layout
         root = new BorderPane();
         root.setPadding(new Insets(20, 20, 20, 20));
+        root.setId("root");
 
         // Load NPC image (adjust the path as needed)
        // Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
@@ -37,10 +46,28 @@ public class GameView {
         //root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
 
         // Game title
-        Label gameTitle = new Label("Tombstone Tussle");
-        gameTitle.setStyle("-fx-font-size: 24px;");
+        //Label gameTitle = new Label("Tombstone Tussle");
+
+        //gameTitle.setStyle("-fx-font-size: 24px;");
         root.setTop(gameTitle);
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
+    }
+
+    // Style for Game title
+    private static class Title extends StackPane{
+        public Title(String name) {
+//            Rectangle bg = new Rectangle(425, 80);
+//            bg.setStroke(Color.WHITE);
+//            bg.setStrokeWidth(2);
+//            bg.setFill(null);
+
+            Text text = new Text(name);
+            text.setFill(Color.WHITE);
+            text.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 50));
+
+            setAlignment(Pos.CENTER);
+            getChildren().addAll(text);
+        }
     }
 
     public void updateNPCPosition(double x, double y) {
@@ -68,6 +95,9 @@ public class GameView {
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
         continueButton.setVisible(gameController.isContinueButtonVisible());
     }
+//    public void updateTitleVisibility(){
+//        gameTitle.setVisible(false);
+//    }
 
     // Create the main menu layout
     public void setupMainMenu() {
@@ -93,7 +123,9 @@ public class GameView {
         characterImageView.setFitHeight(100); // Imposta l'altezza desiderata
         HBox characterControls = new HBox(10, editButton, leftArrowChar, characterImageView, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
-        characterBox.getChildren().addAll(new Label("Character"), characterControls);
+        Label character = new Label("Character");
+        character.setTextFill(Color.WHITE);
+        characterBox.getChildren().addAll(character, characterControls);
 
         // Setting selection
         VBox settingBox = new VBox(10);
@@ -101,9 +133,13 @@ public class GameView {
         this.setDefaultCharacterImage();
         Button rightArrowSetting = new Button(">");
         Label settingPlaceholder = new Label("M"); // Placeholder for maze selection
+        settingPlaceholder.setTextFill(Color.WHITE);
         HBox settingControls = new HBox(10, leftArrowSetting, settingPlaceholder, rightArrowSetting);
         settingControls.setAlignment(Pos.CENTER);
-        settingBox.getChildren().addAll(new Label("Maze selection"), settingControls);
+        Label selection = new Label("Maze selection");
+        selection.setPadding(new Insets(0,0,38,0));
+        selection.setTextFill(Color.WHITE);
+        settingBox.getChildren().addAll(selection, settingControls);
 
         // Maze selection logic
         final int[] mazeIndex = {0}; // Index to keep track of the selected maze
