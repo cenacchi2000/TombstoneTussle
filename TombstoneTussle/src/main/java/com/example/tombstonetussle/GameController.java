@@ -57,6 +57,7 @@ public class GameController extends Application {
 
         // Set up the stage
         Scene scene = new Scene(gameView.getRoot(), 600, 400);
+        scene.getStylesheets().addAll(this.getClass().getResource("gameMenu.css").toExternalForm());
         primaryStage.setTitle("Tombstone Tussle");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true); // Start the window maximized
