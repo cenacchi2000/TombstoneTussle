@@ -66,6 +66,8 @@ public class GameAreaView extends Pane {
         }
 
 
+
+
         //NPC creation
         enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
         enemyImageView.setFitWidth(TILE_SIZE);
@@ -83,6 +85,13 @@ public class GameAreaView extends Pane {
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
 
+    }
+
+
+    public boolean hasBloodTrace(int x, int y) {
+        int tileX = x / TILE_SIZE;
+        int tileY = y / TILE_SIZE;
+        return gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX];
     }
 
     public GameAreaModel getGameAreaModel() {

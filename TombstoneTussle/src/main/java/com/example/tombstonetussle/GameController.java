@@ -7,9 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GameController extends Application {
     private int currentCharacterIndex = 0;
@@ -32,6 +30,8 @@ public class GameController extends Application {
 
     // Declare playerModel field
     private GameAreaModel playerModel;
+
+
 
     public GameController() {
         this.drawingModel = new DrawingModel();

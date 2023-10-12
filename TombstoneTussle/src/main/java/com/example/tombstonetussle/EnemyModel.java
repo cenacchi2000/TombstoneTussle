@@ -3,17 +3,22 @@ package com.example.tombstonetussle;
 public class EnemyModel {
     private int x;
     private int y;
+    private int lastX;
+    private int lastY;
     private final int tileSize;
     private Maze1 maze1;
+    private boolean isFollowingBloodTrace;
 
     public EnemyModel(int tileSize, Maze1 maze1) {
         this.tileSize = tileSize;
         this.maze1 = maze1;
-
-        // Posizione iniziale del nemico. Puoi cambiare queste coordinate come preferisci.
-        this.x = 0;
-        this.y = 0;
+        this.x = 4;
+        this.y = 4;
+        this.lastX = 0;
+        this.lastY = 0;
+        this.isFollowingBloodTrace = false;
     }
+
 
     public int getX() {
         return x;
