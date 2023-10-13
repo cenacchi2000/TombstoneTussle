@@ -1,5 +1,6 @@
 package com.example.tombstonetussle;
 
+import com.example.tombstonetussle.Maze;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ public class Maze1 extends Maze {
     private int startRow;
     private int startCol;
     private boolean[][] bloodTrace;
-
 
     public Maze1() {
         this.maze = null;
@@ -52,8 +52,8 @@ public class Maze1 extends Maze {
     }
 
     public void generateMazeDesign() {
-        int rows = 19; // Number of rows in the maze
-        int cols = 31; // Number of columns in the maze
+        int rows = 17; // Number of rows in the maze
+        int cols = 26; // Number of columns in the maze
 
         // Initialize the maze with walls and additional information arrays
         maze = new char[rows][cols];
@@ -130,7 +130,6 @@ public class Maze1 extends Maze {
         int endCol = random.nextInt(cols);
         maze[endRow][endCol] = 'E';
     }
-
 
     private List<int[]> getRandomNeighbors(int row, int col, int rows, int cols, Random random) {
         int[][] neighbors = {{row - 2, col}, {row + 2, col}, {row, col - 2}, {row, col + 2}};

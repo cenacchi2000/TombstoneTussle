@@ -14,13 +14,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
 
-
 public class GameController extends Application {
     private int currentCharacterIndex = 0;
     private GameState gameState;
     private GameView gameView;
-
-
     private int m= 10;
     private int n= 10;
     private DrawingController drawingController;
@@ -250,8 +247,6 @@ public class GameController extends Application {
             return columnOffset;
         }
     }
-
-
 
     public static void main(String[] args) {
         launch(args);
