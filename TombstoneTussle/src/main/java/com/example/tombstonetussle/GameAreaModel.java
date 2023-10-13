@@ -7,9 +7,7 @@ public class GameAreaModel {
     private Maze1 maze1;
     private double lastX;
     private double lastY;
-
     private int size;
-
 
     public double getLastX() {
         return lastX;
