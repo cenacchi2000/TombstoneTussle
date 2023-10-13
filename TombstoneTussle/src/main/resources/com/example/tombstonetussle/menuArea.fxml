@@ -12,7 +12,10 @@
    <children>
       <VBox prefHeight="600.0" prefWidth="250.0">
          <children>
-            <StackPane fx:id="menuTitle" prefHeight="60.0" prefWidth="250.0" />
+            <StackPane fx:id="menuTitle" prefHeight="60.0" prefWidth="250.0">
+               <children>
+                  <Label fx:id="titleText" text="MENU" StackPane.alignment="CENTER" />
+               </children></StackPane>
             <Label maxWidth="300.0" text="     Walls" />
             <HBox prefHeight="100.0" prefWidth="250.0">
                <children>
