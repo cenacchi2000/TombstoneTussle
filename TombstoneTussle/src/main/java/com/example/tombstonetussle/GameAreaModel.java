@@ -8,6 +8,9 @@ public class GameAreaModel {
     private double lastX;
     private double lastY;
 
+    private int size;
+
+
     public double getLastX() {
         return lastX;
     }
@@ -49,6 +52,14 @@ public class GameAreaModel {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public void moveUp() {

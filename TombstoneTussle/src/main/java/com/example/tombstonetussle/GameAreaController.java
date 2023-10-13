@@ -2,14 +2,30 @@ package com.example.tombstonetussle;
 
 import javafx.scene.input.KeyEvent;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javafx.animation.AnimationTimer;
+import com.example.tombstonetussle.GameAreaView;
+
+
 public class GameAreaController {
     private char[][] maze;  // Add a field for the maze
-    private NPCCharacter npcCharacter;
+
+    private int size; // Add the size variable
+
     private GameAreaView gameAreaView;
     private GameAreaModel gameAreaModel;
     private GameController gameController;
     private GameAreaModel playerModel;
     private long lastClickTime = 0;
+    private EnemyModel enemyModel;
+
+    private boolean isFollowingBloodTrace = false;
+
+    private Set<Integer> passedBloodStains = new HashSet<>();
+
+
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
@@ -17,12 +33,11 @@ public class GameAreaController {
         this.gameController = gameController;
         this.playerModel = model;
         this.maze = maze;  // Initialize the maze field
+        this.enemyModel = new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1());
+        this.size = model.getSize(); // Initialize the size variable with the appropriate value
 
-        // Initialize npcCharacter here with appropriate values
-        int startX = 8;
-        int startY = 9;
-        npcCharacter = new NPCCharacter(startX, startY);
 
+        startEnemyMovement();
         setupKeyListeners();
         setupBackArrowListener();
 
@@ -39,29 +54,9 @@ public class GameAreaController {
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
 
-    public void gameLoop() {
-        // Example usage of playerModel method
-        int playerX = playerModel.getX();
-        int playerY = playerModel.getY();
-
-    }
-
-    public void updateNPCPosition(GameAreaModel playerModel, char[][] maze) {
-        npcCharacter.updatePosition(playerModel, maze);
-
-    }
-
-    private void renderGameView() {
-        // Example usage of playerModel method
-        int playerX = playerModel.getX();
-        int playerY = playerModel.getY();
 
 
-        updateNPCPosition(gameAreaModel, maze);
-
-    }
-
-        private void setupKeyListeners() {
+    private void setupKeyListeners() {
         gameAreaView.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyInput);
     }
 
@@ -112,6 +107,116 @@ public class GameAreaController {
             gameController.handleBackToMainMenu();
         });
     }
+
+    private void moveEnemyRandomly() {
+        Random random = new Random();
+
+        int newX = enemyModel.getX();
+        int newY = enemyModel.getY();
+
+        int currentTileX = newX / GameAreaView.TILE_SIZE;
+        int currentTileY = newY / GameAreaView.TILE_SIZE;
+
+        List<int[]> neighboringCells = new ArrayList<>();
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
+
+        // Check neighboring cells for bloodstains
+        for (int[] direction : directions) {
+            int neighborX = currentTileX + direction[0];
+            int neighborY = currentTileY + direction[1];
+
+            if (isValidCell(neighborX, neighborY) && gameAreaModel.getMaze1().getBloodTrace()[neighborY][neighborX]) {
+                if (!passedBloodStains.contains(neighborX * 1000 + neighborY)) {
+                    neighboringCells.add(new int[]{neighborX, neighborY});
+                }
+            }
+        }
+
+        if (!neighboringCells.isEmpty()) {
+            // Find the neighboring cell with bloodstain closest to the enemy
+            int closestIndex = findClosestBloodStain(neighboringCells, newX, newY);
+            int[] closestCell = neighboringCells.get(closestIndex);
+
+            // Add this bloodstain to the set of passed bloodstains
+            passedBloodStains.add(closestCell[0] * 1000 + closestCell[1]);
+
+            // Call the removeBloodTrace method from the GameAreaView
+            gameAreaView.removeBloodTrace(closestCell[0], closestCell[1]);
+
+            newX = closestCell[0] * GameAreaView.TILE_SIZE;
+            newY = closestCell[1] * GameAreaView.TILE_SIZE;
+        } else {
+            // If no neighboring cells have bloodstains, move randomly
+            int direction = random.nextInt(4); // 0 = up, 1 = down, 2 = left, 3 = right
+
+            switch (direction) {
+                case 0:
+                    newY -= GameAreaView.TILE_SIZE;
+                    break;
+                case 1:
+                    newY += GameAreaView.TILE_SIZE;
+                    break;
+                case 2:
+                    newX -= GameAreaView.TILE_SIZE;
+                    break;
+                case 3:
+                    newX += GameAreaView.TILE_SIZE;
+                    break;
+            }
+        }
+
+        if (enemyModel.isValidMove(newX, newY)) {
+            enemyModel.setX(newX);
+            enemyModel.setY(newY);
+        }
+    }
+
+    private int findClosestBloodStain(List<int[]> cells, int currentX, int currentY) {
+        int closestIndex = 0;
+        int closestDistance = Integer.MAX_VALUE;
+
+        for (int i = 0; i < cells.size(); i++) {
+            int[] cell = cells.get(i);
+            int distance = Math.abs(cell[0] - currentX / GameAreaView.TILE_SIZE) +
+                    Math.abs(cell[1] - currentY / GameAreaView.TILE_SIZE);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+
+
+    private boolean isValidCell(int x, int y) {
+        int mazeWidth = gameAreaModel.getMaze1().getMaze()[0].length;
+        int mazeHeight = gameAreaModel.getMaze1().getMaze().length;
+        return x >= 0 && y >= 0 && x < mazeWidth && y < mazeHeight;
+    }
+
+
+
+    private void startEnemyMovement() {
+        final long[] lastUpdateTime = {System.nanoTime()}; // Wrap in an array to make it effectively final
+        long updateTimeInterval = 500000000L; // 1 second in nanoseconds
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (now - lastUpdateTime[0] >= updateTimeInterval) {
+                    moveEnemyRandomly();
+                    gameAreaView.updateEnemyPosition(enemyModel.getX(), enemyModel.getY());
+                    lastUpdateTime[0] = now; // Update the value
+                }
+            }
+        };
+        timer.start();
+    }
+
+
+
 
 
 }
