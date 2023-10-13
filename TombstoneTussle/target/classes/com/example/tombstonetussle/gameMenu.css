@@ -1,3 +1,15 @@
 #root{
     -fx-background-image: url("tomb-bg.png");
 }
+
+#mainPane{
+    -fx-background-color: white;
+}
+
+#wall{
+    -fx-background-image: url("wall.jpg");
+}
+
+#trap{
+    -fx-background-image: url("trap.png");
+}

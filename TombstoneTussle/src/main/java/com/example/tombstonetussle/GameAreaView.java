@@ -22,7 +22,8 @@ public class GameAreaView extends Pane {
     private GameAreaModel gameAreaModel;
     private NPCCharacter npcCharacter;
 
-    public GameAreaView(GameAreaModel model, WritableImage avatar, NPCCharacter npc, char[][] selectedMaze) {        this.playerModel = playerModel; // Set the playerModel through the constructor
+    public GameAreaView(GameAreaModel model, WritableImage avatar, NPCCharacter npc, char[][] selectedMaze) {
+        this.playerModel = playerModel; // Set the playerModel through the constructor
         this.npcCharacter = npc;
 
         // Set pane's size

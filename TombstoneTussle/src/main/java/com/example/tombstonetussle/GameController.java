@@ -2,11 +2,16 @@ package com.example.tombstonetussle;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +21,7 @@ public class GameController extends Application {
     private NPCCharacter npcCharacter;
     private GameState gameState;
     private GameView gameView;
+
 
     private int m= 10;
     private int n= 10;
@@ -27,6 +33,7 @@ public class GameController extends Application {
     private GameAreaController gameAreaController;
     private DrawingModel drawingModel;
     private DrawingView drawingView;
+    private MenuAreaController menuAreaController;
     private char[][] maze;
     private int rows;
     private int columns;
@@ -61,7 +68,8 @@ public class GameController extends Application {
         primaryStage.setTitle("Tombstone Tussle");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true); // Start the window maximized
-        primaryStage.setResizable(false); // Prevent the player from resizing the window
+        // Temporarily set
+        //primaryStage.setResizable(false); // Prevent the player from resizing the window
         primaryStage.show();
 
     }
@@ -90,7 +98,16 @@ public class GameController extends Application {
             // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
-            gameView.getRoot().setCenter(gameAreaView);
+            AnchorPane menu = null;
+            try {
+                menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //gameView.getRoot().setRight(new Button("Test"));
+            gameView.getRoot().setRight(menu);
+            System.out.println(menu.getClass());
+            gameView.getRoot().setCenter(gameAreaView); // change the center of the borderpane to the maze
             gameAreaView.requestFocus(); // Request focus for the GameAreaView
             gameView.updateButtonVisibility(); // Update button visibility based on the new state
         }
@@ -186,7 +203,6 @@ public class GameController extends Application {
         }
         startNewGameArea();
     }
-
 
 
     public void MazeGenerator(int rows, int columns) {

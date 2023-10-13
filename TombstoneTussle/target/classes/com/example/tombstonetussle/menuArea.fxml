@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="mainPane" prefHeight="600.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/18.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tombstonetussle.MenuAreaController">
+   <children>
+      <VBox prefHeight="600.0" prefWidth="250.0">
+         <children>
+            <StackPane fx:id="menuTitle" prefHeight="60.0" prefWidth="250.0" />
+            <Label maxWidth="300.0" text="     Walls" />
+            <HBox prefHeight="100.0" prefWidth="250.0">
+               <children>
+                  <AnchorPane fx:id="wall" onDragDetected="#addWall" prefHeight="80.0" prefWidth="80.0" />
+                  <AnchorPane prefHeight="80.0" prefWidth="80.0">
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </AnchorPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+               </padding>
+            </HBox>
+            <Label maxWidth="300.0" text="     Traps" />
+            <HBox prefHeight="100.0" prefWidth="250.0">
+               <children>
+                  <AnchorPane fx:id="trap" onDragDetected="#addTrap" prefHeight="80.0" prefWidth="80.0" />
+                  <AnchorPane prefHeight="80.0" prefWidth="80.0">
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </AnchorPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+               </padding>
+            </HBox>
+            <Label maxWidth="300.0" text="     COMMAND" />
+            <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
