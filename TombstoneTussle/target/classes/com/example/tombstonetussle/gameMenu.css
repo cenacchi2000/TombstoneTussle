@@ -13,3 +13,8 @@
 #trap{
     -fx-background-image: url("trap.png");
 }
+
+#titleText{
+    -fx-font-family: Impact;
+    -fx-font-size: 36;
+}

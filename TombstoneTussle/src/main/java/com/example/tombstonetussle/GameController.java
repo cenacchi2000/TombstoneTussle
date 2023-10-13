@@ -62,7 +62,7 @@ public class GameController extends Application {
 
 
         // Set up the stage
-        Scene scene = new Scene(gameView.getRoot(), 600, 400);
+        Scene scene = new Scene(gameView.getRoot(), 1800, 1400);
         scene.getStylesheets().addAll(this.getClass().getResource("gameMenu.css").toExternalForm());
         primaryStage.setTitle("Tombstone Tussle");
         primaryStage.setScene(scene);
@@ -107,7 +107,6 @@ public class GameController extends Application {
             }
             //gameView.getRoot().setRight(new Button("Test"));
             gameView.getRoot().setRight(menu);
-            System.out.println(menu.getClass());
             gameView.getRoot().setCenter(gameAreaView); // change the center of the borderpane to the maze
             gameAreaView.requestFocus(); // Request focus for the GameAreaView
             gameView.updateButtonVisibility(); // Update button visibility based on the new state

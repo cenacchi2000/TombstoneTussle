@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 import javafx.animation.AnimationTimer;
 import com.example.tombstonetussle.GameAreaView;
+import javafx.scene.input.TransferMode;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 
 public class GameAreaController {
@@ -49,6 +52,44 @@ public class GameAreaController {
             }
             lastClickTime = currentTime;
         });
+
+        // Listener on OnDragOver
+        // Activated when mouse drags something over here
+        // Accept the transferred string which indicates the type of the power-up
+        gameAreaView.setOnDragOver(e->{
+            if(e.getDragboard().hasString()){
+                e.acceptTransferModes(TransferMode.ANY);
+            }
+        });
+
+        // Listener on OnDragDropped
+        // Activated when mouse drops the object
+        // Then set the wall/trap according to the passed string
+        gameAreaView.setOnDragDropped(e->{
+            String string = e.getDragboard().getString();
+            char type = string.charAt(0);
+            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
+            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
+
+            if(type == 'W'){
+                gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                Rectangle[][] tiles = gameAreaView.getTiles();
+                System.out.println(tiles.length);
+                tiles[prevY][prevX].setFill(Color.PINK);
+            }
+            else if (type == 'T') {
+
+            }
+        });
+
+//        private void handleDoubleClick(double x, double y) {
+//            // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
+//            if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
+//                gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
+//                gameAreaView.removeBloodTrace(tileX, tileY);
+//            }
+//        }
+
 
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());

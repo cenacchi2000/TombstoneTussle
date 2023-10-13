@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
@@ -19,9 +20,8 @@ public class GameAreaView extends Pane {
     public static final int TILE_SIZE = 40;
     public static final int W = 800;
     public static final int H = 800;
+    private Rectangle[][] tiles;
     private ImageView enemyImageView;
-
-
     private GameAreaModel gameAreaModel;
 
 
@@ -47,24 +47,31 @@ public class GameAreaView extends Pane {
         // Draw the maze
         char[][] maze = selectedMaze;
         maze = model.getMaze1().getMaze();
+
+        // use an array to contain the tile
+        // In order to easily change these rectangles later
+        this.tiles = new Rectangle[maze.length][maze[maze.length-1].length];
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
                 Rectangle rect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                this.tiles[i][j] = rect;
+
+                //Rectangle rect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 switch (maze[i][j]) {
                     case '#':
-                        rect.setFill(javafx.scene.paint.Color.DARKGREY); // Wall color
+                        this.tiles[i][j].setFill(javafx.scene.paint.Color.DARKGREY); // Wall color
                         break;
                     case ' ':
-                        rect.setFill(javafx.scene.paint.Color.LIGHTGRAY); // Path color
+                        this.tiles[i][j].setFill(javafx.scene.paint.Color.LIGHTGRAY); // Path color
                         break;
                     case 'S':
-                        rect.setFill(javafx.scene.paint.Color.GREEN); // Start color
+                        this.tiles[i][j].setFill(javafx.scene.paint.Color.GREEN); // Start color
                         break;
                     case 'E':
-                        rect.setFill(javafx.scene.paint.Color.RED); // End color
+                        this.tiles[i][j].setFill(javafx.scene.paint.Color.RED); // End color
                         break;
                 }
-                getChildren().add(rect);
+                getChildren().add(this.tiles[i][j]);
             }
         }
 
@@ -156,6 +163,11 @@ public class GameAreaView extends Pane {
     public void updateEnemyPosition(int x, int y) {
         enemyImageView.setTranslateX(x);
         enemyImageView.setTranslateY(y);
+    }
+
+    public Rectangle[][] getTiles(){
+        System.out.println("tiles:"+this.tiles[1][1]);
+        return this.tiles;
     }
 
 

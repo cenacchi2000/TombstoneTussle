@@ -1,5 +1,7 @@
 package com.example.tombstonetussle;
 
+import javafx.scene.shape.Rectangle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -165,6 +167,14 @@ public class Maze1 extends Maze {
 
     public boolean[][] getBloodTrace() {
         return bloodTrace;
+    }
+
+    // Set the char inside the maze array to change the type of the tile
+    public void changeType(int row, int column, char type){
+        System.out.println("And my coordinates are:("+column+","+row+")");
+        this.maze[row][column] = type;
+        System.out.println("The tile is:" + type);
+
     }
 
 
