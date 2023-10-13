@@ -24,8 +24,10 @@ public class GameAreaView extends Pane {
 
     private GameAreaModel gameAreaModel;
 
+
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, EnemyModel enemyModel) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
+
 
         // Set pane's size
         setPrefSize(W, H);
