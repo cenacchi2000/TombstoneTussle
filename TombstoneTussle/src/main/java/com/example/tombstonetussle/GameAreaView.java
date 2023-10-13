@@ -7,6 +7,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+import java.util.List;
 import java.util.Objects;
 
 public class GameAreaView extends Pane {
@@ -65,9 +66,6 @@ public class GameAreaView extends Pane {
             }
         }
 
-
-
-
         //NPC creation
         enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
         enemyImageView.setFitWidth(TILE_SIZE);
@@ -76,6 +74,7 @@ public class GameAreaView extends Pane {
         enemyImageView.setTranslateY(enemyModel.getY());
         getChildren().add(enemyImageView);
 
+        
         // Create and position the player image view
         playerImageView = new ImageView(avatar);
         playerImageView.setFitWidth(TILE_SIZE);

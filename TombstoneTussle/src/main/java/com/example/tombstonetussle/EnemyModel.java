@@ -1,5 +1,7 @@
 package com.example.tombstonetussle;
 
+import java.util.Random;
+
 public class EnemyModel {
     private int x;
     private int y;
@@ -12,11 +14,23 @@ public class EnemyModel {
     public EnemyModel(int tileSize, Maze1 maze1) {
         this.tileSize = tileSize;
         this.maze1 = maze1;
-        this.x = 4;
-        this.y = 4;
-        this.lastX = 0;
-        this.lastY = 0;
         this.isFollowingBloodTrace = false;
+
+        // Initialize the enemy's position in a valid cell
+        spawnInValidCell();
+    }
+
+    private void spawnInValidCell() {
+        int mazeWidth = maze1.getMaze()[0].length;
+        int mazeHeight = maze1.getMaze().length;
+
+        Random random = new Random();
+
+        // Continue generating random positions until a valid cell is found
+        do {
+            x = random.nextInt(mazeWidth) * tileSize;
+            y = random.nextInt(mazeHeight) * tileSize;
+        } while (!isValidMove(x, y));
     }
 
 
