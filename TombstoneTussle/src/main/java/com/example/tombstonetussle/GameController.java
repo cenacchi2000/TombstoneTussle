@@ -131,6 +131,7 @@ public class GameController extends Application {
     public void handleBackToMainMenu() {
         gameState.pauseGame();
         gameView.setupMainMenu();
+        // Hide the menu bar when getting back to the main menu
         menu.setVisible(false);
     }
 

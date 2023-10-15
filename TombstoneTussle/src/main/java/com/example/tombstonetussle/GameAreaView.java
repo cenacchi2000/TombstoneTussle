@@ -38,11 +38,15 @@ public class GameAreaView extends Pane {
         this.setStyle("-fx-background-color: white;");  // Set a background color
 
         // Adding a back arrow (emoticon) to the top left
-        javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label("⬅️");
-        arrowLabel.setFont(new javafx.scene.text.Font(24));
+        //javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label("⬅️");
+        javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label();
+        Image arrow = new Image(getClass().getResourceAsStream("arrowback.png"));
+        ImageView view = new ImageView(arrow);
+        //arrowLabel.setFont(new javafx.scene.text.Font(40));
+        arrowLabel.setGraphic(view);
         arrowLabel.setId("backArrow"); // Setting an ID for easier access later
         // Set its position
-        arrowLabel.setLayoutY(-40);  // This sets the top margin to 20 pixels
+        arrowLabel.setLayoutY(-50);  // This sets the top margin to 20 pixels
 
 
         // Create and position the player
