@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,9 +24,10 @@ public class GameAreaView extends Pane {
     private Rectangle[][] tiles;
     private ImageView enemyImageView;
     private GameAreaModel gameAreaModel;
+    private List<ImageView> enemyImageViews = new ArrayList<>();
 
 
-    public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, EnemyModel enemyModel) {
+    public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
 
 
@@ -76,12 +78,16 @@ public class GameAreaView extends Pane {
         }
 
         //NPC creation
-        enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
-        enemyImageView.setFitWidth(TILE_SIZE);
-        enemyImageView.setFitHeight(TILE_SIZE);
-        enemyImageView.setTranslateX(enemyModel.getX());
-        enemyImageView.setTranslateY(enemyModel.getY());
-        getChildren().add(enemyImageView);
+        for (EnemyModel enemyModel : enemyModels) {
+            ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
+            enemyImageView.setFitWidth(TILE_SIZE);
+            enemyImageView.setFitHeight(TILE_SIZE);
+            enemyImageView.setTranslateX(enemyModel.getX());
+            enemyImageView.setTranslateY(enemyModel.getY());
+            getChildren().add(enemyImageView);
+            enemyImageViews.add(enemyImageView);
+            System.out.println("Numero di ImageView dei nemici: " + enemyImageViews.size());
+        }
 
         
         // Create and position the player image view
@@ -160,9 +166,14 @@ public class GameAreaView extends Pane {
         }
     }
 
-    public void updateEnemyPosition(int x, int y) {
-        enemyImageView.setTranslateX(x);
-        enemyImageView.setTranslateY(y);
+    public void updateEnemyPosition(int x, int y, int index) {
+        if (index < enemyImageViews.size()) {
+            enemyImageViews.get(index).setTranslateX(x);
+            enemyImageViews.get(index).setTranslateY(y);
+        } else {
+            // Handle the error condition, e.g., log an error message or throw a custom exception
+            System.err.println("Invalid enemy index: " + index);
+        }
     }
 
     public Rectangle[][] getTiles(){

@@ -27,6 +27,7 @@ public class GameAreaController {
     private GameAreaModel playerModel;
     private long lastClickTime = 0;
     private EnemyModel enemyModel;
+    private List<EnemyModel> enemyModels = new ArrayList<>();
 
     private boolean isFollowingBloodTrace = false;
 
@@ -40,7 +41,6 @@ public class GameAreaController {
         this.gameController = gameController;
         this.playerModel = model;
         this.maze = maze;  // Initialize the maze field
-        this.enemyModel = new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1());
         this.size = model.getSize(); // Initialize the size variable with the appropriate value
 
 
@@ -120,6 +120,12 @@ public class GameAreaController {
 //            }
 //        }
 
+        for (int i = 0; i < 4; i++) {
+            enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
+        }
+        System.out.println("Numero di nemici: " + enemyModels.size());
+
+
 
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
@@ -179,7 +185,7 @@ public class GameAreaController {
         });
     }
 
-    private void moveEnemyRandomly() {
+    private void moveEnemyRandomly(EnemyModel enemyModel) {
         Random random = new Random();
 
         int newX = enemyModel.getX();
@@ -271,20 +277,23 @@ public class GameAreaController {
 
     private void startEnemyMovement() {
         final long[] lastUpdateTime = {System.nanoTime()}; // Wrap in an array to make it effectively final
-        long updateTimeInterval = 500000000L; // 1 second in nanoseconds
+        long updateTimeInterval = 500000000L; // 0.5 seconds in nanoseconds
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 if (now - lastUpdateTime[0] >= updateTimeInterval) {
-                    moveEnemyRandomly();
-                    gameAreaView.updateEnemyPosition(enemyModel.getX(), enemyModel.getY());
+                    for (int i = 0; i < enemyModels.size(); i++) {
+                        moveEnemyRandomly(enemyModels.get(i));
+                        gameAreaView.updateEnemyPosition(enemyModels.get(i).getX(), enemyModels.get(i).getY(), i);
+                    }
                     lastUpdateTime[0] = now; // Update the value
                 }
             }
         };
         timer.start();
     }
+
 
 
 

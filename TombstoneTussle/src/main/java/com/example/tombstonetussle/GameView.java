@@ -48,6 +48,7 @@ public class GameView {
         // Game title
         //Label gameTitle = new Label("Tombstone Tussle");
 
+
         //gameTitle.setStyle("-fx-font-size: 24px;");
         root.setTop(gameTitle);
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
@@ -129,34 +130,14 @@ public class GameView {
 
         // Setting selection
         VBox settingBox = new VBox(10);
-        Button leftArrowSetting = new Button("<");
+
         this.setDefaultCharacterImage();
-        Button rightArrowSetting = new Button(">");
-        Label settingPlaceholder = new Label("M"); // Placeholder for maze selection
-        settingPlaceholder.setTextFill(Color.WHITE);
-        HBox settingControls = new HBox(10, leftArrowSetting, settingPlaceholder, rightArrowSetting);
+
+        HBox settingControls = new HBox(10);
         settingControls.setAlignment(Pos.CENTER);
-        Label selection = new Label("Maze selection");
-        selection.setPadding(new Insets(0,0,38,0));
-        selection.setTextFill(Color.WHITE);
-        settingBox.getChildren().addAll(selection, settingControls);
 
-        // Maze selection logic
-        final int[] mazeIndex = {0}; // Index to keep track of the selected maze
-        Label[] mazeLabels = { new Label("M1"), new Label("M2"), new Label("M3") }; // Labels for maze selection
-        settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty()); // Bind the placeholder to the selected maze label
+        settingBox.getChildren().addAll(settingControls);
 
-        leftArrowSetting.setOnAction(e -> {
-            mazeIndex[0] = (mazeIndex[0] - 1 + mazeLabels.length) % mazeLabels.length;
-            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty());
-            gameController.selectMaze(mazeLabels[mazeIndex[0]].getText().toLowerCase());
-        });
-
-        rightArrowSetting.setOnAction(e -> {
-            mazeIndex[0] = (mazeIndex[0] + 1) % mazeLabels.length;
-            settingPlaceholder.textProperty().bind(mazeLabels[mazeIndex[0]].textProperty());
-            gameController.selectMaze(mazeLabels[mazeIndex[0]].getText().toLowerCase());
-        });
 
 
         selectionBox.getChildren().addAll(characterBox, settingBox);

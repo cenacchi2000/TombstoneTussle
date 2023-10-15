@@ -14,13 +14,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
 
-
 public class GameController extends Application {
     private int currentCharacterIndex = 0;
     private GameState gameState;
     private GameView gameView;
-
-
     private int m= 10;
     private int n= 10;
     private DrawingController drawingController;
@@ -94,8 +91,11 @@ public class GameController extends Application {
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
             WritableImage selectedCharacter = gameView.getCharacterImage();
             // Inizializza enemyModel prima di creare gameAreaView
-            EnemyModel enemyModel = new EnemyModel(GameAreaView.TILE_SIZE, gameAreaModel.getMaze1());
-            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, maze, enemyModel);
+            List<EnemyModel> enemyModels = new ArrayList<>();
+            for(int i = 0; i < 4; i++) {
+                enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, gameAreaModel.getMaze1()));
+            }
+            gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, maze, enemyModels);
             // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
@@ -250,8 +250,6 @@ public class GameController extends Application {
             return columnOffset;
         }
     }
-
-
 
     public static void main(String[] args) {
         launch(args);
