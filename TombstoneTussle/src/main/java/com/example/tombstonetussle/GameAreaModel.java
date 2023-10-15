@@ -94,7 +94,8 @@ public class GameAreaModel {
         }
 
         // Check if the new position is a wall
-        if (maze1.getMaze()[newY / tileSize][newX / tileSize] == '#') {
+        char cell = maze1.getMaze()[newY / tileSize][newX / tileSize];
+        if (cell == '#' || cell == 'W') {
             return false;
         }
 

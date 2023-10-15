@@ -75,6 +75,7 @@ public class GameAreaController {
                     System.out.println(tiles[prevY][prevX].getFill().getClass().getSimpleName());
                     if (tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
                         tiles[prevY][prevX].setFill(Color.LIGHTGRAY);
+                        gameAreaModel.getMaze1().changeType(prevY, prevX, ' ');
                     }
 
 

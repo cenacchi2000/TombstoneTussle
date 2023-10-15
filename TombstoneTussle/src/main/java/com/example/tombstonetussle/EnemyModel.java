@@ -58,7 +58,8 @@ public class EnemyModel {
         if (newX < 0 || newY < 0 || newX >= maze1.getMaze()[0].length * tileSize || newY >= maze1.getMaze().length * tileSize) {
             return false;
         }
-        if (maze1.getMaze()[newY / tileSize][newX / tileSize] == '#') {
+        char cell = maze1.getMaze()[newY / tileSize][newX / tileSize];
+        if (cell == '#' || cell == 'W') {
             return false;
         }
         return true;
