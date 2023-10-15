@@ -5,6 +5,7 @@ import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.util.*;
@@ -17,6 +18,19 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import static com.example.tombstonetussle.GameAreaView.TILE_SIZE;
+import javafx.animation.AnimationTimer;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameAreaController {
     private char[][] maze;  // Add a field for the maze
@@ -34,6 +48,9 @@ public class GameAreaController {
     private boolean isFollowingBloodTrace = false;
 
     private Set<Integer> passedBloodStains = new HashSet<>();
+
+    private List<Bullet> bullets = new ArrayList<>(); // List to store bullets
+    private double bulletSpeed = 5; // Adjust the bullet speed as needed
 
 
 
@@ -89,8 +106,8 @@ public class GameAreaController {
         gameAreaView.setOnDragDropped(e->{
             String string = e.getDragboard().getString();
             char type = string.charAt(0);
-            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
-            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
+            int prevX = (int)e.getX() / TILE_SIZE;
+            int prevY = (int)e.getY() / TILE_SIZE;
 
             if(type == 'W'){
                 gameAreaModel.getMaze1().changeType(prevY,prevX,type);
@@ -123,7 +140,7 @@ public class GameAreaController {
 //        }
 
         for (int i = 0; i < 4; i++) {
-            enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
+            enemyModels.add(new EnemyModel(TILE_SIZE, model.getMaze1()));
         }
         System.out.println("Numero di nemici: " + enemyModels.size());
 
@@ -133,6 +150,84 @@ public class GameAreaController {
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
 
+    // Method to handle shooting bullets
+    public void shootBullet() {
+        // Calculate directionX and directionY based on the character's position
+        double directionX = (playerModel.getX() - gameAreaModel.getX());
+        double directionY = (playerModel.getY() - gameAreaModel.getY());
+
+        // Calculate the length of the direction vector
+        double length = Math.sqrt(directionX * directionX + directionY * directionY);
+
+        // Normalize the direction vector
+        directionX /= length;
+        directionY /= length;
+
+        // Create a new bullet and add it to the list
+        bullets.add(new Bullet(gameAreaModel.getX(), gameAreaModel.getY(), directionX, directionY, bulletSpeed));
+    }
+
+    // Method to move and update the bullets
+
+    private void moveBullets() {
+        List<Bullet> bulletsToRemove = new ArrayList<>();
+
+        for (Bullet bullet : bullets) {
+            // Move the bullet in the specified direction
+            bullet.setX(bullet.getX() + bullet.getDirectionX() * bullet.getSpeed());
+            bullet.setY(bullet.getY() + bullet.getDirectionY() * bullet.getSpeed());
+
+            // Check if the bullet is out of bounds or hits a wall (implement your collision logic)
+            if (!isValidBulletMove(bullet.getX(), bullet.getY())) {
+                bulletsToRemove.add(bullet);
+            }
+        }
+
+        // Remove bullets that are out of bounds or hit a wall
+        bullets.removeAll(bulletsToRemove);
+    }
+
+    // Method to check for bullet hits on the character
+    private void checkBulletHits() {
+        List<Bullet> bulletsToRemove = new ArrayList<>();
+
+        for (Bullet bullet : bullets) {
+            // Calculate the distance between the character and the bullet
+            double distance = Math.sqrt(Math.pow(playerModel.getX() - bullet.getX(), 2) +
+                    Math.pow(playerModel.getY() - bullet.getY(), 2));
+
+            // Define a threshold for bullet hits (e.g., distance less than a certain value)
+            double hitThreshold = 20; // Adjust as needed
+
+            if (distance <= hitThreshold) {
+                // Handle the bullet hit on the character (e.g., reduce character's life)
+                playerModel.setLives(playerModel.getLives() - 1);
+
+                // Mark the bullet for removal
+                bulletsToRemove.add(bullet);
+            }
+        }
+
+        // Remove bullets that have hit the character
+        bullets.removeAll(bulletsToRemove);
+    }
+    // Additional method to check if a bullet move is valid (within bounds and not hitting a wall)
+    private boolean isValidBulletMove(double newX, double newY) {
+        int tileX = (int) (newX / TILE_SIZE);
+        int tileY = (int) (newY / TILE_SIZE);
+
+        // Check if the new position is outside the maze boundaries
+        if (newX < 0 || newY < 0 || tileX >= maze[0].length || tileY >= maze.length) {
+            return false;
+        }
+
+        // Check if the new position is a wall
+        if (maze[tileY][tileX] == '#') {
+            return false;
+        }
+
+        return true;
+    }
 
 
     private void setupKeyListeners() {
@@ -140,8 +235,8 @@ public class GameAreaController {
     }
 
     private void handleKeyInput(KeyEvent event) {
-        int prevX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
-        int prevY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
+        int prevX = gameAreaModel.getX() / TILE_SIZE;
+        int prevY = gameAreaModel.getY() / TILE_SIZE;
         switch (event.getCode()) {
             case W:
                 gameAreaModel.moveUp();
@@ -159,8 +254,15 @@ public class GameAreaController {
                 return; // If it's not one of the movement keys, exit early.
         }
 
-        int currentX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
-        int currentY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
+
+        if (event.getCode() == KeyCode.SPACE) {
+            // Shoot a bullet when the SPACE key is pressed
+            shootBullet();
+
+        }
+
+        int currentX = gameAreaModel.getX() / TILE_SIZE;
+        int currentY = gameAreaModel.getY() / TILE_SIZE;
 
         // Check if player actually moved
         if (prevX != currentX || prevY != currentY) {
@@ -207,8 +309,8 @@ public class GameAreaController {
     }
 
     private void handleDoubleClick(double x, double y) {
-        int tileX = (int) x / GameAreaView.TILE_SIZE;
-        int tileY = (int) y / GameAreaView.TILE_SIZE;
+        int tileX = (int) x / TILE_SIZE;
+        int tileY = (int) y / TILE_SIZE;
 
         // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
         if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
@@ -230,8 +332,8 @@ public class GameAreaController {
         int newX = enemyModel.getX();
         int newY = enemyModel.getY();
 
-        int currentTileX = newX / GameAreaView.TILE_SIZE;
-        int currentTileY = newY / GameAreaView.TILE_SIZE;
+        int currentTileX = newX / TILE_SIZE;
+        int currentTileY = newY / TILE_SIZE;
 
         List<int[]> neighboringCells = new ArrayList<>();
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
@@ -259,24 +361,24 @@ public class GameAreaController {
             // Call the removeBloodTrace method from the GameAreaView
             gameAreaView.removeBloodTrace(closestCell[0], closestCell[1]);
 
-            newX = closestCell[0] * GameAreaView.TILE_SIZE;
-            newY = closestCell[1] * GameAreaView.TILE_SIZE;
+            newX = closestCell[0] * TILE_SIZE;
+            newY = closestCell[1] * TILE_SIZE;
         } else {
             // If no neighboring cells have bloodstains, move randomly
             int direction = random.nextInt(4); // 0 = up, 1 = down, 2 = left, 3 = right
 
             switch (direction) {
                 case 0:
-                    newY -= GameAreaView.TILE_SIZE;
+                    newY -= TILE_SIZE;
                     break;
                 case 1:
-                    newY += GameAreaView.TILE_SIZE;
+                    newY += TILE_SIZE;
                     break;
                 case 2:
-                    newX -= GameAreaView.TILE_SIZE;
+                    newX -= TILE_SIZE;
                     break;
                 case 3:
-                    newX += GameAreaView.TILE_SIZE;
+                    newX += TILE_SIZE;
                     break;
             }
         }
@@ -293,8 +395,8 @@ public class GameAreaController {
 
         for (int i = 0; i < cells.size(); i++) {
             int[] cell = cells.get(i);
-            int distance = Math.abs(cell[0] - currentX / GameAreaView.TILE_SIZE) +
-                    Math.abs(cell[1] - currentY / GameAreaView.TILE_SIZE);
+            int distance = Math.abs(cell[0] - currentX / TILE_SIZE) +
+                    Math.abs(cell[1] - currentY / TILE_SIZE);
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestIndex = i;

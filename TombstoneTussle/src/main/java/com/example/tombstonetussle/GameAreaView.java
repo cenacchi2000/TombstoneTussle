@@ -1,6 +1,7 @@
 
 package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,8 +28,11 @@ public class GameAreaView extends Pane {
     private ImageView enemyImageView;
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
+    private static final double BULLET_SIZE = 10; // Adjust the size as needed
 
 
+    // Create a group to hold bullet representations
+    private Group bulletsGroup = new Group();
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
 
@@ -44,7 +48,8 @@ public class GameAreaView extends Pane {
         // Set its position
         arrowLabel.setLayoutY(-40);  // This sets the top margin to 20 pixels
 
-
+        // Add bullets group to the game area
+        getChildren().add(bulletsGroup);
         // Create and position the player
         this.gameAreaModel = model;
 
@@ -173,6 +178,23 @@ public class GameAreaView extends Pane {
 
             // Start the fade-out animation
             fadeOut.play();
+        }
+    }
+
+
+    public void updateBulletPositions(List<Bullet> bullets) {
+        // Update the positions of bullet representations based on the bullet model
+        for (Bullet bullet : bullets) {
+            // Create a graphical representation (e.g., Rectangle) for the bullet
+            Rectangle bulletRect = new Rectangle(bullet.getX(), bullet.getY(), BULLET_SIZE, BULLET_SIZE);
+            bulletRect.setFill(Color.RED); // Set the color of the bullet
+
+            // Update the bullet representation's position
+            bulletRect.setX(bullet.getX());
+            bulletRect.setY(bullet.getY());
+
+            // Add or update the bullet representation in the bullets group
+            bulletsGroup.getChildren().add(bulletRect);
         }
     }
 

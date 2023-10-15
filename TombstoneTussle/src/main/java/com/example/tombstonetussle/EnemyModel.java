@@ -1,5 +1,7 @@
 package com.example.tombstonetussle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class EnemyModel {
@@ -9,6 +11,7 @@ public class EnemyModel {
     private int lastY;
     private final int tileSize;
     private Maze1 maze1;
+    private List<Bullet> bullets;
     private boolean isFollowingBloodTrace;
 
     public EnemyModel(int tileSize, Maze1 maze1) {
@@ -18,6 +21,7 @@ public class EnemyModel {
 
         // Initialize the enemy's position in a valid cell
         spawnInValidCell();
+        bullets = new ArrayList<>();
     }
 
     private void spawnInValidCell() {
