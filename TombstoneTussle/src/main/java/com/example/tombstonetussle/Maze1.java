@@ -169,10 +169,12 @@ public class Maze1 extends Maze {
     }
 
     // Set the char inside the maze array to change the type of the tile
-    public void changeType(int row, int column, char type){
+    public char changeType(int row, int column, char type){
         System.out.println("And my coordinates are:("+column+","+row+")");
+        char originalType = this.maze[row][column];
         this.maze[row][column] = type;
-        System.out.println("The tile is:" + type);
+        System.out.println("The tile is changed from:" + originalType + "to:" + type);
+        return originalType;
 
     }
 

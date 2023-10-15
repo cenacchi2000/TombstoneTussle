@@ -95,13 +95,12 @@ public class GameAreaController {
             if(type == 'W'){
                 gameAreaModel.getMaze1().changeType(prevY,prevX,type);
                 Rectangle[][] tiles = gameAreaView.getTiles();
-                System.out.println(tiles.length);
                 Image wall = new Image(getClass().getResourceAsStream("wall.jpg"));
                 tiles[prevY][prevX].setFill(new ImagePattern(wall));
 
             }
             else if (type == 'T') {
-                gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                char originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
                 Rectangle[][] tiles = gameAreaView.getTiles();
                 Image trap = new Image(getClass().getResourceAsStream("trap.png"));
                 tiles[prevY][prevX].setFill(new ImagePattern(trap));
