@@ -8,6 +8,7 @@ public class GameAreaModel {
     private double lastX;
     private double lastY;
     private int size;
+    private int lives;
 
     public double getLastX() {
         return lastX;
@@ -27,6 +28,8 @@ public class GameAreaModel {
         this.tileSize = tileSize;
         this.maze1 = new Maze1();
         this.maze1.generateMazeDesign();
+
+        lives = 5; // Initialize with 5 lives or any other desired value
 
         int[] endPoint = this.maze1.getEndPointCoordinates();
         if (endPoint != null) {
@@ -97,6 +100,16 @@ public class GameAreaModel {
 
         return true;
     }
+
+    // Getter and setter for lives
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
 
     public Maze1 getMaze1() {
         return maze1;

@@ -153,9 +153,13 @@ public class GameAreaView extends Pane {
     }
 
     public void handleEnemyElimination(EnemyModel enemyModel) {
+        // Get the enemy's ImageView
         ImageView enemyImageView = getEnemyImageViewForModel(enemyModel);
 
         if (enemyImageView != null) {
+            // Reduce the character's life count
+            gameAreaModel.setLives(gameAreaModel.getLives() - 1);
+
             // Create a FadeTransition to make the enemy fade out over a specified duration
             FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImageView);
             fadeOut.setToValue(0); // Fade to fully transparent
@@ -171,6 +175,7 @@ public class GameAreaView extends Pane {
             fadeOut.play();
         }
     }
+
 
 
     private ImageView getEnemyImageViewForModel(EnemyModel enemyModel) {
