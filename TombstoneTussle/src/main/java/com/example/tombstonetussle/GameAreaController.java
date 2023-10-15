@@ -1,19 +1,21 @@
 package com.example.tombstonetussle;
 
+import javafx.animation.*;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javafx.animation.AnimationTimer;
 import com.example.tombstonetussle.GameAreaView;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 
 public class GameAreaController {
@@ -165,6 +167,43 @@ public class GameAreaController {
             gameAreaModel.getMaze1().getBloodTrace()[prevY][prevX] = true;
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
+
+        // Check for collision with enemies
+        for (EnemyModel enemyModel : enemyModels) {
+            if (enemyModel.getX() == gameAreaModel.getX() && enemyModel.getY() == gameAreaModel.getY()) {
+                // Player and enemy are in the same cell; handle the collision here
+                // For example, you can call a method to handle the enemy's elimination.
+                handleEnemyElimination(enemyModel);
+            }
+        }
+    }
+
+
+
+
+
+    // Create a method to animate cursor movement
+    private void animateCursorAroundCharacter(double centerX, double centerY) {
+        Cursor originalCursor = gameAreaView.getCursor();
+        ImageCursor imageCursor = new ImageCursor(new Image(getClass().getResourceAsStream("cursor_image.png")));
+
+        int radius = 50; // Set the desired radius of the circular movement
+        int durationMillis = 2000; // Set the desired duration of the animation
+
+        // Create a Timeline for cursor animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(gameAreaView.cursorProperty(), originalCursor)),
+                new KeyFrame(Duration.millis(durationMillis), event -> gameAreaView.setCursor(originalCursor))
+        );
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
+        // Animate cursor movement along a circular path
+        timeline.setOnFinished(event -> gameAreaView.setCursor(originalCursor));
+        gameAreaView.setCursor(imageCursor);
+
+        // Start the animation
+        timeline.play();
     }
 
     private void handleDoubleClick(double x, double y) {
@@ -273,6 +312,33 @@ public class GameAreaController {
         return x >= 0 && y >= 0 && x < mazeWidth && y < mazeHeight;
     }
 
+    private void handleEnemyElimination(EnemyModel enemyModel) {
+        // Get the enemy's position
+        int enemyX = enemyModel.getX();
+        int enemyY = enemyModel.getY();
+
+        // Get the player's position
+        int playerX = gameAreaModel.getX();
+        int playerY = gameAreaModel.getY();
+
+        // Calculate the distance between the player and the enemy
+        int distance = Math.abs(playerX - enemyX) + Math.abs(playerY - enemyY);
+
+        // Define a threshold for elimination (e.g., distance less than or equal to 1)
+        int eliminationThreshold = 1;
+
+        if (distance <= eliminationThreshold) {
+            // The enemy is within the elimination threshold, perform elimination actions
+            // You can add your elimination logic here, such as reducing player health or ending the game.
+            // For example:
+            System.out.println("Enemy eliminated!");
+
+            // Remove the enemy model from the list of enemyModels
+            enemyModels.remove(enemyModel);
+
+            // You can also perform other actions here based on your game's logic.
+        }
+    }
 
 
     private void startEnemyMovement() {

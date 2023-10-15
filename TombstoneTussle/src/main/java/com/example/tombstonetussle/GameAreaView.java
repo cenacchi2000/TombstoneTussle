@@ -1,5 +1,6 @@
 
 package com.example.tombstonetussle;
+import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -7,6 +8,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +79,7 @@ public class GameAreaView extends Pane {
             }
         }
 
-        //NPC creation
+        // Initialize the enemyImageViews based on the enemyModels
         for (EnemyModel enemyModel : enemyModels) {
             ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
             enemyImageView.setFitWidth(TILE_SIZE);
@@ -140,6 +142,7 @@ public class GameAreaView extends Pane {
         }
 
 
+
         playerImageView.setTranslateX(playerX);
         playerImageView.setTranslateY(playerY);
 
@@ -147,6 +150,56 @@ public class GameAreaView extends Pane {
         gameAreaModel.updateLastPosition(playerX, playerY); // Update lastX and lastY
         gameAreaModel.setX((int) playerX);
         gameAreaModel.setY((int) playerY);
+    }
+
+    public void handleEnemyElimination(EnemyModel enemyModel) {
+        ImageView enemyImageView = getEnemyImageViewForModel(enemyModel);
+
+        if (enemyImageView != null) {
+            // Create a FadeTransition to make the enemy fade out over a specified duration
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImageView);
+            fadeOut.setToValue(0); // Fade to fully transparent
+
+            // Define an event handler to be executed when the animation is finished
+            fadeOut.setOnFinished(event -> {
+                // Perform actions after the animation (e.g., remove from the scene)
+                getChildren().remove(enemyImageView);
+                enemyImageViews.remove(enemyImageView); // Remove from the list
+            });
+
+            // Start the fade-out animation
+            fadeOut.play();
+        }
+    }
+
+
+    private ImageView getEnemyImageViewForModel(EnemyModel enemyModel) {
+        for (ImageView enemyImageView : enemyImageViews) {
+            if (enemyImageView.getTranslateX() == enemyModel.getX() && enemyImageView.getTranslateY() == enemyModel.getY()) {
+                return enemyImageView;
+            }
+        }
+        return null; // Return null if the ImageView is not found
+    }
+
+
+    public void removeEnemy(int index) {
+        if (index >= 0 && index < enemyImageViews.size()) {
+            ImageView enemyImageView = enemyImageViews.get(index);
+            // Create a FadeTransition to make the enemy fade out over a specified duration
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImageView);
+            fadeOut.setToValue(0); // Fade to fully transparent
+
+            // Define an event handler to be executed when the animation is finished
+            fadeOut.setOnFinished(event -> {
+                // Remove the enemy ImageView from the scene
+                getChildren().remove(enemyImageView);
+                enemyImageViews.remove(index);
+            });
+
+            // Start the fade-out animation
+            fadeOut.play();
+        }
     }
 
     public void removeBloodTrace(int tileX, int tileY) {
@@ -167,19 +220,16 @@ public class GameAreaView extends Pane {
     }
 
     public void updateEnemyPosition(int x, int y, int index) {
-        if (index < enemyImageViews.size()) {
-            enemyImageViews.get(index).setTranslateX(x);
-            enemyImageViews.get(index).setTranslateY(y);
-        } else {
-            // Handle the error condition, e.g., log an error message or throw a custom exception
-            System.err.println("Invalid enemy index: " + index);
+        // Update the position of the enemy ImageView
+        if (index >= 0 && index < enemyImageViews.size()) {
+            ImageView enemyImageView = enemyImageViews.get(index);
+            enemyImageView.setTranslateX(x);
+            enemyImageView.setTranslateY(y);
         }
     }
 
-    public Rectangle[][] getTiles(){
+    public Rectangle[][] getTiles() {
         return this.tiles;
     }
-
-
 
 }
