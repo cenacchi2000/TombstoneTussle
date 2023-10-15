@@ -259,6 +259,43 @@ public class GameAreaView extends Pane {
         }
     }
 
+    public void removeEnemyView(EnemyModel enemyModel) {
+        // Get the enemy's ImageView
+        ImageView enemyView = getEnemyImageViewForModel(enemyModel);
+        if (enemyView != null) {
+            // Create a FadeTransition to make the enemy fade out over a specified duration
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyView);
+            fadeOut.setToValue(0); // Fade to fully transparent
+
+            // Define an event handler to be executed when the animation is finished
+            fadeOut.setOnFinished(event -> {
+                // Remove the enemy ImageView from the scene and from the list of enemyImageViews
+                getChildren().remove(enemyView);
+                enemyImageViews.remove(enemyView);
+            });
+
+            // Start the fade-out animation
+            fadeOut.play();
+        }
+    }
+
+    public void removePlayerView() {
+        // Create a FadeTransition to make the player fade out over a specified duration
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), playerImageView);
+        fadeOut.setToValue(0); // Fade to fully transparent
+
+        // Define an event handler to be executed when the animation is finished
+        fadeOut.setOnFinished(event -> {
+            // Remove the player ImageView from the scene
+            getChildren().remove(playerImageView);
+        });
+
+        // Start the fade-out animation
+        fadeOut.play();
+    }
+
+
+
     public Rectangle[][] getTiles() {
         return this.tiles;
     }

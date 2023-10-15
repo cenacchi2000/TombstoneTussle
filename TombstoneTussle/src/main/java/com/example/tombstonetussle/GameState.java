@@ -6,11 +6,23 @@ public class GameState {
 
     private Maze selectedMaze;
 
-    public GameState() {
+    // Variabile statica per tenere traccia dell'istanza Singleton
+    private static GameState instance;
+
+    // Rendi il costruttore privato in modo che non possa essere istanziato direttamente
+    private GameState() {
         currentState = State.MENU;
-        // Initialize the mazes
+        // Inizializza i labirinti
         maze1 = new Maze1();
-        selectedMaze = maze1; // Default selected maze is Maze1
+        selectedMaze = maze1; // Il labirinto selezionato di default è Maze1
+    }
+
+    // Metodo statico per ottenere l'istanza Singleton
+    public static GameState getInstance() {
+        if (instance == null) {
+            instance = new GameState();
+        }
+        return instance;
     }
 
 
