@@ -177,7 +177,6 @@ public class GameAreaView extends Pane {
     }
 
     public Rectangle[][] getTiles(){
-        System.out.println("tiles:"+this.tiles[1][1]);
         return this.tiles;
     }
 

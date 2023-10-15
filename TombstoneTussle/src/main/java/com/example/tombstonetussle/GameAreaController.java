@@ -1,5 +1,8 @@
 package com.example.tombstonetussle;
 
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 
 import java.util.*;
@@ -9,6 +12,7 @@ import javafx.animation.AnimationTimer;
 import com.example.tombstonetussle.GameAreaView;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 
@@ -59,8 +63,23 @@ public class GameAreaController {
         gameAreaView.setOnDragOver(e->{
             if(e.getDragboard().hasString()){
                 e.acceptTransferModes(TransferMode.ANY);
+
+            }
+            e.consume();
+        });
+
+        // To set the cursor correspond to the power-up
+        gameAreaView.setOnDragEntered(e->{
+            if(e.getDragboard().getString().equals("W")){
+                Image wallImg = new Image(getClass().getResourceAsStream("wall.jpg"));
+                gameAreaView.getScene().setCursor(new ImageCursor(wallImg));
+            }
+            else if(e.getDragboard().getString().equals("T")){
+                Image trapImg = new Image(getClass().getResourceAsStream("trap.png"));
+                gameAreaView.getScene().setCursor(new ImageCursor(trapImg));
             }
         });
+
 
         // Listener on OnDragDropped
         // Activated when mouse drops the object
@@ -75,11 +94,22 @@ public class GameAreaController {
                 gameAreaModel.getMaze1().changeType(prevY,prevX,type);
                 Rectangle[][] tiles = gameAreaView.getTiles();
                 System.out.println(tiles.length);
-                tiles[prevY][prevX].setFill(Color.PINK);
-            }
-            else if (type == 'T') {
+                Image wall = new Image(getClass().getResourceAsStream("wall.jpg"));
+                tiles[prevY][prevX].setFill(new ImagePattern(wall));
 
             }
+            else if (type == 'T') {
+                gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                Rectangle[][] tiles = gameAreaView.getTiles();
+                Image trap = new Image(getClass().getResourceAsStream("trap.png"));
+                tiles[prevY][prevX].setFill(new ImagePattern(trap));
+            }
+            // Set the cursor back to default as the dropping completed
+            // Also have to the clear the dragboard or else the lines inside the setOnDragEntered
+            // will be continuously run and the cursor is always image
+            gameAreaView.getScene().setCursor(Cursor.DEFAULT);
+            e.getDragboard().clear();
+            e.setDropCompleted(true);
         });
 
 //        private void handleDoubleClick(double x, double y) {
