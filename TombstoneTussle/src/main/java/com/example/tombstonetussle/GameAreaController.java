@@ -5,6 +5,7 @@ import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.util.*;
@@ -57,6 +58,30 @@ public class GameAreaController {
                 handleDoubleClick(event.getX(), event.getY());
             }
             lastClickTime = currentTime;
+
+        });
+
+        // MousePress the specific power-up and press key "M"
+        // to cancel this power-up(temporary wall or trap)
+        gameAreaView.setOnMousePressed(e->{
+            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
+            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
+            Rectangle[][] tiles = gameAreaView.getTiles();
+
+            gameAreaView.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.M) {
+                    System.out.println("'M' is pressed");
+                    System.out.println("The coordinates:("+prevY+","+prevX+")");
+                    System.out.println(tiles[prevY][prevX].getFill().getClass().getSimpleName());
+                    if (tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
+                        tiles[prevY][prevX].setFill(Color.LIGHTGRAY);
+                    }
+
+
+                    // Disable the keyPress event everytime the cancelling interaction is done
+                    gameAreaView.setOnKeyPressed(null);
+                }
+            });
         });
 
         // Listener on OnDragOver
@@ -91,17 +116,17 @@ public class GameAreaController {
             char type = string.charAt(0);
             int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
             int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
+            Rectangle[][] tiles = gameAreaView.getTiles();
+            char originalType;
 
             if(type == 'W'){
-                gameAreaModel.getMaze1().changeType(prevY,prevX,type);
-                Rectangle[][] tiles = gameAreaView.getTiles();
+                originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
                 Image wall = new Image(getClass().getResourceAsStream("wall.jpg"));
                 tiles[prevY][prevX].setFill(new ImagePattern(wall));
 
             }
             else if (type == 'T') {
-                char originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
-                Rectangle[][] tiles = gameAreaView.getTiles();
+                originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
                 Image trap = new Image(getClass().getResourceAsStream("trap.png"));
                 tiles[prevY][prevX].setFill(new ImagePattern(trap));
             }
@@ -112,6 +137,19 @@ public class GameAreaController {
             e.getDragboard().clear();
             e.setDropCompleted(true);
         });
+
+        // Handle the swiping interaction to cancel the power up
+        gameAreaView.setOnSwipeRight(e->{
+            Rectangle[][] tiles = gameAreaView.getTiles();
+            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
+            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
+//            if(maze[prevY][prevX] == 'W' || maze[prevY][prevX] == 'T'){
+//                maze[prevY][prevX] = ' ';
+//            }
+            //if(tiles[prevY][prevX].getFill())
+            System.out.println(tiles[prevY][prevX].getFill());
+        });
+
 
 //        private void handleDoubleClick(double x, double y) {
 //            // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
