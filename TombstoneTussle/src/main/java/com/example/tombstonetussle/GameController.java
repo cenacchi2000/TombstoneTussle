@@ -29,6 +29,7 @@ public class GameController extends Application {
     private DrawingModel drawingModel;
     private DrawingView drawingView;
     private MenuAreaController menuAreaController;
+    private AnchorPane menu;
     private char[][] maze;
     private int rows;
     private int columns;
@@ -99,9 +100,9 @@ public class GameController extends Application {
             // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
-            AnchorPane menu = null;
+            //AnchorPane menu = null;
             try {
-                menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
+                this.menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -130,6 +131,7 @@ public class GameController extends Application {
     public void handleBackToMainMenu() {
         gameState.pauseGame();
         gameView.setupMainMenu();
+        menu.setVisible(false);
     }
 
     public void handleBackFromDrawing(){
