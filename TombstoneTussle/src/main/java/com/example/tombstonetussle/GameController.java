@@ -100,13 +100,13 @@ public class GameController extends Application {
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
             //AnchorPane menu = null;
-            try {
-                this.menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            //gameView.getRoot().setRight(new Button("Test"));
-            gameView.getRoot().setRight(menu);
+//            try {
+//                this.menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+            gameView.getRoot().getRight().setVisible(true);
+
             gameView.getRoot().setCenter(gameAreaView); // change the center of the borderpane to the maze
             gameAreaView.requestFocus(); // Request focus for the GameAreaView
             gameView.updateButtonVisibility(); // Update button visibility based on the new state
@@ -131,7 +131,8 @@ public class GameController extends Application {
         gameState.pauseGame();
         gameView.setupMainMenu();
         // Hide the menu bar when getting back to the main menu
-        menu.setVisible(false);
+        gameView.getMenu().setVisible(false);
+        //menu.setVisible(false);
     }
 
     public void handleBackFromDrawing(){
