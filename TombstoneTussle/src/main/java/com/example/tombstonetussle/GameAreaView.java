@@ -26,7 +26,7 @@ public class GameAreaView extends Pane {
     public static final int W = 800;
     public static final int H = 800;
     private Rectangle[][] tiles;
-    private ImageView enemyImageView;
+
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
@@ -34,6 +34,9 @@ public class GameAreaView extends Pane {
     private Label timerLabel = new Label("00:00");
 
     private ImageView shieldImageView;
+
+    private boolean isShieldVisible = false; // Flag to control shield visibility
+
 
     // Create a group to hold bullet representations
     private Group bulletsGroup = new Group();
@@ -125,6 +128,7 @@ public class GameAreaView extends Pane {
         shieldImageView = new ImageView(new Image(getClass().getResourceAsStream("shield.png")));
         shieldImageView.setFitWidth(TILE_SIZE);
         shieldImageView.setFitHeight(TILE_SIZE);
+        shieldImageView.setVisible(false); // Initially, set it to not visible
 
         // Bind the shieldImageView's position to the playerImageView's position
         shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());

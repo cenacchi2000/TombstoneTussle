@@ -40,7 +40,6 @@ public class GameAreaController {
     private Set<Integer> passedBloodStains = new HashSet<>();
     private Timeline timerTimeline;
 
-    private boolean isShieldVisible = false;
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
@@ -50,6 +49,8 @@ public class GameAreaController {
         this.maze = maze;  // Initialize the maze field
         this.size = model.getSize(); // Initialize the size variable with the appropriate value
 
+
+        findValidSpawnPoints();
 
         startEnemyMovement();
         setupKeyListeners();
@@ -111,7 +112,6 @@ public class GameAreaController {
             }
         });
 
-
         // Listener on OnDragDropped
         // Activated when mouse drops the object
         // Then set the wall/trap according to the passed string
@@ -167,6 +167,48 @@ public class GameAreaController {
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
 
+
+    private void findValidSpawnPoints() {
+        List<int[]> validSpawnPoints = new ArrayList<>();
+        char[][] maze = gameAreaModel.getMaze1().getMaze();
+
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j] == ' ' || maze[i][j] == 'S') {
+                    // Check if the current tile and adjacent tiles are empty
+                    boolean validSpawn = true;
+                    for (int x = i - 1; x <= i + 1; x++) {
+                        for (int y = j - 1; y <= j + 1; y++) {
+                            if (x >= 0 && x < maze.length && y >= 0 && y < maze[i].length) {
+                                if (maze[x][y] == '#') {
+                                    validSpawn = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (validSpawn) {
+                        validSpawnPoints.add(new int[]{i, j});
+                    }
+                }
+            }
+        }
+
+        if (!validSpawnPoints.isEmpty()) {
+            // Randomly choose a valid spawn point
+            Random random = new Random();
+            int[] spawnPoint = validSpawnPoints.get(random.nextInt(validSpawnPoints.size()));
+
+            // Set the player's initial position
+            int x = spawnPoint[1] * GameAreaView.TILE_SIZE;
+            int y = spawnPoint[0] * GameAreaView.TILE_SIZE;
+            gameAreaModel.setX(x);
+            gameAreaModel.setY(y);
+
+            // Update the player's position in the view
+            gameAreaView.updatePlayerPosition(x, y);
+        }
+    }
 
 
     private void setupKeyListeners() {
