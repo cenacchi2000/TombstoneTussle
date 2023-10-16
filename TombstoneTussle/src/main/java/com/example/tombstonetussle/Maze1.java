@@ -90,11 +90,6 @@ public class Maze1 extends Maze {
                 }
             }
 
-            // Randomly set some cells to contain traps (adjust probability as needed)
-            if (random.nextDouble() < 0.1) { // Change 0.1 to your desired trap probability
-                hasTrap[currentRow][currentCol] = true;
-                maze[currentRow][currentCol] = 'D'; // Set this cell as 'D' (trap)
-            }
 
             // Check neighboring cells
             List<int[]> neighbors = getRandomNeighbors(currentRow, currentCol, rows, cols, random);
