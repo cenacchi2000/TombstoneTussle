@@ -33,6 +33,7 @@ public class GameAreaView extends Pane {
     private List<ImageView> heartIcons = new ArrayList<>();
     private Label timerLabel = new Label("00:00");
 
+    private ImageView shieldImageView;
 
     // Create a group to hold bullet representations
     private Group bulletsGroup = new Group();
@@ -119,6 +120,22 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
+
+        // Create the shieldImageView
+        shieldImageView = new ImageView(new Image(getClass().getResourceAsStream("shield.png")));
+        shieldImageView.setFitWidth(TILE_SIZE);
+        shieldImageView.setFitHeight(TILE_SIZE);
+
+        // Bind the shieldImageView's position to the playerImageView's position
+        shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());
+        shieldImageView.translateYProperty().bind(playerImageView.translateYProperty());
+
+        // Add the shieldImageView to the scene
+        getChildren().add(shieldImageView);
+    }
+
+    public void toggleShieldVisibility() {
+        shieldImageView.setVisible(!shieldImageView.isVisible());
     }
 
 

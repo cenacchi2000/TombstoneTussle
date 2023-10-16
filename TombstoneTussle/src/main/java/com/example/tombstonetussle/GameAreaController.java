@@ -225,6 +225,8 @@ public class GameAreaController {
         gameAreaView.toggleShieldVisibility();
     }
 
+
+
     // Create a method to animate cursor movement
     private void animateCursorAroundCharacter(double centerX, double centerY) {
         Cursor originalCursor = gameAreaView.getCursor();
