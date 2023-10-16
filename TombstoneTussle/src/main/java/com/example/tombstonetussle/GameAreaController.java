@@ -31,6 +31,7 @@ public class GameAreaController {
     private GameAreaModel gameAreaModel;
     private GameController gameController;
     private GameAreaModel playerModel;
+    private MenuAreaController menuAreaController = new MenuAreaController();
     private long lastClickTime = 0;
     private EnemyModel enemyModel;
     private List<EnemyModel> enemyModels = new ArrayList<>();
@@ -104,7 +105,7 @@ public class GameAreaController {
             e.consume();
         });
 
-        // To set the cursor correspond to the power-up
+        // To set the cursor correspond to the power-up//
         gameAreaView.setOnDragEntered(e->{
             if(e.getDragboard().getString().equals("W")){
                 Image wallImg = new Image(getClass().getResourceAsStream("wall.jpg"));
@@ -128,17 +129,21 @@ public class GameAreaController {
             Rectangle[][] tiles = gameAreaView.getTiles();
             char originalType;
 
-            if(type == 'W'){
-                originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
-                Image wall = new Image(getClass().getResourceAsStream("wall.jpg"));
-                tiles[prevY][prevX].setFill(new ImagePattern(wall));
+            // To avoid putting the power-up on the one exists.
+            if(!tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
+                if(type == 'W'){
+                    originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                    Image wall = new Image(getClass().getResourceAsStream("wall.jpg"));
+                    tiles[prevY][prevX].setFill(new ImagePattern(wall));
 
+                }
+                else if (type == 'T') {
+                    originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                    Image trap = new Image(getClass().getResourceAsStream("trap.png"));
+                    tiles[prevY][prevX].setFill(new ImagePattern(trap));
+                }
             }
-            else if (type == 'T') {
-                originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
-                Image trap = new Image(getClass().getResourceAsStream("trap.png"));
-                tiles[prevY][prevX].setFill(new ImagePattern(trap));
-            }
+
             // Set the cursor back to default as the dropping completed
             // Also have to the clear the dragboard or else the lines inside the setOnDragEntered
             // will be continuously run and the cursor is always image
@@ -147,35 +152,19 @@ public class GameAreaController {
             e.setDropCompleted(true);
         });
 
-        // Handle the swiping interaction to cancel the power up
-        gameAreaView.setOnSwipeRight(e->{
-            Rectangle[][] tiles = gameAreaView.getTiles();
-            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
-            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
-//            if(maze[prevY][prevX] == 'W' || maze[prevY][prevX] == 'T'){
-//                maze[prevY][prevX] = ' ';
-//            }
-            //if(tiles[prevY][prevX].getFill())
-            System.out.println(tiles[prevY][prevX].getFill());
-        });
-
         // Set listener on Guidance
-        // When the mouse entering the Question-Mark, the graphical guidance popup
-        gameAreaView.getQM().setOnMouseEntered(e->{
+        // When the mouse clicked the Question-Mark, the graphical guidance popup
+        // Re-click the question mark to close the guidance
+        gameAreaView.getQM().setOnMouseClicked(e->{
             ImageView keyGuidance = gameAreaView.getKeyGuidance();
             ImageView powerGuidance = gameAreaView.getPowerGuidance();
 
-            keyGuidance.setVisible(true);
-            powerGuidance.setVisible(true);
+            keyGuidance.setVisible(!keyGuidance.isVisible());
+            powerGuidance.setVisible(!powerGuidance.isVisible());
+
         });
 
-        gameAreaView.getQM().setOnMouseExited(e->{
-            ImageView keyGuidance = gameAreaView.getKeyGuidance();
-            ImageView powerGuidance = gameAreaView.getPowerGuidance();
 
-            keyGuidance.setVisible(false);
-            powerGuidance.setVisible(false);
-        });
 
 
         for (int i = 0; i < 4; i++) {
