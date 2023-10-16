@@ -1,7 +1,6 @@
 package com.example.tombstonetussle;
 
 import javafx.animation.*;
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.control.Alert;
@@ -22,8 +21,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-import static com.example.tombstonetussle.GameAreaView.TILE_SIZE;
-
 
 public class GameAreaController {
     private char[][] maze;  // Add a field for the maze
@@ -43,27 +40,23 @@ public class GameAreaController {
     private Set<Integer> passedBloodStains = new HashSet<>();
     private Timeline timerTimeline;
 
-    private List<Point2D> mousePositions = new ArrayList<>();
-    private boolean isCircling = false;
-    private double circleThreshold = 20.0;  // Adjust the threshold as needed
-
+    private boolean isShieldVisible = false;
+    private List<Bullet> bullets = new ArrayList<>();
+    private final long shootTimeInterval = 2000000000L; // 2 seconds in nanoseconds
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
         this.gameAreaModel = model;
         this.gameController = gameController;
         this.playerModel = model;
-        this.maze = maze;  // Initialize the maze field
+        this.maze = model.getMaze1().getMaze();
         this.size = model.getSize(); // Initialize the size variable with the appropriate value
 
-
-        findValidSpawnPoints();
 
         startEnemyMovement();
         setupKeyListeners();
         setupBackArrowListener();
 
-        gameAreaView.updatePlayerPosition(model.getX(), model.getY());
         //Listener to fast double click
         gameAreaView.setOnMouseClicked(event -> {
             long currentTime = System.currentTimeMillis();
@@ -77,8 +70,8 @@ public class GameAreaController {
         // MousePress the specific power-up and press key "M"
         // to cancel this power-up(temporary wall or trap)
         gameAreaView.setOnMousePressed(e->{
-            int prevX = (int)e.getX() / TILE_SIZE;
-            int prevY = (int)e.getY() / TILE_SIZE;
+            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
+            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
             Rectangle[][] tiles = gameAreaView.getTiles();
 
             gameAreaView.setOnKeyPressed(event -> {
@@ -120,14 +113,15 @@ public class GameAreaController {
             }
         });
 
+
         // Listener on OnDragDropped
         // Activated when mouse drops the object
         // Then set the wall/trap according to the passed string
         gameAreaView.setOnDragDropped(e->{
             String string = e.getDragboard().getString();
             char type = string.charAt(0);
-            int prevX = (int)e.getX() / TILE_SIZE;
-            int prevY = (int)e.getY() / TILE_SIZE;
+            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
+            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
             Rectangle[][] tiles = gameAreaView.getTiles();
             char originalType;
 
@@ -153,8 +147,8 @@ public class GameAreaController {
         // Handle the swiping interaction to cancel the power up
         gameAreaView.setOnSwipeRight(e->{
             Rectangle[][] tiles = gameAreaView.getTiles();
-            int prevX = (int)e.getX() / TILE_SIZE;
-            int prevY = (int)e.getY() / TILE_SIZE;
+            int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
+            int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
 //            if(maze[prevY][prevX] == 'W' || maze[prevY][prevX] == 'T'){
 //                maze[prevY][prevX] = ' ';
 //            }
@@ -164,7 +158,7 @@ public class GameAreaController {
 
 
         for (int i = 0; i < 4; i++) {
-            enemyModels.add(new EnemyModel(TILE_SIZE, model.getMaze1()));
+            enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
         }
         System.out.println("Numero di nemici: " + enemyModels.size());
 
@@ -176,52 +170,6 @@ public class GameAreaController {
     }
 
 
-    private void findValidSpawnPoints() {
-        List<int[]> validSpawnPoints = new ArrayList<>();
-        char[][] maze = gameAreaModel.getMaze1().getMaze();
-
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                if (isValidSpawnPoint(i, j, maze)) {
-                    validSpawnPoints.add(new int[]{i, j});
-                }
-            }
-        }
-
-        if (!validSpawnPoints.isEmpty()) {
-            Random random = new Random();
-            int randomIndex = random.nextInt(validSpawnPoints.size());
-            int[] spawnPoint = validSpawnPoints.get(randomIndex);
-
-            // Set the player's initial position
-            int x = spawnPoint[1] * TILE_SIZE;
-            int y = spawnPoint[0] * TILE_SIZE;
-            gameAreaModel.setX(x);
-            gameAreaModel.setY(y);
-
-            // Update the player's position in the view
-            gameAreaView.updatePlayerPosition();
-        }
-    }
-
-    private boolean isValidSpawnPoint(int row, int col, char[][] maze) {
-        if (maze[row][col] == ' ' || maze[row][col] == 'S') {
-            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
-
-            for (int[] dir : directions) {
-                int newRow = row + dir[0];
-                int newCol = col + dir[1];
-
-                if (newRow >= 0 && newRow < maze.length && newCol >= 0 && newCol < maze[0].length) {
-                    if (maze[newRow][newCol] == ' ' || maze[newRow][newCol] == 'S') {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
 
     private void setupKeyListeners() {
         gameAreaView.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyInput);
@@ -229,8 +177,8 @@ public class GameAreaController {
 
 
     private void handleKeyInput(KeyEvent event) {
-        int prevX = gameAreaModel.getX() / TILE_SIZE;
-        int prevY = gameAreaModel.getY() / TILE_SIZE;
+        int prevX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
+        int prevY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
         switch (event.getCode()) {
             case W:
                 gameAreaModel.moveUp();
@@ -252,16 +200,14 @@ public class GameAreaController {
                 return; // If it's not one of the movement keys, exit early.
         }
 
-        int currentX = gameAreaModel.getX() / TILE_SIZE;
-        int currentY = gameAreaModel.getY() / TILE_SIZE;
+        int currentX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
+        int currentY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
 
         // Check if player actually moved
         if (prevX != currentX || prevY != currentY) {
             gameAreaModel.getMaze1().getBloodTrace()[prevY][prevX] = true;
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
-
-
 
         // Check if player's life is 0
         if (gameAreaModel.getLives() <= 0) {
@@ -278,12 +224,47 @@ public class GameAreaController {
                 handleEnemyElimination(enemyModel, iterator);
             }
         }
+        // Check if player's life is 0
+        if (gameAreaModel.getLives() <= 0) {
+            showFailureMessage();
+        }
 
-
+        if (enemyModels.isEmpty()) {
+            // All enemies are eliminated, show the win message
+            showWinMessage();
+        }
     }
 
 
+    private void showFailureMessage() {
+        Alert failureAlert = new Alert(Alert.AlertType.INFORMATION);
+        failureAlert.setTitle("Game Over");
+        failureAlert.setHeaderText("You've lost!");
+        failureAlert.setContentText("You've run out of lives. Better luck next time.");
+        ButtonType backToMenuButton = new ButtonType("Back to Menu", ButtonBar.ButtonData.OK_DONE);
+        failureAlert.getButtonTypes().setAll(backToMenuButton);
 
+        // Handle the button action to go back to the main menu
+        Optional<ButtonType> result = failureAlert.showAndWait();
+        if (result.isPresent() && result.get() == backToMenuButton) {
+            gameController.handleBackToMainMenu();
+        }
+    }
+
+    private void showWinMessage() {
+        Alert winAlert = new Alert(Alert.AlertType.INFORMATION);
+        winAlert.setTitle("Congratulations!");
+        winAlert.setHeaderText("You've won!");
+        winAlert.setContentText("You've eliminated all the enemies. Great job!");
+        ButtonType backToMenuButton = new ButtonType("Back to Menu", ButtonBar.ButtonData.OK_DONE);
+        winAlert.getButtonTypes().setAll(backToMenuButton);
+
+        // Handle the button action to go back to the main menu
+        Optional<ButtonType> result = winAlert.showAndWait();
+        if (result.isPresent() && result.get() == backToMenuButton) {
+            gameController.handleBackToMainMenu();
+        }
+    }
     private void toggleShield() {
         gameAreaView.toggleShieldVisibility();
     }
@@ -315,8 +296,8 @@ public class GameAreaController {
     }
 
     private void handleDoubleClick(double x, double y) {
-        int tileX = (int) x / TILE_SIZE;
-        int tileY = (int) y / TILE_SIZE;
+        int tileX = (int) x / GameAreaView.TILE_SIZE;
+        int tileY = (int) y / GameAreaView.TILE_SIZE;
 
         try {
             if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
@@ -371,8 +352,8 @@ public class GameAreaController {
         int newX = enemyModel.getX();
         int newY = enemyModel.getY();
 
-        int currentTileX = newX / TILE_SIZE;
-        int currentTileY = newY / TILE_SIZE;
+        int currentTileX = newX / GameAreaView.TILE_SIZE;
+        int currentTileY = newY / GameAreaView.TILE_SIZE;
 
         List<int[]> neighboringCells = new ArrayList<>();
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
@@ -401,24 +382,24 @@ public class GameAreaController {
             // Call the removeBloodTrace method from the GameAreaView
             gameAreaView.removeBloodTrace(closestCell[0], closestCell[1]);
 
-            newX = closestCell[0] * TILE_SIZE;
-            newY = closestCell[1] * TILE_SIZE;
+            newX = closestCell[0] * GameAreaView.TILE_SIZE;
+            newY = closestCell[1] * GameAreaView.TILE_SIZE;
         } else {
             // If no neighboring cells have bloodstains, move randomly
             int direction = random.nextInt(4); // 0 = up, 1 = down, 2 = left, 3 = right
 
             switch (direction) {
                 case 0:
-                    newY -= TILE_SIZE;
+                    newY -= GameAreaView.TILE_SIZE;
                     break;
                 case 1:
-                    newY += TILE_SIZE;
+                    newY += GameAreaView.TILE_SIZE;
                     break;
                 case 2:
-                    newX -= TILE_SIZE;
+                    newX -= GameAreaView.TILE_SIZE;
                     break;
                 case 3:
-                    newX += TILE_SIZE;
+                    newX += GameAreaView.TILE_SIZE;
                     break;
             }
         }
@@ -435,8 +416,8 @@ public class GameAreaController {
 
         for (int i = 0; i < cells.size(); i++) {
             int[] cell = cells.get(i);
-            int distance = Math.abs(cell[0] - currentX / TILE_SIZE) +
-                    Math.abs(cell[1] - currentY / TILE_SIZE);
+            int distance = Math.abs(cell[0] - currentX / GameAreaView.TILE_SIZE) +
+                    Math.abs(cell[1] - currentY / GameAreaView.TILE_SIZE);
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestIndex = i;
@@ -481,48 +462,8 @@ public class GameAreaController {
 
             // You can also perform other actions here based on your game's logic.
         }
-
-        // Check if all enemies are eliminated
-        if (enemyModels.isEmpty()) {
-            // All enemies are eliminated, show the win message
-            showWinMessage();
-        }
-
-        if (gameAreaModel.getLives() <= 0) {
-            showFailureMessage();
-        }
-
     }
 
-    private void showFailureMessage() {
-        Alert failureAlert = new Alert(Alert.AlertType.INFORMATION);
-        failureAlert.setTitle("Game Over");
-        failureAlert.setHeaderText("You've lost!");
-        failureAlert.setContentText("You've run out of lives. Better luck next time.");
-        ButtonType backToMenuButton = new ButtonType("Back to Menu", ButtonBar.ButtonData.OK_DONE);
-        failureAlert.getButtonTypes().setAll(backToMenuButton);
-
-        // Handle the button action to go back to the main menu
-        Optional<ButtonType> result = failureAlert.showAndWait();
-        if (result.isPresent() && result.get() == backToMenuButton) {
-            gameController.handleBackToMainMenu();
-        }
-    }
-
-    private void showWinMessage() {
-        Alert winAlert = new Alert(Alert.AlertType.INFORMATION);
-        winAlert.setTitle("Congratulations!");
-        winAlert.setHeaderText("You've won!");
-        winAlert.setContentText("You've eliminated all the enemies. Great job!");
-        ButtonType backToMenuButton = new ButtonType("Back to Menu", ButtonBar.ButtonData.OK_DONE);
-        winAlert.getButtonTypes().setAll(backToMenuButton);
-
-        // Handle the button action to go back to the main menu
-        Optional<ButtonType> result = winAlert.showAndWait();
-        if (result.isPresent() && result.get() == backToMenuButton) {
-            gameController.handleBackToMainMenu();
-        }
-    }
 
     private void startEnemyMovement() {
         final long[] lastUpdateTime = {System.nanoTime()}; // Wrap in an array to make it effectively final
@@ -536,16 +477,96 @@ public class GameAreaController {
                         moveEnemyRandomly(enemyModels.get(i));
                         gameAreaView.updateEnemyPosition(enemyModels.get(i).getX(), enemyModels.get(i).getY(), i);
                     }
+                    moveBullets();  // Move the bullets
                     lastUpdateTime[0] = now; // Update the value
                 }
             }
         };
         timer.start();
+        startEnemyShooting();
+    }
+
+    private void startEnemyShooting() {
+        final long[] lastShootTime = {System.nanoTime()};
+
+        AnimationTimer shootTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (now - lastShootTime[0] >= shootTimeInterval) {
+                    for (EnemyModel enemy : enemyModels) {
+                        if (enemy.canShootAt(gameAreaModel, maze)) {
+                            Bullet bullet = createBulletFromEnemyToPlayer(enemy);
+                            bullets.add(bullet);
+                            gameAreaView.addBulletView(bullet);
+                        }
+                    }
+                    lastShootTime[0] = now; // Update the time
+                }
+            }
+        };
+        shootTimer.start();
+    }
+
+    private Bullet createBulletFromEnemyToPlayer(EnemyModel enemy) {
+        double startX = enemy.getX() + GameAreaView.TILE_SIZE / 2.0;
+        double startY = enemy.getY() + GameAreaView.TILE_SIZE / 2.0;
+
+        double directionX = gameAreaModel.getX() - startX;
+        double directionY = gameAreaModel.getY() - startY;
+
+        // Normalize the direction
+        double magnitude = Math.sqrt(directionX * directionX + directionY * directionY);
+        directionX /= magnitude;
+        directionY /= magnitude;
+
+        return new Bullet(startX, startY, directionX, directionY, 30);
     }
 
 
 
 
+    private void moveBullets() {
+        Iterator<Bullet> bulletIterator = bullets.iterator();
 
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
 
+            double newX = bullet.getX() + bullet.getDirectionX() * bullet.getSpeed();
+            double newY = bullet.getY() + bullet.getDirectionY() * bullet.getSpeed();
+
+            bullet.setX(newX);
+            System.out.println(newX);
+            bullet.setY(newY);
+            System.out.println(newX);
+            gameAreaView.updateBulletPosition(bullet, newX,newY);
+
+            /*
+            // Check for collisions or if the bullet is out of bounds
+            if (checkBulletCollision(bullet) || isBulletOutOfBounds(bullet)) {
+                gameAreaView.removeBulletView(bullet);
+                bulletIterator.remove();
+            }
+            */
+        }
+    }
+
+    private boolean checkBulletCollision(Bullet bullet) {
+        // Check for collisions with the player, walls, or any other entities.
+        // If a collision is detected, return true. Otherwise, return false.
+
+        // Here's a basic check for collision with the player:
+        if (Math.abs(bullet.getX() - gameAreaModel.getX()) < GameAreaView.TILE_SIZE &&
+                Math.abs(bullet.getY() - gameAreaModel.getY()) < GameAreaView.TILE_SIZE) {
+            // Handle the player being hit by a bullet here
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isBulletOutOfBounds(Bullet bullet) {
+        return bullet.getX() < 0 || bullet.getX() >= size * GameAreaView.TILE_SIZE ||
+                bullet.getY() < 0 || bullet.getY() >= size * GameAreaView.TILE_SIZE;
+    }
 }
+

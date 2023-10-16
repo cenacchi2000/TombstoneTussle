@@ -26,6 +26,15 @@ public class EnemyModel {
         bullets = new ArrayList<>();
     }
 
+    // A simple utility class for a point in the grid
+    private static class Point {
+        int x, y;
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
     private void spawnInValidCell() {
         int mazeWidth = maze1.getMaze()[0].length;
         int mazeHeight = maze1.getMaze().length;
@@ -78,4 +87,53 @@ public class EnemyModel {
     }
 
     public void setLives(int lives) { this.lives = lives; }
+    public boolean canShootAt(GameAreaModel player, char[][] maze) {
+        int x1 = this.x / tileSize;
+        int y1 = this.y / tileSize;
+        int x2 = player.getX() / tileSize;
+        int y2 = player.getY() / tileSize;
+
+        // Use Bresenham's line algorithm to determine the cells touched by the line
+        List<Point> pointsOnLine = bresenhamLine(x1, y1, x2, y2);
+
+        // Check if there's a wall on any of the cells touched by the line
+        for (Point point : pointsOnLine) {
+            if (maze[point.y][point.x] == '#' || maze[point.y][point.x] == 'W') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<Point> bresenhamLine(int x1, int y1, int x2, int y2) {
+        List<Point> line = new ArrayList<>();
+
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+
+        int sx = x1 < x2 ? 1 : -1;
+        int sy = y1 < y2 ? 1 : -1;
+
+        int err = dx - dy;
+        int e2;
+
+        while (true) {
+            line.add(new Point(x1, y1));
+
+            if (x1 == x2 && y1 == y2) break;
+
+            e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x1 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y1 += sy;
+            }
+        }
+
+        return line;
+    }
 }
+
