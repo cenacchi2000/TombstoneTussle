@@ -209,12 +209,6 @@ public class GameAreaController {
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
 
-        // Check if player's life is 0
-        if (gameAreaModel.getLives() <= 0) {
-            gameAreaView.removePlayerView();
-            gameAreaModel.disablePlayer();
-            gameAreaView.updateHeartIcons();
-        }
 
         // Check for collision with enemies
         Iterator<EnemyModel> iterator = enemyModels.iterator();
@@ -479,6 +473,12 @@ public class GameAreaController {
                     }
                     moveBullets();  // Move the bullets
                     lastUpdateTime[0] = now; // Update the value
+                    // Check if player's life is 0
+                    if (gameAreaModel.getLives() <= 0) {
+                        gameAreaView.removePlayerView();
+                        gameAreaModel.disablePlayer();
+                        gameAreaView.updateHeartIcons();
+                    }
                 }
             }
         };
@@ -519,7 +519,7 @@ public class GameAreaController {
         directionX /= magnitude;
         directionY /= magnitude;
 
-        return new Bullet(startX, startY, directionX, directionY, 30);
+        return new Bullet(startX, startY, directionX, directionY, 50);
     }
 
 
@@ -535,38 +535,48 @@ public class GameAreaController {
             double newY = bullet.getY() + bullet.getDirectionY() * bullet.getSpeed();
 
             bullet.setX(newX);
-            System.out.println(newX);
+            //System.out.println(newX);
             bullet.setY(newY);
-            System.out.println(newX);
+            //System.out.println(newX);
             gameAreaView.updateBulletPosition(bullet, newX,newY);
 
-            /*
+
             // Check for collisions or if the bullet is out of bounds
-            if (checkBulletCollision(bullet) || isBulletOutOfBounds(bullet)) {
+            if (checkBulletCollision(bullet)) {
                 gameAreaView.removeBulletView(bullet);
                 bulletIterator.remove();
             }
-            */
+
         }
     }
 
     private boolean checkBulletCollision(Bullet bullet) {
         // Check for collisions with the player, walls, or any other entities.
         // If a collision is detected, return true. Otherwise, return false.
+        int bulletTileX = (int) bullet.getX() / GameAreaView.TILE_SIZE;
+        int bulletTileY = (int) bullet.getY() / GameAreaView.TILE_SIZE;
 
-        // Here's a basic check for collision with the player:
-        if (Math.abs(bullet.getX() - gameAreaModel.getX()) < GameAreaView.TILE_SIZE &&
-                Math.abs(bullet.getY() - gameAreaModel.getY()) < GameAreaView.TILE_SIZE) {
+        // 10 is the bullet size
+        if (bullet.getX() < gameAreaModel.getX() + GameAreaView.TILE_SIZE &&
+                bullet.getX() + 10 > gameAreaModel.getX() &&
+                bullet.getY() < gameAreaModel.getY() + GameAreaView.TILE_SIZE &&
+                bullet.getY() + 10 > gameAreaModel.getY()) {
             // Handle the player being hit by a bullet here
+            gameAreaModel.setLives(gameAreaModel.getLives()-1);
+            gameAreaView.updateHeartIcons();
+            return true;
+        }
+
+        if (maze[bulletTileY][bulletTileX] == '#') {
+            return true;
+        }
+
+        if (maze[bulletTileY][bulletTileX] == 'W') {
             return true;
         }
 
         return false;
     }
 
-    private boolean isBulletOutOfBounds(Bullet bullet) {
-        return bullet.getX() < 0 || bullet.getX() >= size * GameAreaView.TILE_SIZE ||
-                bullet.getY() < 0 || bullet.getY() >= size * GameAreaView.TILE_SIZE;
-    }
 }
 

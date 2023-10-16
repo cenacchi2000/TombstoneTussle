@@ -10,6 +10,7 @@ public class GameAreaModel {
     private int size;
     private int lives = 5;
     private int elapsedTime = 0;  // in seconds
+    private boolean isDead = false;
     GameState gameState = GameState.getInstance();
 
 
@@ -91,7 +92,7 @@ public class GameAreaModel {
 
     private boolean isValidMove(int newX, int newY) {
         // Check if the new position is outside the maze boundaries
-        if (newX < 0 || newY < 0 || newX >= maze1.getMaze()[0].length * tileSize || newY >= maze1.getMaze().length * tileSize) {
+        if (newX < 0 || newY < 0 || newX >= maze1.getMaze()[0].length * tileSize || newY >= maze1.getMaze().length * tileSize || isDead) {
             return false;
         }
 
@@ -124,8 +125,7 @@ public class GameAreaModel {
     }
 
     public void disablePlayer() {
-        this.x = -1000; // Or any other invalid value
-        this.y = -1000; // Or any other invalid value
+        isDead = true;
     }
 
     public int getElapsedTime() {
