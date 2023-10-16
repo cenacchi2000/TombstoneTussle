@@ -1,5 +1,6 @@
 package com.example.tombstonetussle;
 
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -7,15 +8,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.*;
 import javafx.scene.paint.Color;
+
+import java.io.IOException;
 
 
 public class GameView {
@@ -25,12 +25,12 @@ public class GameView {
 
     private ImageView npcImageView;
     private Button newGameButton; // The button to start a new game
-    private Button continueButton; // The button to continue a game
     private GameController gameController; // Reference to the game controller
     private ImageView characterImageView;
     private Title gameTitle = new Title("TOMBSTONE TUSSLE");
+    private AnchorPane menu;
 
-    public GameView(GameController controller) {
+    public GameView(GameController controller){
         this.gameController = controller;
 
         // Main layout
@@ -51,6 +51,14 @@ public class GameView {
 
         //gameTitle.setStyle("-fx-font-size: 24px;");
         root.setTop(gameTitle);
+
+        try {
+            this.menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        root.setRight(menu);
+        root.getRight().setVisible(false);
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
     }
 
@@ -88,13 +96,9 @@ public class GameView {
         return newGameButton;
     }
 
-    public Button getContinueButton(){
-        return continueButton;
-    }
 
     public void updateButtonVisibility() {
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
-        continueButton.setVisible(gameController.isContinueButtonVisible());
     }
 //    public void updateTitleVisibility(){
 //        gameTitle.setVisible(false);
@@ -144,17 +148,13 @@ public class GameView {
         centerBox.getChildren().add(selectionBox);
         root.setCenter(centerBox);
 
-        // New Game and Continue buttons
+        // New Game button
         HBox buttonBox = new HBox(20);
         if (newGameButton == null) {
             newGameButton = new Button("New Game");
         }
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
-        if (continueButton == null) {
-            continueButton = new Button("Continue");
-        }
-        continueButton.setVisible(gameController.isContinueButtonVisible());
-        buttonBox.getChildren().addAll(newGameButton, continueButton);
+        buttonBox.getChildren().addAll(newGameButton);
         buttonBox.setAlignment(Pos.CENTER);
         root.setBottom(buttonBox);
     }
@@ -176,6 +176,9 @@ public class GameView {
     public void setDefaultCharacterImage() {
         Image defaultCharacter = getDefaultCharacterImage();
         characterImageView.setImage(defaultCharacter);
+    }
+    public AnchorPane getMenu(){
+        return menu;
     }
 
 

@@ -9,6 +9,7 @@ public class GameAreaModel {
     private double lastY;
     private int size;
     private int lives = 5;
+    private int elapsedTime = 0;  // in seconds
     GameState gameState = GameState.getInstance();
 
 
@@ -127,7 +128,13 @@ public class GameAreaModel {
         this.y = -1000; // Or any other invalid value
     }
 
+    public int getElapsedTime() {
+        return elapsedTime;
+    }
 
+    public void incrementElapsedTime() {
+        this.elapsedTime++;
+    }
 
     public Maze1 getMaze1() {
         return maze1;

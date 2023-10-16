@@ -35,6 +35,7 @@ public class GameAreaController {
     private boolean isFollowingBloodTrace = false;
 
     private Set<Integer> passedBloodStains = new HashSet<>();
+    private Timeline timerTimeline;
 
     private boolean isShieldVisible = false;
 
@@ -70,9 +71,8 @@ public class GameAreaController {
 
             gameAreaView.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.M) {
-                    System.out.println("'M' is pressed");
-                    System.out.println("The coordinates:("+prevY+","+prevX+")");
-                    System.out.println(tiles[prevY][prevX].getFill().getClass().getSimpleName());
+//                    System.out.println("'M' is pressed");
+//                    System.out.println("The coordinates:("+prevY+","+prevX+")");
                     if (tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
                         tiles[prevY][prevX].setFill(Color.LIGHTGRAY);
                         gameAreaModel.getMaze1().changeType(prevY, prevX, ' ');
@@ -152,14 +152,6 @@ public class GameAreaController {
         });
 
 
-//        private void handleDoubleClick(double x, double y) {
-//            // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
-//            if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
-//                gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
-//                gameAreaView.removeBloodTrace(tileX, tileY);
-//            }
-//        }
-
         for (int i = 0; i < 4; i++) {
             enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
         }
@@ -167,6 +159,7 @@ public class GameAreaController {
 
 
 
+        startTimer();
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
@@ -219,11 +212,11 @@ public class GameAreaController {
         }
 
         // Check for collision with enemies
-        for (EnemyModel enemyModel : enemyModels) {
+        Iterator<EnemyModel> iterator = enemyModels.iterator();
+        while (iterator.hasNext()) {
+            EnemyModel enemyModel = iterator.next();
             if (enemyModel.getX() == gameAreaModel.getX() && enemyModel.getY() == gameAreaModel.getY()) {
-                // Player and enemy are in the same cell; handle the collision here
-                // For example, you can call a method to handle the enemy's elimination.
-                handleEnemyElimination(enemyModel);
+                handleEnemyElimination(enemyModel, iterator);
             }
         }
     }
@@ -260,13 +253,28 @@ public class GameAreaController {
         int tileX = (int) x / GameAreaView.TILE_SIZE;
         int tileY = (int) y / GameAreaView.TILE_SIZE;
 
-        // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
-        if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
-            gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
-            gameAreaView.removeBloodTrace(tileX, tileY);
+        try {
+            if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
+                gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
+                gameAreaView.removeBloodTrace(tileX, tileY);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
+
     }
 
+    private void startTimer() {
+        timerTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    gameAreaModel.incrementElapsedTime();
+                    gameAreaView.updateTimer(gameAreaModel.getElapsedTime());
+                })
+        );
+        timerTimeline.setCycleCount(Timeline.INDEFINITE);
+        timerTimeline.play();
+    }
 
     private void setupBackArrowListener() {
         gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {
@@ -286,12 +294,6 @@ public class GameAreaController {
         List<int[]> neighboringCells = new ArrayList<>();
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
 
-        // If the enemy's life is 0, remove it and return
-        if (enemyModel.getLives() <= 0) {
-            enemyModels.remove(enemyModel);
-            gameAreaView.removeEnemyView(enemyModel);
-            return;
-        }
 
         // Check neighboring cells for bloodstains
         for (int[] direction : directions) {
@@ -369,7 +371,7 @@ public class GameAreaController {
         return x >= 0 && y >= 0 && x < mazeWidth && y < mazeHeight;
     }
 
-    private void handleEnemyElimination(EnemyModel enemyModel) {
+    private void handleEnemyElimination(EnemyModel enemyModel, Iterator<EnemyModel> iterator) {
         // Get the enemy's position
         int enemyX = enemyModel.getX();
         int enemyY = enemyModel.getY();
@@ -389,9 +391,10 @@ public class GameAreaController {
             // You can add your elimination logic here, such as reducing player health or ending the game.
             // For example:
             System.out.println("Enemy eliminated!");
+            gameAreaView.removeEnemyView(enemyModel);
 
             // Remove the enemy model from the list of enemyModels
-            enemyModels.remove(enemyModel);
+            iterator.remove();
 
             // You can also perform other actions here based on your game's logic.
         }

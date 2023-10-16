@@ -3,6 +3,7 @@ package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -30,15 +31,13 @@ public class GameAreaView extends Pane {
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
     private List<ImageView> heartIcons = new ArrayList<>();
-    private ImageView shieldImageView;
-
+    private Label timerLabel = new Label("00:00");
 
 
     // Create a group to hold bullet representations
     private Group bulletsGroup = new Group();
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
-
 
 
         // Set pane's size
@@ -59,8 +58,14 @@ public class GameAreaView extends Pane {
         getChildren().add(bulletsGroup);
         // Create and position the player
         this.gameAreaModel = model;
+        // Position and style the timer label
+        timerLabel.setLayoutX(1050); // Adjust as needed
+        timerLabel.setLayoutY(-75); // Adjust as needed
+        timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
+        getChildren().add(timerLabel);
         //Player's life
         initializeHeartIcons();
+
 
         // Draw the maze
         char[][] maze = selectedMaze;
@@ -114,23 +119,8 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
-
-        // Create the shieldImageView
-        shieldImageView = new ImageView(new Image(getClass().getResourceAsStream("shield.png")));
-        shieldImageView.setFitWidth(TILE_SIZE);
-        shieldImageView.setFitHeight(TILE_SIZE);
-
-        // Bind the shieldImageView's position to the playerImageView's position
-        shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());
-        shieldImageView.translateYProperty().bind(playerImageView.translateYProperty());
-
-        // Add the shieldImageView to the scene
-        getChildren().add(shieldImageView);
     }
 
-    public void toggleShieldVisibility() {
-        shieldImageView.setVisible(!shieldImageView.isVisible());
-    }
 
     public boolean hasBloodTrace(int x, int y) {
         int tileX = x / TILE_SIZE;
@@ -233,25 +223,6 @@ public class GameAreaView extends Pane {
     }
 
 
-    public void removeEnemy(int index) {
-        if (index >= 0 && index < enemyImageViews.size()) {
-            ImageView enemyImageView = enemyImageViews.get(index);
-            // Create a FadeTransition to make the enemy fade out over a specified duration
-            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImageView);
-            fadeOut.setToValue(0); // Fade to fully transparent
-
-            // Define an event handler to be executed when the animation is finished
-            fadeOut.setOnFinished(event -> {
-                // Remove the enemy ImageView from the scene
-                getChildren().remove(enemyImageView);
-                enemyImageViews.remove(index);
-            });
-
-            // Start the fade-out animation
-            fadeOut.play();
-        }
-    }
-
     public void removeBloodTrace(int tileX, int tileY) {
         ImageView bloodTraceToRemove = null;
         for (Node node : getChildren()) {
@@ -318,7 +289,7 @@ public class GameAreaView extends Pane {
             ImageView heartIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/heart.png")));
             heartIcon.setFitWidth(30);  // Dimensione desiderata per l'icona
             heartIcon.setFitHeight(30); // Dimensione desiderata per l'icona
-            int offsetX = 700;
+            int offsetX = -500;
             heartIcon.setLayoutX(W - (i+1) * 40 + offsetX); // Posizione orizzontale (spostato di 40px per ogni cuore)
             heartIcon.setLayoutY(-45); // Posizione verticale
             getChildren().add(heartIcon);
@@ -327,6 +298,8 @@ public class GameAreaView extends Pane {
             heartIcon.setMouseTransparent(true);
             heartIcons.add(heartIcon);
         }
+        //this.getChildren().addAll(this.heartIcons);
+
     }
 
     public void updateHeartIcons() {
@@ -338,6 +311,12 @@ public class GameAreaView extends Pane {
                 heartIcons.get(i).setVisible(false);
             }
         }
+    }
+
+    public void updateTimer(int elapsedSeconds) {
+        int minutes = elapsedSeconds / 60;
+        int seconds = elapsedSeconds % 60;
+        timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
     public Rectangle[][] getTiles() {
