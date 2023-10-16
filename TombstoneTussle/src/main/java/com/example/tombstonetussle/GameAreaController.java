@@ -550,7 +550,7 @@ public class GameAreaController {
         directionX /= magnitude;
         directionY /= magnitude;
 
-        return new Bullet(startX, startY, directionX, directionY, 50);
+        return new Bullet(startX, startY, directionX, directionY, 80);
     }
 
 
@@ -586,6 +586,9 @@ public class GameAreaController {
         // If a collision is detected, return true. Otherwise, return false.
         int bulletTileX = (int) bullet.getX() / GameAreaView.TILE_SIZE;
         int bulletTileY = (int) bullet.getY() / GameAreaView.TILE_SIZE;
+        if (bulletTileX >= maze[0].length || bulletTileY >= maze.length) {
+            return false;
+        }
 
         // 10 is the bullet size
         if (bullet.getX() < gameAreaModel.getX() + GameAreaView.TILE_SIZE &&
