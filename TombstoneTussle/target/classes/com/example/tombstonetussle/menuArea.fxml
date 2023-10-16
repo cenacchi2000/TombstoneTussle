@@ -14,31 +14,31 @@
          <children>
             <StackPane fx:id="menuTitle" prefHeight="60.0" prefWidth="150.0">
                <children>
-                  <Label fx:id="titleText" text="MENU" StackPane.alignment="CENTER" />
+                  <Label fx:id="titleText" text="POWER-UPs" StackPane.alignment="CENTER" />
                </children></StackPane>
             <Label prefWidth="150.0" text="     Walls" />
-            <HBox prefHeight="100.0" prefWidth="150.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="150.0">
                <children>
                   <AnchorPane fx:id="wall" onDragDetected="#addWall" onDragDone="#wallDragDone" prefHeight="80.0" prefWidth="80.0" />
-                  <AnchorPane prefHeight="60.0" prefWidth="40.0">
+                  <Label fx:id="wallNumText" text="Label">
                      <HBox.margin>
-                        <Insets left="10.0" />
+                        <Insets left="20.0" />
                      </HBox.margin>
-                  </AnchorPane>
+                  </Label>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </HBox>
             <Label maxWidth="150.0" text="     Traps" />
-            <HBox prefHeight="100.0" prefWidth="150.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="150.0">
                <children>
                   <AnchorPane fx:id="trap" onDragDetected="#addTrap" onDragDone="#trapDragDone" prefHeight="80.0" prefWidth="80.0" />
-                  <AnchorPane prefHeight="60.0" prefWidth="40.0">
+                  <Label fx:id="trapNumText" text="Label">
                      <HBox.margin>
-                        <Insets left="10.0" />
+                        <Insets left="20.0" />
                      </HBox.margin>
-                  </AnchorPane>
+                  </Label>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -46,7 +46,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0">
                <children>
-                  <Label maxWidth="150.0" text="     COMMAND" />
+                  <Label maxWidth="150.0" text="     " />
                   <ImageView fx:id="questionMark" fitHeight="30.0" fitWidth="30.0" onMouseEntered="#openGuidance" onMouseExited="#closeGuidance" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets left="20.0" />
