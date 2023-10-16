@@ -46,6 +46,7 @@ public class GameAreaController {
     private List<Point2D> mousePositions = new ArrayList<>();
     private boolean isCircling = false;
     private double circleThreshold = 20.0;  // Adjust the threshold as needed
+    private boolean isSpaceKeyPressed = false;
 
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
@@ -245,9 +246,16 @@ public class GameAreaController {
                 gameAreaModel.moveRight();
                 break;
             case SPACE:
-                toggleShield(); // Handle the spacebar press
+                if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+                    // Space key is pressed
+                    isSpaceKeyPressed = true;
+                    toggleShield(true); // Activate the shield
+                } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
+                    // Space key is released
+                    isSpaceKeyPressed = false;
+                    toggleShield(false); // Deactivate the shield
+                }
                 break;
-
             default:
                 return; // If it's not one of the movement keys, exit early.
         }
@@ -282,10 +290,12 @@ public class GameAreaController {
 
     }
 
-
-
-    private void toggleShield() {
-        gameAreaView.toggleShieldVisibility();
+    private void toggleShield(boolean activate) {
+        if (activate) {
+            gameAreaView.toggleShieldVisibility();
+        } else {
+            gameAreaView.deactivateShield();
+        }
     }
 
 

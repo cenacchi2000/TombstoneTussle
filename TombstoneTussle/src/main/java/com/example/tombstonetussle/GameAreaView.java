@@ -141,6 +141,11 @@ public class GameAreaView extends Pane {
         shieldImageView.setVisible(!shieldImageView.isVisible());
     }
 
+    public void deactivateShield() {
+        boolean shieldVisible = false;
+
+    }
+
 
     public boolean hasBloodTrace(int x, int y) {
         int tileX = x / TILE_SIZE;
