@@ -5,12 +5,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,8 +28,12 @@ public class MenuAreaController implements Initializable {
     private AnchorPane trap;
     @FXML
     private ImageView questionMark;
-    private int wallNum = 5;
-    private int trapNum = 5;
+    @FXML
+    private Label wallNumText;
+    @FXML
+    private Label trapNumText;
+    private int wallNum = 8;
+    private int trapNum = 8;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -36,14 +43,10 @@ public class MenuAreaController implements Initializable {
         Image powerImg = new Image(getClass().getResourceAsStream("powerCommand.png"));
         Image qmImg = new Image(getClass().getResourceAsStream("qm.png"));
 
-//        // Set the images
-//        keyCommand.setImage(keyImg);
-//        powerCommand.setImage(powerImg);
-//        //questionMark.setImage(qmImg);
-//
-//        // Hide the guidance
-//        keyCommand.setVisible(false);
-//        powerCommand.setVisible(false);
+        wallNumText.setText("X"+wallNum);
+        trapNumText.setText("X"+trapNum);
+        wallNumText.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 25));
+        trapNumText.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 25));
 
     }
 
@@ -56,8 +59,10 @@ public class MenuAreaController implements Initializable {
         Dragboard db = wall.startDragAndDrop(TransferMode.ANY);
         ClipboardContent cb = new ClipboardContent();
         cb.putString("W");
-        this.wallNum --;
         db.setContent(cb);
+
+        this.wallNum --;
+        wallNumText.setText("X"+wallNum);
         if(this.wallNum == 0){
             wall.setDisable(true);
         }
@@ -74,6 +79,11 @@ public class MenuAreaController implements Initializable {
         ClipboardContent cb = new ClipboardContent();
         cb.putString("T");
         db.setContent(cb);
+        trapNum--;
+        trapNumText.setText("X"+trapNum);
+        if(this.trapNum == 0){
+            trap.setDisable(true);
+        }
         //trap.getScene().setCursor(new ImageCursor(trapImg));
         //trap.setCursor(new ImageCursor(trapImg));
 
