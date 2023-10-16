@@ -58,15 +58,13 @@ public class GameAreaView extends Pane {
         getChildren().add(bulletsGroup);
         // Create and position the player
         this.gameAreaModel = model;
-        //Player's life
-        initializeHeartIcons();
-
-
         // Position and style the timer label
         timerLabel.setLayoutX(1050); // Adjust as needed
         timerLabel.setLayoutY(-75); // Adjust as needed
         timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
         getChildren().add(timerLabel);
+        //Player's life
+        initializeHeartIcons();
 
 
         // Draw the maze
@@ -224,25 +222,6 @@ public class GameAreaView extends Pane {
         return null; // Return null if the ImageView is not found
     }
 
-
-    public void removeEnemy(int index) {
-        if (index >= 0 && index < enemyImageViews.size()) {
-            ImageView enemyImageView = enemyImageViews.get(index);
-            // Create a FadeTransition to make the enemy fade out over a specified duration
-            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImageView);
-            fadeOut.setToValue(0); // Fade to fully transparent
-
-            // Define an event handler to be executed when the animation is finished
-            fadeOut.setOnFinished(event -> {
-                // Remove the enemy ImageView from the scene
-                getChildren().remove(enemyImageView);
-                enemyImageViews.remove(index);
-            });
-
-            // Start the fade-out animation
-            fadeOut.play();
-        }
-    }
 
     public void removeBloodTrace(int tileX, int tileY) {
         ImageView bloodTraceToRemove = null;

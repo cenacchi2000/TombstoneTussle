@@ -159,9 +159,9 @@ public class GameAreaController {
 
 
 
+        startTimer();
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
-        startTimer();
     }
 
 
