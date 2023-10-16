@@ -36,7 +36,7 @@ public class GameAreaController {
 
     private Set<Integer> passedBloodStains = new HashSet<>();
 
-
+    private boolean isShieldVisible = false;
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
@@ -177,6 +177,7 @@ public class GameAreaController {
         gameAreaView.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyInput);
     }
 
+
     private void handleKeyInput(KeyEvent event) {
         int prevX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
         int prevY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
@@ -193,6 +194,10 @@ public class GameAreaController {
             case D:
                 gameAreaModel.moveRight();
                 break;
+            case SPACE:
+                toggleShield(); // Handle the spacebar press
+                break;
+
             default:
                 return; // If it's not one of the movement keys, exit early.
         }
@@ -223,9 +228,9 @@ public class GameAreaController {
         }
     }
 
-
-
-
+    private void toggleShield() {
+        gameAreaView.toggleShieldVisibility();
+    }
 
     // Create a method to animate cursor movement
     private void animateCursorAroundCharacter(double centerX, double centerY) {

@@ -120,10 +120,6 @@ public class Maze1 extends Maze {
             }
         }
 
-        // Set the end position
-        int endRow = random.nextInt(rows);
-        int endCol = random.nextInt(cols);
-        maze[endRow][endCol] = 'E';
     }
 
     private List<int[]> getRandomNeighbors(int row, int col, int rows, int cols, Random random) {

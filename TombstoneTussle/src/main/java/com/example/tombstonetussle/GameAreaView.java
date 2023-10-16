@@ -30,12 +30,15 @@ public class GameAreaView extends Pane {
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
     private List<ImageView> heartIcons = new ArrayList<>();
+    private ImageView shieldImageView;
+
 
 
     // Create a group to hold bullet representations
     private Group bulletsGroup = new Group();
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
+
 
 
         // Set pane's size
@@ -111,8 +114,23 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
+
+        // Create the shieldImageView
+        shieldImageView = new ImageView(new Image(getClass().getResourceAsStream("shield.png")));
+        shieldImageView.setFitWidth(TILE_SIZE);
+        shieldImageView.setFitHeight(TILE_SIZE);
+
+        // Bind the shieldImageView's position to the playerImageView's position
+        shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());
+        shieldImageView.translateYProperty().bind(playerImageView.translateYProperty());
+
+        // Add the shieldImageView to the scene
+        getChildren().add(shieldImageView);
     }
 
+    public void toggleShieldVisibility() {
+        shieldImageView.setVisible(!shieldImageView.isVisible());
+    }
 
     public boolean hasBloodTrace(int x, int y) {
         int tileX = x / TILE_SIZE;
