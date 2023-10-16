@@ -41,13 +41,15 @@ public class GameAreaController {
     private Timeline timerTimeline;
 
     private boolean isShieldVisible = false;
+    private List<Bullet> bullets = new ArrayList<>();
+    private final long shootTimeInterval = 2000000000L; // 2 seconds in nanoseconds
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
         this.gameAreaModel = model;
         this.gameController = gameController;
         this.playerModel = model;
-        this.maze = maze;  // Initialize the maze field
+        this.maze = model.getMaze1().getMaze();
         this.size = model.getSize(); // Initialize the size variable with the appropriate value
 
 
@@ -436,16 +438,96 @@ public class GameAreaController {
                         moveEnemyRandomly(enemyModels.get(i));
                         gameAreaView.updateEnemyPosition(enemyModels.get(i).getX(), enemyModels.get(i).getY(), i);
                     }
+                    moveBullets();  // Move the bullets
                     lastUpdateTime[0] = now; // Update the value
                 }
             }
         };
         timer.start();
+        startEnemyShooting();
+    }
+
+    private void startEnemyShooting() {
+        final long[] lastShootTime = {System.nanoTime()};
+
+        AnimationTimer shootTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (now - lastShootTime[0] >= shootTimeInterval) {
+                    for (EnemyModel enemy : enemyModels) {
+                        if (enemy.canShootAt(gameAreaModel, maze)) {
+                            Bullet bullet = createBulletFromEnemyToPlayer(enemy);
+                            bullets.add(bullet);
+                            gameAreaView.addBulletView(bullet);
+                        }
+                    }
+                    lastShootTime[0] = now; // Update the time
+                }
+            }
+        };
+        shootTimer.start();
+    }
+
+    private Bullet createBulletFromEnemyToPlayer(EnemyModel enemy) {
+        double startX = enemy.getX() + GameAreaView.TILE_SIZE / 2.0;
+        double startY = enemy.getY() + GameAreaView.TILE_SIZE / 2.0;
+
+        double directionX = gameAreaModel.getX() - startX;
+        double directionY = gameAreaModel.getY() - startY;
+
+        // Normalize the direction
+        double magnitude = Math.sqrt(directionX * directionX + directionY * directionY);
+        directionX /= magnitude;
+        directionY /= magnitude;
+
+        return new Bullet(startX, startY, directionX, directionY, 30);
     }
 
 
 
 
+    private void moveBullets() {
+        Iterator<Bullet> bulletIterator = bullets.iterator();
 
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
 
+            double newX = bullet.getX() + bullet.getDirectionX() * bullet.getSpeed();
+            double newY = bullet.getY() + bullet.getDirectionY() * bullet.getSpeed();
+
+            bullet.setX(newX);
+            System.out.println(newX);
+            bullet.setY(newY);
+            System.out.println(newX);
+            gameAreaView.updateBulletPosition(bullet, newX,newY);
+
+            /*
+            // Check for collisions or if the bullet is out of bounds
+            if (checkBulletCollision(bullet) || isBulletOutOfBounds(bullet)) {
+                gameAreaView.removeBulletView(bullet);
+                bulletIterator.remove();
+            }
+            */
+        }
+    }
+
+    private boolean checkBulletCollision(Bullet bullet) {
+        // Check for collisions with the player, walls, or any other entities.
+        // If a collision is detected, return true. Otherwise, return false.
+
+        // Here's a basic check for collision with the player:
+        if (Math.abs(bullet.getX() - gameAreaModel.getX()) < GameAreaView.TILE_SIZE &&
+                Math.abs(bullet.getY() - gameAreaModel.getY()) < GameAreaView.TILE_SIZE) {
+            // Handle the player being hit by a bullet here
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isBulletOutOfBounds(Bullet bullet) {
+        return bullet.getX() < 0 || bullet.getX() >= size * GameAreaView.TILE_SIZE ||
+                bullet.getY() < 0 || bullet.getY() >= size * GameAreaView.TILE_SIZE;
+    }
 }
+

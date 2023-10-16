@@ -32,11 +32,9 @@ public class GameAreaView extends Pane {
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
     private List<ImageView> heartIcons = new ArrayList<>();
     private Label timerLabel = new Label("00:00");
-
+    private List<Rectangle> bulletViews = new ArrayList<>();
     private ImageView shieldImageView;
 
-    // Create a group to hold bullet representations
-    private Group bulletsGroup = new Group();
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
 
@@ -55,8 +53,6 @@ public class GameAreaView extends Pane {
         arrowLabel.setId("backArrow"); // Setting an ID for easier access later
         // Set its position
         arrowLabel.setLayoutY(-50);  // This sets the top margin to 20 pixels
-        // Add bullets group to the game area
-        getChildren().add(bulletsGroup);
         // Create and position the player
         this.gameAreaModel = model;
         // Position and style the timer label
@@ -214,24 +210,6 @@ public class GameAreaView extends Pane {
     }
 
 
-    public void updateBulletPositions(List<Bullet> bullets) {
-        // Update the positions of bullet representations based on the bullet model
-        for (Bullet bullet : bullets) {
-            // Create a graphical representation (e.g., Rectangle) for the bullet
-            Rectangle bulletRect = new Rectangle(bullet.getX(), bullet.getY(), BULLET_SIZE, BULLET_SIZE);
-            bulletRect.setFill(Color.RED); // Set the color of the bullet
-
-            // Update the bullet representation's position
-            bulletRect.setX(bullet.getX());
-            bulletRect.setY(bullet.getY());
-
-            // Add or update the bullet representation in the bullets group
-            bulletsGroup.getChildren().add(bulletRect);
-        }
-    }
-
-
-
     private ImageView getEnemyImageViewForModel(EnemyModel enemyModel) {
         for (ImageView enemyImageView : enemyImageViews) {
             if (enemyImageView.getTranslateX() == enemyModel.getX() && enemyImageView.getTranslateY() == enemyModel.getY()) {
@@ -341,5 +319,38 @@ public class GameAreaView extends Pane {
     public Rectangle[][] getTiles() {
         return this.tiles;
     }
+
+    public void addBulletView(Bullet bullet) {
+        Rectangle bulletView = new Rectangle(bullet.getX(), bullet.getY(), BULLET_SIZE, BULLET_SIZE);
+        bulletView.setFill(Color.BLACK);  // Or any color you want for the bullet
+        getChildren().add(bulletView);
+        bulletViews.add(bulletView);
+    }
+
+    public void removeBulletView(Bullet bullet) {
+        Rectangle bulletViewToRemove = null;
+        for (Rectangle bulletView : bulletViews) {
+            if (bulletView.getX() == bullet.getX() && bulletView.getY() == bullet.getY()) {
+                bulletViewToRemove = bulletView;
+                break;
+            }
+        }
+
+        if (bulletViewToRemove != null) {
+            getChildren().remove(bulletViewToRemove);
+            bulletViews.remove(bulletViewToRemove);
+        }
+    }
+
+    public void updateBulletPosition(Bullet bullet, double newX, double newY) {
+        for (Rectangle bulletView : bulletViews) {
+            if (bulletView.getX() != newX && bulletView.getY() != newY) {
+                bulletView.setX(newX);
+                bulletView.setY(newY);
+                break;
+            }
+        }
+    }
+
 
 }
