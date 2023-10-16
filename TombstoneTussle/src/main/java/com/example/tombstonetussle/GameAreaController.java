@@ -215,6 +215,7 @@ public class GameAreaController {
 
         if (enemyModels.isEmpty()) {
             // All enemies are eliminated, show the win message
+            stopTimer();
             showWinMessage();
         }
 
