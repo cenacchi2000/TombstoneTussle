@@ -346,4 +346,6 @@ public class GameAreaView extends Pane {
         return this.tiles;
     }
 
+    public void updatePlayerPosition() {
+    }
 }
