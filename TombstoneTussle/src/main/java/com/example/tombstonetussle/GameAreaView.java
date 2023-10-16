@@ -3,6 +3,7 @@ package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -30,6 +31,7 @@ public class GameAreaView extends Pane {
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
     private List<ImageView> heartIcons = new ArrayList<>();
+    private Label timerLabel = new Label("00:00");
 
 
     // Create a group to hold bullet representations
@@ -58,6 +60,12 @@ public class GameAreaView extends Pane {
         this.gameAreaModel = model;
         //Player's life
         initializeHeartIcons();
+
+        // Position and style the timer label
+        timerLabel.setLayoutX(1050); // Adjust as needed
+        timerLabel.setLayoutY(-75); // Adjust as needed
+        timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
+        getChildren().add(timerLabel);
 
         // Draw the maze
         char[][] maze = selectedMaze;
@@ -320,6 +328,12 @@ public class GameAreaView extends Pane {
                 heartIcons.get(i).setVisible(false);
             }
         }
+    }
+
+    public void updateTimer(int elapsedSeconds) {
+        int minutes = elapsedSeconds / 60;
+        int seconds = elapsedSeconds % 60;
+        timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
     public Rectangle[][] getTiles() {

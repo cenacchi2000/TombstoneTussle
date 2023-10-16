@@ -35,6 +35,7 @@ public class GameAreaController {
     private boolean isFollowingBloodTrace = false;
 
     private Set<Integer> passedBloodStains = new HashSet<>();
+    private Timeline timerTimeline;
 
 
 
@@ -169,6 +170,7 @@ public class GameAreaController {
 
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
+        startTimer();
     }
 
 
@@ -262,6 +264,16 @@ public class GameAreaController {
         }
     }
 
+    private void startTimer() {
+        timerTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    gameAreaModel.incrementElapsedTime();
+                    gameAreaView.updateTimer(gameAreaModel.getElapsedTime());
+                })
+        );
+        timerTimeline.setCycleCount(Timeline.INDEFINITE);
+        timerTimeline.play();
+    }
 
     private void setupBackArrowListener() {
         gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {
@@ -281,12 +293,6 @@ public class GameAreaController {
         List<int[]> neighboringCells = new ArrayList<>();
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
 
-        // If the enemy's life is 0, remove it and return
-        if (enemyModel.getLives() <= 0) {
-            enemyModels.remove(enemyModel);
-            gameAreaView.removeEnemyView(enemyModel);
-            return;
-        }
 
         // Check neighboring cells for bloodstains
         for (int[] direction : directions) {
@@ -384,6 +390,7 @@ public class GameAreaController {
             // You can add your elimination logic here, such as reducing player health or ending the game.
             // For example:
             System.out.println("Enemy eliminated!");
+            gameAreaView.removeEnemyView(enemyModel);
 
             // Remove the enemy model from the list of enemyModels
             iterator.remove();
