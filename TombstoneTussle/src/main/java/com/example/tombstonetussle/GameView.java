@@ -25,7 +25,6 @@ public class GameView {
 
     private ImageView npcImageView;
     private Button newGameButton; // The button to start a new game
-    private Button continueButton; // The button to continue a game
     private GameController gameController; // Reference to the game controller
     private ImageView characterImageView;
     private Title gameTitle = new Title("TOMBSTONE TUSSLE");
@@ -88,13 +87,9 @@ public class GameView {
         return newGameButton;
     }
 
-    public Button getContinueButton(){
-        return continueButton;
-    }
 
     public void updateButtonVisibility() {
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
-        continueButton.setVisible(gameController.isContinueButtonVisible());
     }
 //    public void updateTitleVisibility(){
 //        gameTitle.setVisible(false);
@@ -144,17 +139,13 @@ public class GameView {
         centerBox.getChildren().add(selectionBox);
         root.setCenter(centerBox);
 
-        // New Game and Continue buttons
+        // New Game button
         HBox buttonBox = new HBox(20);
         if (newGameButton == null) {
             newGameButton = new Button("New Game");
         }
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
-        if (continueButton == null) {
-            continueButton = new Button("Continue");
-        }
-        continueButton.setVisible(gameController.isContinueButtonVisible());
-        buttonBox.getChildren().addAll(newGameButton, continueButton);
+        buttonBox.getChildren().addAll(newGameButton);
         buttonBox.setAlignment(Pos.CENTER);
         root.setBottom(buttonBox);
     }
