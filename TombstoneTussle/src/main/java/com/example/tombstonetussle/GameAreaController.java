@@ -224,8 +224,47 @@ public class GameAreaController {
                 handleEnemyElimination(enemyModel, iterator);
             }
         }
+        // Check if player's life is 0
+        if (gameAreaModel.getLives() <= 0) {
+            showFailureMessage();
+        }
+
+        if (enemyModels.isEmpty()) {
+            // All enemies are eliminated, show the win message
+            showWinMessage();
+        }
     }
 
+
+    private void showFailureMessage() {
+        Alert failureAlert = new Alert(Alert.AlertType.INFORMATION);
+        failureAlert.setTitle("Game Over");
+        failureAlert.setHeaderText("You've lost!");
+        failureAlert.setContentText("You've run out of lives. Better luck next time.");
+        ButtonType backToMenuButton = new ButtonType("Back to Menu", ButtonBar.ButtonData.OK_DONE);
+        failureAlert.getButtonTypes().setAll(backToMenuButton);
+
+        // Handle the button action to go back to the main menu
+        Optional<ButtonType> result = failureAlert.showAndWait();
+        if (result.isPresent() && result.get() == backToMenuButton) {
+            gameController.handleBackToMainMenu();
+        }
+    }
+
+    private void showWinMessage() {
+        Alert winAlert = new Alert(Alert.AlertType.INFORMATION);
+        winAlert.setTitle("Congratulations!");
+        winAlert.setHeaderText("You've won!");
+        winAlert.setContentText("You've eliminated all the enemies. Great job!");
+        ButtonType backToMenuButton = new ButtonType("Back to Menu", ButtonBar.ButtonData.OK_DONE);
+        winAlert.getButtonTypes().setAll(backToMenuButton);
+
+        // Handle the button action to go back to the main menu
+        Optional<ButtonType> result = winAlert.showAndWait();
+        if (result.isPresent() && result.get() == backToMenuButton) {
+            gameController.handleBackToMainMenu();
+        }
+    }
     private void toggleShield() {
         gameAreaView.toggleShieldVisibility();
     }
