@@ -71,9 +71,8 @@ public class GameAreaController {
 
             gameAreaView.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.M) {
-                    System.out.println("'M' is pressed");
-                    System.out.println("The coordinates:("+prevY+","+prevX+")");
-                    System.out.println(tiles[prevY][prevX].getFill().getClass().getSimpleName());
+//                    System.out.println("'M' is pressed");
+//                    System.out.println("The coordinates:("+prevY+","+prevX+")");
                     if (tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
                         tiles[prevY][prevX].setFill(Color.LIGHTGRAY);
                         gameAreaModel.getMaze1().changeType(prevY, prevX, ' ');
@@ -152,14 +151,6 @@ public class GameAreaController {
             System.out.println(tiles[prevY][prevX].getFill());
         });
 
-
-//        private void handleDoubleClick(double x, double y) {
-//            // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
-//            if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
-//                gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
-//                gameAreaView.removeBloodTrace(tileX, tileY);
-//            }
-//        }
 
         for (int i = 0; i < 4; i++) {
             enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
@@ -257,11 +248,16 @@ public class GameAreaController {
         int tileX = (int) x / GameAreaView.TILE_SIZE;
         int tileY = (int) y / GameAreaView.TILE_SIZE;
 
-        // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
-        if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
-            gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
-            gameAreaView.removeBloodTrace(tileX, tileY);
+        try {
+            if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
+                gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
+                gameAreaView.removeBloodTrace(tileX, tileY);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
+
     }
 
     private void startTimer() {

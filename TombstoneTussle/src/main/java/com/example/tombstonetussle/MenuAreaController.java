@@ -16,6 +16,8 @@ public class MenuAreaController {
     private AnchorPane wall;
     @FXML
     private AnchorPane trap;
+    private int wallNum = 5;
+    private int trapNum = 5;
 
     // Listener on OnDragDetected
     // Activated when the wall on the menu bar is dragged
@@ -26,7 +28,11 @@ public class MenuAreaController {
         Dragboard db = wall.startDragAndDrop(TransferMode.ANY);
         ClipboardContent cb = new ClipboardContent();
         cb.putString("W");
+        this.wallNum --;
         db.setContent(cb);
+        if(this.wallNum == 0){
+            wall.setDisable(true);
+        }
 
         //cb.putFiles(wall.)
     }

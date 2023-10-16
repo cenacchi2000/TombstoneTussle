@@ -61,11 +61,13 @@ public class GameAreaView extends Pane {
         //Player's life
         initializeHeartIcons();
 
+
         // Position and style the timer label
         timerLabel.setLayoutX(1050); // Adjust as needed
         timerLabel.setLayoutY(-75); // Adjust as needed
         timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
         getChildren().add(timerLabel);
+
 
         // Draw the maze
         char[][] maze = selectedMaze;
@@ -308,7 +310,7 @@ public class GameAreaView extends Pane {
             ImageView heartIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/heart.png")));
             heartIcon.setFitWidth(30);  // Dimensione desiderata per l'icona
             heartIcon.setFitHeight(30); // Dimensione desiderata per l'icona
-            int offsetX = 700;
+            int offsetX = -500;
             heartIcon.setLayoutX(W - (i+1) * 40 + offsetX); // Posizione orizzontale (spostato di 40px per ogni cuore)
             heartIcon.setLayoutY(-45); // Posizione verticale
             getChildren().add(heartIcon);
@@ -317,6 +319,8 @@ public class GameAreaView extends Pane {
             heartIcon.setMouseTransparent(true);
             heartIcons.add(heartIcon);
         }
+        //this.getChildren().addAll(this.heartIcons);
+
     }
 
     public void updateHeartIcons() {
