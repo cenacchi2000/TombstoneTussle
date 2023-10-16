@@ -214,11 +214,11 @@ public class GameAreaController {
         }
 
         // Check for collision with enemies
-        for (EnemyModel enemyModel : enemyModels) {
+        Iterator<EnemyModel> iterator = enemyModels.iterator();
+        while (iterator.hasNext()) {
+            EnemyModel enemyModel = iterator.next();
             if (enemyModel.getX() == gameAreaModel.getX() && enemyModel.getY() == gameAreaModel.getY()) {
-                // Player and enemy are in the same cell; handle the collision here
-                // For example, you can call a method to handle the enemy's elimination.
-                handleEnemyElimination(enemyModel);
+                handleEnemyElimination(enemyModel, iterator);
             }
         }
     }
@@ -364,7 +364,7 @@ public class GameAreaController {
         return x >= 0 && y >= 0 && x < mazeWidth && y < mazeHeight;
     }
 
-    private void handleEnemyElimination(EnemyModel enemyModel) {
+    private void handleEnemyElimination(EnemyModel enemyModel, Iterator<EnemyModel> iterator) {
         // Get the enemy's position
         int enemyX = enemyModel.getX();
         int enemyY = enemyModel.getY();
@@ -386,7 +386,7 @@ public class GameAreaController {
             System.out.println("Enemy eliminated!");
 
             // Remove the enemy model from the list of enemyModels
-            enemyModels.remove(enemyModel);
+            iterator.remove();
 
             // You can also perform other actions here based on your game's logic.
         }
