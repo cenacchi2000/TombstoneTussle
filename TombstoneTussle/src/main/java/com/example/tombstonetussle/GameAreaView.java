@@ -32,6 +32,9 @@ public class GameAreaView extends Pane {
     private Label timerLabel = new Label("00:00");
     private List<Rectangle> bulletViews = new ArrayList<>();
     private ImageView shieldImageView;
+    private ImageView questionMark = new ImageView();
+    private ImageView keyGuidance = new ImageView();
+    private ImageView powerGuidance = new ImageView();
 
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
@@ -42,11 +45,9 @@ public class GameAreaView extends Pane {
         this.setStyle("-fx-background-color: white;");  // Set a background color
 
         // Adding a back arrow (emoticon) to the top left
-        //javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label("⬅️");
         javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label();
         Image arrow = new Image(getClass().getResourceAsStream("arrowback.png"));
         ImageView view = new ImageView(arrow);
-        //arrowLabel.setFont(new javafx.scene.text.Font(40));
         arrowLabel.setGraphic(view);
         arrowLabel.setId("backArrow"); // Setting an ID for easier access later
         // Set its position
@@ -60,6 +61,16 @@ public class GameAreaView extends Pane {
         getChildren().add(timerLabel);
         //Player's life
         initializeHeartIcons();
+
+        // Put the question mark behind the COMMAND
+        Image qmImg = new Image(getClass().getResourceAsStream("qm.png"));
+        this.questionMark.setImage(qmImg);
+        this.questionMark.setFitWidth(50);
+        this.questionMark.setFitHeight(50);
+        this.questionMark.setLayoutX(1100);
+        this.questionMark.setLayoutY(100);
+        getChildren().add(this.questionMark);
+
 
 
         // Draw the maze
@@ -126,6 +137,8 @@ public class GameAreaView extends Pane {
 
         // Add the shieldImageView to the scene
         getChildren().add(shieldImageView);
+
+        setupGuidance();
     }
 
     public void toggleShieldVisibility() {
@@ -360,6 +373,38 @@ public class GameAreaView extends Pane {
                 break;
             }
         }
+    }
+
+    public void setupGuidance(){
+        Image keyImg = new Image(getClass().getResourceAsStream("keyCommand.png"));
+        Image powerImg = new Image(getClass().getResourceAsStream("powerCommand.png"));
+
+        keyGuidance = new ImageView(keyImg);
+        powerGuidance = new ImageView(powerImg);
+        keyGuidance.setFitHeight(400);
+        keyGuidance.setFitWidth(400);
+        powerGuidance.setFitWidth(400);
+        powerGuidance.setFitHeight(400);
+
+        keyGuidance.setLayoutX(100);
+        keyGuidance.setLayoutY(100);
+        powerGuidance.setLayoutX(600);
+        powerGuidance.setLayoutY(100);
+        getChildren().addAll(keyGuidance,powerGuidance);
+        keyGuidance.setVisible(false);
+        powerGuidance.setVisible(false);
+    }
+
+    public ImageView getQM(){
+        return questionMark;
+    }
+
+    public ImageView getKeyGuidance(){
+        return keyGuidance;
+    }
+
+    public ImageView getPowerGuidance(){
+        return powerGuidance;
     }
 
 

@@ -56,6 +56,9 @@ public class GameAreaController {
         startEnemyMovement();
         setupKeyListeners();
         setupBackArrowListener();
+        //setupGuidance();
+
+
 
         //Listener to fast double click
         gameAreaView.setOnMouseClicked(event -> {
@@ -154,6 +157,24 @@ public class GameAreaController {
 //            }
             //if(tiles[prevY][prevX].getFill())
             System.out.println(tiles[prevY][prevX].getFill());
+        });
+
+        // Set listener on Guidance
+        // When the mouse entering the Question-Mark, the graphical guidance popup
+        gameAreaView.getQM().setOnMouseEntered(e->{
+            ImageView keyGuidance = gameAreaView.getKeyGuidance();
+            ImageView powerGuidance = gameAreaView.getPowerGuidance();
+
+            keyGuidance.setVisible(true);
+            powerGuidance.setVisible(true);
+        });
+
+        gameAreaView.getQM().setOnMouseExited(e->{
+            ImageView keyGuidance = gameAreaView.getKeyGuidance();
+            ImageView powerGuidance = gameAreaView.getPowerGuidance();
+
+            keyGuidance.setVisible(false);
+            powerGuidance.setVisible(false);
         });
 
 
@@ -593,5 +614,9 @@ public class GameAreaController {
         return false;
     }
 
+    private boolean isBulletOutOfBounds(Bullet bullet) {
+        return bullet.getX() < 0 || bullet.getX() >= size * GameAreaView.TILE_SIZE ||
+                bullet.getY() < 0 || bullet.getY() >= size * GameAreaView.TILE_SIZE;
+    }
 }
 
