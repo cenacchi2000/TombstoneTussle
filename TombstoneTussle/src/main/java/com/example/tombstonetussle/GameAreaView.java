@@ -95,7 +95,6 @@ public class GameAreaView extends Pane {
                         this.tiles[i][j].setFill(javafx.scene.paint.Color.GREEN); // Start color
                         break;
                     case 'E':
-                        this.tiles[i][j].setFill(javafx.scene.paint.Color.RED); // End color
                         break;
                 }
                 getChildren().add(this.tiles[i][j]);

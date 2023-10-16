@@ -1,6 +1,7 @@
 package com.example.tombstonetussle;
 
 import javafx.animation.*;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.control.Alert;
@@ -42,6 +43,9 @@ public class GameAreaController {
     private Set<Integer> passedBloodStains = new HashSet<>();
     private Timeline timerTimeline;
 
+    private List<Point2D> mousePositions = new ArrayList<>();
+    private boolean isCircling = false;
+    private double circleThreshold = 20.0;  // Adjust the threshold as needed
 
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
@@ -257,6 +261,8 @@ public class GameAreaController {
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
 
+
+
         // Check if player's life is 0
         if (gameAreaModel.getLives() <= 0) {
             gameAreaView.removePlayerView();
@@ -272,7 +278,11 @@ public class GameAreaController {
                 handleEnemyElimination(enemyModel, iterator);
             }
         }
+
+
     }
+
+
 
     private void toggleShield() {
         gameAreaView.toggleShieldVisibility();
