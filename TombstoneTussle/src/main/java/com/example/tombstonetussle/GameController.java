@@ -90,7 +90,7 @@ public class GameController extends Application {
 
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
             WritableImage selectedCharacter = gameView.getCharacterImage();
-            // Inizializza enemyModel prima di creare gameAreaView
+            // Inizialize enemyModel prima di creare gameAreaView
             List<EnemyModel> enemyModels = new ArrayList<>();
             for(int i = 0; i < 4; i++) {
                 enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, gameAreaModel.getMaze1()));
