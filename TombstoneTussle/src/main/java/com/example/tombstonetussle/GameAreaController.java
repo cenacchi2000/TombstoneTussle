@@ -3,6 +3,9 @@ package com.example.tombstonetussle;
 import javafx.animation.*;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -280,9 +283,27 @@ public class GameAreaController {
 
     private void setupBackArrowListener() {
         gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {
-            gameController.handleBackToMainMenu();
+            showConfirmationDialog();
         });
     }
+
+    private void showConfirmationDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Go back to the main menu?");
+        alert.setContentText("All progress will be lost. Are you sure you want to continue?");
+
+        ButtonType buttonConfirm = new ButtonType("Confirm");
+        ButtonType buttonCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonConfirm, buttonCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == buttonConfirm) {
+            gameController.handleBackToMainMenu();
+        }
+    }
+
 
     private void moveEnemyRandomly(EnemyModel enemyModel) {
         Random random = new Random();
