@@ -45,8 +45,8 @@
                </padding>
             </HBox>
             <Label maxWidth="150.0" text="     COMMAND" />
-            <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="keyCommand" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="powerCommand" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </VBox>
    </children>
