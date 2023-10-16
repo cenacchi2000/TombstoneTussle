@@ -8,7 +8,9 @@ public class GameAreaModel {
     private double lastX;
     private double lastY;
     private int size;
-    private int lives;
+    private int lives = 5;
+    GameState gameState = GameState.getInstance();
+
 
     public double getLastX() {
         return lastX;
@@ -29,7 +31,6 @@ public class GameAreaModel {
         this.maze1 = new Maze1();
         this.maze1.generateMazeDesign();
 
-        lives = 5; // Initialize with 5 lives or any other desired value
 
         int[] endPoint = this.maze1.getEndPointCoordinates();
         if (endPoint != null) {
@@ -94,8 +95,15 @@ public class GameAreaModel {
         }
 
         // Check if the new position is a wall
-        if (maze1.getMaze()[newY / tileSize][newX / tileSize] == '#') {
+        char cell = maze1.getMaze()[newY / tileSize][newX / tileSize];
+        if (cell == '#' || cell == 'W') {
             return false;
+        }
+
+        // Check if the cell is a trap
+        if (cell == 'T') {
+            setLives(0); // Reduce the player's life to 0
+            return true;
         }
 
         return true;
@@ -107,8 +115,18 @@ public class GameAreaModel {
     }
 
     public void setLives(int lives) {
+
         this.lives = lives;
+        if (this.lives <= 0) {
+            gameState.gameOver();
+        }
     }
+
+    public void disablePlayer() {
+        this.x = -1000; // Or any other invalid value
+        this.y = -1000; // Or any other invalid value
+    }
+
 
 
     public Maze1 getMaze1() {

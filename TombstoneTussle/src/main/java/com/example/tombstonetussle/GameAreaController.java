@@ -75,6 +75,7 @@ public class GameAreaController {
                     System.out.println(tiles[prevY][prevX].getFill().getClass().getSimpleName());
                     if (tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
                         tiles[prevY][prevX].setFill(Color.LIGHTGRAY);
+                        gameAreaModel.getMaze1().changeType(prevY, prevX, ' ');
                     }
 
 
@@ -205,6 +206,13 @@ public class GameAreaController {
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
 
+        // Check if player's life is 0
+        if (gameAreaModel.getLives() <= 0) {
+            gameAreaView.removePlayerView();
+            gameAreaModel.disablePlayer();
+            gameAreaView.updateHeartIcons();
+        }
+
         // Check for collision with enemies
         for (EnemyModel enemyModel : enemyModels) {
             if (enemyModel.getX() == gameAreaModel.getX() && enemyModel.getY() == gameAreaModel.getY()) {
@@ -272,6 +280,13 @@ public class GameAreaController {
 
         List<int[]> neighboringCells = new ArrayList<>();
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Up, Down, Left, Right
+
+        // If the enemy's life is 0, remove it and return
+        if (enemyModel.getLives() <= 0) {
+            enemyModels.remove(enemyModel);
+            gameAreaView.removeEnemyView(enemyModel);
+            return;
+        }
 
         // Check neighboring cells for bloodstains
         for (int[] direction : directions) {

@@ -16,7 +16,7 @@ import java.util.*;
 
 public class GameController extends Application {
     private int currentCharacterIndex = 0;
-    private GameState gameState;
+    GameState gameState = GameState.getInstance();
     private GameView gameView;
     private int m= 10;
     private int n= 10;
@@ -52,7 +52,6 @@ public class GameController extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        gameState = new GameState(); // Initialize the state machine
         gameView = new GameView(this);   // Initialize the game view
 
         gameView.setupMainMenu(); // Set up the main menu

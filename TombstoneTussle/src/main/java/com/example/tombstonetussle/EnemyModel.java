@@ -13,6 +13,8 @@ public class EnemyModel {
     private Maze1 maze1;
     private List<Bullet> bullets;
     private boolean isFollowingBloodTrace;
+    private int lives = 1;
+
 
     public EnemyModel(int tileSize, Maze1 maze1) {
         this.tileSize = tileSize;
@@ -58,9 +60,22 @@ public class EnemyModel {
         if (newX < 0 || newY < 0 || newX >= maze1.getMaze()[0].length * tileSize || newY >= maze1.getMaze().length * tileSize) {
             return false;
         }
-        if (maze1.getMaze()[newY / tileSize][newX / tileSize] == '#') {
+        char cell = maze1.getMaze()[newY / tileSize][newX / tileSize];
+        if (cell == '#' || cell == 'W') {
             return false;
+        }
+        // Check if the cell is a trap
+        if (cell == 'T') {
+            setLives(0); // Reduce the enemy's life to 0
+            return true;
         }
         return true;
     }
+
+    // Getter and setter for lives
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) { this.lives = lives; }
 }

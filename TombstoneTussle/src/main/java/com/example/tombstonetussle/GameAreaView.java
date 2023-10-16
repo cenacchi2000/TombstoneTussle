@@ -29,6 +29,7 @@ public class GameAreaView extends Pane {
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
+    private List<ImageView> heartIcons = new ArrayList<>();
 
 
     // Create a group to hold bullet representations
@@ -51,11 +52,12 @@ public class GameAreaView extends Pane {
         arrowLabel.setId("backArrow"); // Setting an ID for easier access later
         // Set its position
         arrowLabel.setLayoutY(-50);  // This sets the top margin to 20 pixels
-
         // Add bullets group to the game area
         getChildren().add(bulletsGroup);
         // Create and position the player
         this.gameAreaModel = model;
+        //Player's life
+        initializeHeartIcons();
 
         // Draw the maze
         char[][] maze = selectedMaze;
@@ -109,7 +111,6 @@ public class GameAreaView extends Pane {
         playerImageView.setTranslateY(model.getY());
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
-
     }
 
 
@@ -256,6 +257,68 @@ public class GameAreaView extends Pane {
             ImageView enemyImageView = enemyImageViews.get(index);
             enemyImageView.setTranslateX(x);
             enemyImageView.setTranslateY(y);
+        }
+    }
+
+    public void removeEnemyView(EnemyModel enemyModel) {
+        // Get the enemy's ImageView
+        ImageView enemyView = getEnemyImageViewForModel(enemyModel);
+        if (enemyView != null) {
+            // Create a FadeTransition to make the enemy fade out over a specified duration
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyView);
+            fadeOut.setToValue(0); // Fade to fully transparent
+
+            // Define an event handler to be executed when the animation is finished
+            fadeOut.setOnFinished(event -> {
+                // Remove the enemy ImageView from the scene and from the list of enemyImageViews
+                getChildren().remove(enemyView);
+                enemyImageViews.remove(enemyView);
+            });
+
+            // Start the fade-out animation
+            fadeOut.play();
+        }
+    }
+
+    public void removePlayerView() {
+        // Create a FadeTransition to make the player fade out over a specified duration
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), playerImageView);
+        fadeOut.setToValue(0); // Fade to fully transparent
+
+        // Define an event handler to be executed when the animation is finished
+        fadeOut.setOnFinished(event -> {
+            // Remove the player ImageView from the scene
+            getChildren().remove(playerImageView);
+        });
+
+        // Start the fade-out animation
+        fadeOut.play();
+    }
+
+    private void initializeHeartIcons() {
+        for (int i = 0; i < gameAreaModel.getLives(); i++) {
+            ImageView heartIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/heart.png")));
+            heartIcon.setFitWidth(30);  // Dimensione desiderata per l'icona
+            heartIcon.setFitHeight(30); // Dimensione desiderata per l'icona
+            int offsetX = 700;
+            heartIcon.setLayoutX(W - (i+1) * 40 + offsetX); // Posizione orizzontale (spostato di 40px per ogni cuore)
+            heartIcon.setLayoutY(-45); // Posizione verticale
+            getChildren().add(heartIcon);
+            heartIcon.toBack();
+            heartIcon.setPickOnBounds(false);
+            heartIcon.setMouseTransparent(true);
+            heartIcons.add(heartIcon);
+        }
+    }
+
+    public void updateHeartIcons() {
+        int currentLives = gameAreaModel.getLives();
+        for (int i = 0; i < heartIcons.size(); i++) {
+            if (i < currentLives) {
+                heartIcons.get(i).setVisible(true);
+            } else {
+                heartIcons.get(i).setVisible(false);
+            }
         }
     }
 
