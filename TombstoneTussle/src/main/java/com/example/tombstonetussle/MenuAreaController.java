@@ -91,12 +91,9 @@ public class MenuAreaController implements Initializable {
 
     public void openGuidance(){
 
-
     }
 
     public void closeGuidance(){
-//        keyCommand.setVisible(false);
-//        powerCommand.setVisible(false);
 
     }
 
@@ -107,6 +104,7 @@ public class MenuAreaController implements Initializable {
     public void trapDragDone(){
         //trap.getParent().getScene().setCursor(Cursor.DEFAULT);
     }
+
 
 
 
