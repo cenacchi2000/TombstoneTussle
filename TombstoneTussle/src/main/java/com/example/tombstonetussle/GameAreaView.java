@@ -1,7 +1,6 @@
 
 package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -14,7 +13,6 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GameAreaView extends Pane {
 
@@ -145,6 +143,13 @@ public class GameAreaView extends Pane {
 
     public void toggleShieldVisibility() {
         shieldImageView.setVisible(!shieldImageView.isVisible());
+    }
+
+    public boolean isShieldOn(){
+        if(shieldImageView.isVisible()){
+            return true;
+        }
+        else return false;
     }
 
     public void deactivateShield() {
