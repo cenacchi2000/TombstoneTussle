@@ -18,20 +18,32 @@ import java.util.ResourceBundle;
 public class MenuAreaController implements Initializable {
 
     @FXML
+    private AnchorPane mainPane;
+    @FXML
     private AnchorPane wall;
     @FXML
     private AnchorPane trap;
     @FXML
-    private ImageView keyCommand;
-    @FXML
-    private ImageView powerCommand;
+    private ImageView questionMark;
     private int wallNum = 5;
     private int trapNum = 5;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Image keyimg = new Image(getClass().getResourceAsStream("keyCommand.png"));
-        keyCommand.setImage(keyimg);
+
+        // Import the images
+        Image keyImg = new Image(getClass().getResourceAsStream("keyCommand.png"));
+        Image powerImg = new Image(getClass().getResourceAsStream("powerCommand.png"));
+        Image qmImg = new Image(getClass().getResourceAsStream("qm.png"));
+
+//        // Set the images
+//        keyCommand.setImage(keyImg);
+//        powerCommand.setImage(powerImg);
+//        //questionMark.setImage(qmImg);
+//
+//        // Hide the guidance
+//        keyCommand.setVisible(false);
+//        powerCommand.setVisible(false);
 
     }
 
@@ -64,6 +76,17 @@ public class MenuAreaController implements Initializable {
         db.setContent(cb);
         //trap.getScene().setCursor(new ImageCursor(trapImg));
         //trap.setCursor(new ImageCursor(trapImg));
+
+    }
+
+    public void openGuidance(){
+
+
+    }
+
+    public void closeGuidance(){
+//        keyCommand.setVisible(false);
+//        powerCommand.setVisible(false);
 
     }
 

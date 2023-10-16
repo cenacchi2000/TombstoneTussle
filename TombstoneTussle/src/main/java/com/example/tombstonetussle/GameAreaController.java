@@ -56,6 +56,9 @@ public class GameAreaController {
         startEnemyMovement();
         setupKeyListeners();
         setupBackArrowListener();
+        //setupGuidance();
+
+
 
         //Listener to fast double click
         gameAreaView.setOnMouseClicked(event -> {
@@ -154,6 +157,24 @@ public class GameAreaController {
 //            }
             //if(tiles[prevY][prevX].getFill())
             System.out.println(tiles[prevY][prevX].getFill());
+        });
+
+        // Set listener on Guidance
+        // When the mouse entering the Question-Mark, the graphical guidance popup
+        gameAreaView.getQM().setOnMouseEntered(e->{
+            ImageView keyGuidance = gameAreaView.getKeyGuidance();
+            ImageView powerGuidance = gameAreaView.getPowerGuidance();
+
+            keyGuidance.setVisible(true);
+            powerGuidance.setVisible(true);
+        });
+
+        gameAreaView.getQM().setOnMouseExited(e->{
+            ImageView keyGuidance = gameAreaView.getKeyGuidance();
+            ImageView powerGuidance = gameAreaView.getPowerGuidance();
+
+            keyGuidance.setVisible(false);
+            powerGuidance.setVisible(false);
         });
 
 
@@ -567,6 +588,25 @@ public class GameAreaController {
     private boolean isBulletOutOfBounds(Bullet bullet) {
         return bullet.getX() < 0 || bullet.getX() >= size * GameAreaView.TILE_SIZE ||
                 bullet.getY() < 0 || bullet.getY() >= size * GameAreaView.TILE_SIZE;
+    }
+
+    private void setupGuidance(){
+        Image keyImg = new Image(getClass().getResourceAsStream("keyCommand.png"));
+        Image powerImg = new Image(getClass().getResourceAsStream("powerCommand.png"));
+
+        ImageView keyGuidance = new ImageView(keyImg);
+        ImageView powerGuidance = new ImageView(powerImg);
+//        keyGuidance.setFitWidth(400);
+//        keyGuidance.setFitHeight(400);
+        powerGuidance.setFitWidth(400);
+        powerGuidance.setFitHeight(400);
+        keyGuidance.setLayoutX(100);
+        keyGuidance.setLayoutY(100);
+        powerGuidance.setLayoutX(600);
+        powerGuidance.setLayoutY(100);
+        gameAreaView.getChildren().addAll(keyGuidance,powerGuidance);
+        keyGuidance.setVisible(false);
+        powerGuidance.setVisible(false);
     }
 }
 
