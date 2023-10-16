@@ -173,6 +173,8 @@ public class GameAreaView extends Pane {
                 bloodTraceView.setX(prevTileX * TILE_SIZE);
                 bloodTraceView.setY(prevTileY * TILE_SIZE);
                 getChildren().add(bloodTraceView);
+                playerImageView.toFront();
+                shieldImageView.toFront();
             }
         }
 
