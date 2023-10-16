@@ -209,6 +209,15 @@ public class GameAreaController {
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
 
+        if(gameAreaModel.getLives()<=0) {
+            showFailureMessage();
+        }
+
+        if (enemyModels.isEmpty()) {
+            // All enemies are eliminated, show the win message
+            showWinMessage();
+        }
+
 
         // Check for collision with enemies
         Iterator<EnemyModel> iterator = enemyModels.iterator();
@@ -217,15 +226,6 @@ public class GameAreaController {
             if (enemyModel.getX() == gameAreaModel.getX() && enemyModel.getY() == gameAreaModel.getY()) {
                 handleEnemyElimination(enemyModel, iterator);
             }
-        }
-        // Check if player's life is 0
-        if (gameAreaModel.getLives() <= 0) {
-            showFailureMessage();
-        }
-
-        if (enemyModels.isEmpty()) {
-            // All enemies are eliminated, show the win message
-            showWinMessage();
         }
     }
 
@@ -315,6 +315,13 @@ public class GameAreaController {
         timerTimeline.setCycleCount(Timeline.INDEFINITE);
         timerTimeline.play();
     }
+
+    public void stopTimer() {
+        if (timerTimeline != null) {
+            timerTimeline.stop();
+        }
+    }
+
 
     private void setupBackArrowListener() {
         gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {
@@ -478,7 +485,9 @@ public class GameAreaController {
                         gameAreaView.removePlayerView();
                         gameAreaModel.disablePlayer();
                         gameAreaView.updateHeartIcons();
+                        stopTimer();
                     }
+
                 }
             }
         };
@@ -562,9 +571,14 @@ public class GameAreaController {
                 bullet.getY() < gameAreaModel.getY() + GameAreaView.TILE_SIZE &&
                 bullet.getY() + 10 > gameAreaModel.getY()) {
             // Handle the player being hit by a bullet here
-            gameAreaModel.setLives(gameAreaModel.getLives()-1);
-            gameAreaView.updateHeartIcons();
-            return true;
+            if(gameAreaView.isShieldOn()){
+                return true;
+            }
+            else{
+                gameAreaModel.setLives(gameAreaModel.getLives()-1);
+                gameAreaView.updateHeartIcons();
+                return true;
+            }
         }
 
         if (maze[bulletTileY][bulletTileX] == '#') {
