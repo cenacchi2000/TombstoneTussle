@@ -9,6 +9,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -56,9 +58,11 @@ public class GameAreaView extends Pane {
         this.gameAreaModel = model;
         // Position and style the timer label
         timerLabel.setLayoutX(1050); // Adjust as needed
-        timerLabel.setLayoutY(-75); // Adjust as needed
-        timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
+        timerLabel.setLayoutY(-60); // Adjust as needed
+        //timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
         getChildren().add(timerLabel);
+        timerLabel.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 45));
+        timerLabel.setTextFill(Color.WHITE);
         //Player's life
         initializeHeartIcons();
 
