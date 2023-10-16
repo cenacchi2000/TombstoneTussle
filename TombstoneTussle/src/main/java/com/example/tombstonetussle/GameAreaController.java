@@ -210,6 +210,7 @@ public class GameAreaController {
         if (gameAreaModel.getLives() <= 0) {
             gameAreaView.removePlayerView();
             gameAreaModel.disablePlayer();
+            gameAreaView.updateHeartIcons();
         }
 
         // Check for collision with enemies
