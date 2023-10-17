@@ -518,11 +518,9 @@ public class GameAreaController {
             System.out.println("Enemy eliminated!");
             //gameAreaView.removeEnemyView(enemyModel);
             enemyModel.setZombified(true);
+            gameAreaView.updateEnemyImage(enemyModel, "zombie");
 
-            // Remove the enemy model from the list of enemyModels
-            //iterator.remove();
 
-            // You can also perform other actions here based on your game's logic.
         }
     }
 
