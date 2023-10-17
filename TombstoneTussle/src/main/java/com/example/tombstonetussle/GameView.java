@@ -110,15 +110,16 @@ public class GameView {
     // Create the main menu layout
     public void setupMainMenu() {
         // Center Box for selections
-        VBox centerBox = new VBox(50);
+        VBox centerBox = new VBox(100);
         centerBox.setAlignment(Pos.CENTER);
+        centerBox.setTranslateX(100);
 
         // Character and Setting selection
-        HBox selectionBox = new HBox(50);
+        HBox selectionBox = new HBox(10);
         selectionBox.setAlignment(Pos.CENTER);
 
         // Character selection
-        VBox characterBox = new VBox(10);
+        VBox characterBox = new VBox(100);
         Button leftArrowChar = new Button("<");
         leftArrowChar.setOnAction(event -> gameController.previousCharacter());
         Button rightArrowChar = new Button(">");
@@ -127,11 +128,12 @@ public class GameView {
             editButton = new Button("✎"); // Pencil emoticon button
         }
         characterImageView = new ImageView();
-        characterImageView.setFitWidth(100); // Imposta la larghezza desiderata
-        characterImageView.setFitHeight(100); // Imposta l'altezza desiderata
+        characterImageView.setFitWidth(200); // Imposta la larghezza desiderata
+        characterImageView.setFitHeight(200); // Imposta l'altezza desiderata
         HBox characterControls = new HBox(10, editButton, leftArrowChar, characterImageView, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
-        Label character = new Label("Character");
+        Label character = new Label("Create your own character:");
+        character.setFont(Font.font("Impact",30));
         character.setTextFill(Color.WHITE);
         characterBox.getChildren().addAll(character, characterControls);
 
@@ -152,10 +154,12 @@ public class GameView {
         root.setCenter(centerBox);
 
         // New Game button
-        HBox buttonBox = new HBox(20);
+        HBox buttonBox = new HBox(40);
         if (newGameButton == null) {
             newGameButton = new Button("New Game");
         }
+        newGameButton.setFont(Font.font("Impact",20));
+        newGameButton.setTranslateY(-100);
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
         buttonBox.getChildren().addAll(newGameButton);
         buttonBox.setAlignment(Pos.CENTER);
