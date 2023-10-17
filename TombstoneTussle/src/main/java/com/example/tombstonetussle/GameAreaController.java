@@ -334,7 +334,10 @@ public class GameAreaController {
 
     private void setupBackArrowListener() {
         gameAreaView.lookup("#backArrow").setOnMouseClicked(event -> {
-            showConfirmationDialog();
+            if(gameAreaModel.getLives()<=0){
+                showFailureMessage();
+            }
+            else showConfirmationDialog();
         });
     }
 
@@ -537,7 +540,7 @@ public class GameAreaController {
         directionX /= magnitude;
         directionY /= magnitude;
 
-        return new Bullet(startX, startY, directionX, directionY, 80);
+        return new Bullet(startX, startY, directionX, directionY, 60);
     }
 
 
@@ -573,15 +576,15 @@ public class GameAreaController {
         // If a collision is detected, return true. Otherwise, return false.
         int bulletTileX = (int) bullet.getX() / GameAreaView.TILE_SIZE;
         int bulletTileY = (int) bullet.getY() / GameAreaView.TILE_SIZE;
-        if (bulletTileX >= maze[0].length || bulletTileY >= maze.length) {
+        if (bulletTileX < 0 || bulletTileX >= maze[0].length || bulletTileY < 0 || bulletTileY >= maze.length) {
             return false;
         }
 
+
+        int playerTileX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
+        int playerTileY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
         // 10 is the bullet size
-        if (bullet.getX() < gameAreaModel.getX() + GameAreaView.TILE_SIZE &&
-                bullet.getX() + 10 > gameAreaModel.getX() &&
-                bullet.getY() < gameAreaModel.getY() + GameAreaView.TILE_SIZE &&
-                bullet.getY() + 10 > gameAreaModel.getY()) {
+        if (bulletTileX == playerTileX && bulletTileY == playerTileY) {
             // Handle the player being hit by a bullet here
             if(gameAreaView.isShieldOn()){
                 return true;
