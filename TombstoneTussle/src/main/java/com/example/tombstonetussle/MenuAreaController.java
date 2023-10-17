@@ -89,6 +89,14 @@ public class MenuAreaController implements Initializable {
 
     }
 
+    // Reset the power-up when opening a new game
+    public void resetPowerup(){
+        wallNum = 8;
+        wallNumText.setText("X"+wallNum);
+        trapNum = 8;
+        trapNumText.setText("X"+trapNum);
+    }
+
     public void openGuidance(){
 
     }
@@ -104,8 +112,6 @@ public class MenuAreaController implements Initializable {
     public void trapDragDone(){
         //trap.getParent().getScene().setCursor(Cursor.DEFAULT);
     }
-
-
 
 
 }
