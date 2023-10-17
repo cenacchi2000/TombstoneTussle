@@ -24,7 +24,7 @@ public class GameController extends Application {
     private GameAreaController gameAreaController;
     private DrawingModel drawingModel;
     private DrawingView drawingView;
-    private MenuAreaController menuAreaController;
+    private MenuAreaController menuAreaController = new MenuAreaController();
     private AnchorPane menu;
     private char[][] maze;
     private int rows;
@@ -101,6 +101,7 @@ public class GameController extends Application {
 //            } catch (IOException e) {
 //                throw new RuntimeException(e);
 //            }
+            gameView.resetMenu();
             gameView.getRoot().getRight().setVisible(true);
 
             gameView.getRoot().setCenter(gameAreaView); // change the center of the borderpane to the maze
