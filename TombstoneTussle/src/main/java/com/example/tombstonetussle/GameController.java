@@ -130,7 +130,7 @@ public class GameController extends Application {
     }
 
     public void handleBackFromDrawing(){
-        gameState.goToPreviousState();
+        gameState.goToMenu();
         gameView.setupMainMenu();
         if (!drawingModel.getAllCharacters().isEmpty()) {
             WritableImage currentCharacter = drawingModel.getCharacter(currentCharacterIndex);
