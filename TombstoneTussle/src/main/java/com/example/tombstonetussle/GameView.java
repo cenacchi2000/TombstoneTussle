@@ -159,12 +159,18 @@ public class GameView {
 
         // Character selection
         VBox characterBox = new VBox(100);
+
         Button leftArrowChar = new Button("<");
+        leftArrowChar.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20");
         leftArrowChar.setOnAction(event -> gameController.previousCharacter());
+
         Button rightArrowChar = new Button(">");
+        rightArrowChar.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20;");
         rightArrowChar.setOnAction(event -> gameController.nextCharacter());
+
         if (editButton == null) {
             editButton = new Button("✎"); // Pencil emoticon button
+            editButton.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20");
         }
         characterImageView = new ImageView();
         characterImageView.setFitWidth(200); // Imposta la larghezza desiderata
