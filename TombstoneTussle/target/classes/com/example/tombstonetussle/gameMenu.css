@@ -1,5 +1,6 @@
 #root{
-    -fx-background-image: url("tomb-bg.png");
+    -fx-background-image: url("tomb-bg1.png");
+    -fx-background-size: cover;
 }
 
 #mainPane{
