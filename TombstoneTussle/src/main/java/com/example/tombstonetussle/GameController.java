@@ -51,13 +51,13 @@ public class GameController extends Application {
 
 
         // Set up the stage
-        Scene scene = new Scene(gameView.getRoot(), 600, 400);
+        Scene scene = new Scene(gameView.getRoot(), 1500, 1000);
         scene.getStylesheets().addAll(this.getClass().getResource("gameMenu.css").toExternalForm());
         primaryStage.setTitle("Tombstone Tussle");
         primaryStage.setScene(scene);
-        primaryStage.setMaximized(true); // Start the window maximized
+        //primaryStage.setMaximized(true); // Start the window maximized
         // Temporarily set
-        //primaryStage.setResizable(false); // Prevent the player from resizing the window
+        primaryStage.setResizable(false); // Prevent the player from resizing the window
         primaryStage.show();
 
     }
@@ -124,6 +124,8 @@ public class GameController extends Application {
         gameView.setupMainMenu();
         // Hide the menu bar when getting back to the main menu
         gameView.getMenu().setVisible(false);
+        // Reset the power-ups
+        gameView.resetMenu();
         //menu.setVisible(false);
     }
 
