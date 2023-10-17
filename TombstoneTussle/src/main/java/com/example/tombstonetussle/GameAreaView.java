@@ -104,7 +104,7 @@ public class GameAreaView extends Pane {
 
         // Initialize the enemyImageViews based on the enemyModels
         for (EnemyModel enemyModel : enemyModels) {
-            ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
+            ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police-pistol.png")));
             enemyImageView.setFitWidth(TILE_SIZE);
             enemyImageView.setFitHeight(TILE_SIZE);
             enemyImageView.setTranslateX(enemyModel.getX());

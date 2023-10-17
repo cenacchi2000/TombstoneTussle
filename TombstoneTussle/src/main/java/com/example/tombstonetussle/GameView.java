@@ -26,6 +26,7 @@ public class GameView {
     private ImageView npcImageView;
     private Button newGameButton; // The button to start a new game
     private GameController gameController; // Reference to the game controller
+    private MenuAreaController menuAreaController;
     private ImageView characterImageView;
     private Title gameTitle = new Title("TOMBSTONE TUSSLE");
     private AnchorPane menu;
@@ -53,7 +54,9 @@ public class GameView {
         root.setTop(gameTitle);
 
         try {
-            this.menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menuArea.fxml"));
+            this.menu = fxmlLoader.load();
+            this.menuAreaController = fxmlLoader.getController();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -179,6 +182,10 @@ public class GameView {
     }
     public AnchorPane getMenu(){
         return menu;
+    }
+
+    public void resetMenu(){
+        menuAreaController.resetPowerup();
     }
 
 
