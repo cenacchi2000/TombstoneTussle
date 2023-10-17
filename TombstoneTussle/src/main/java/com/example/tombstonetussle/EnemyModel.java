@@ -14,6 +14,7 @@ public class EnemyModel {
     private List<Bullet> bullets;
     private boolean isFollowingBloodTrace;
     private int lives = 1;
+    private boolean isZombified = false;
 
 
     public EnemyModel(int tileSize, Maze1 maze1) {
@@ -88,6 +89,10 @@ public class EnemyModel {
 
     public void setLives(int lives) { this.lives = lives; }
     public boolean canShootAt(GameAreaModel player, char[][] maze) {
+        //if the enemy isZombified it can not shoot
+        if(isZombified) {
+            return false;
+        }
         int x1 = this.x / tileSize;
         int y1 = this.y / tileSize;
         int x2 = player.getX() / tileSize;
@@ -134,6 +139,15 @@ public class EnemyModel {
         }
 
         return line;
+    }
+
+    // Getter e setter per isZombified
+    public boolean isZombified() {
+        return isZombified;
+    }
+
+    public void setZombified(boolean isZombified) {
+        this.isZombified = isZombified;
     }
 }
 
