@@ -1,11 +1,14 @@
 
 package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -15,6 +18,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class GameAreaView extends Pane {
 
@@ -26,7 +30,7 @@ public class GameAreaView extends Pane {
     public static final int W = 800;
     public static final int H = 800;
     private Rectangle[][] tiles;
-    private ImageView enemyImageView;
+   
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
@@ -37,6 +41,9 @@ public class GameAreaView extends Pane {
     private ImageView questionMark = new ImageView();
     private ImageView keyGuidance = new ImageView();
     private ImageView powerGuidance = new ImageView();
+    private Rectangle[][] fogTiles;
+
+
 
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
@@ -120,6 +127,16 @@ public class GameAreaView extends Pane {
             System.out.println("Numero di ImageView dei nemici: " + enemyImageViews.size());
         }
 
+        this.fogTiles = new Rectangle[maze.length][maze[maze.length-1].length];
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                Rectangle fogRect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                fogRect.setFill(new Color(0, 0, 0, 0.9));  // semi-transparent gray
+                this.fogTiles[i][j] = fogRect;
+                getChildren().add(fogRect);
+            }
+        }
+
         
         // Create and position the player image view
         playerImageView = new ImageView(avatar);
@@ -138,6 +155,7 @@ public class GameAreaView extends Pane {
         // Bind the shieldImageView's position to the playerImageView's position
         shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());
         shieldImageView.translateYProperty().bind(playerImageView.translateYProperty());
+        shieldImageView.setVisible(false);
 
         // Add the shieldImageView to the scene
         getChildren().add(shieldImageView);
@@ -210,6 +228,7 @@ public class GameAreaView extends Pane {
         gameAreaModel.updateLastPosition(playerX, playerY); // Update lastX and lastY
         gameAreaModel.setX((int) playerX);
         gameAreaModel.setY((int) playerY);
+        clearFogAroundPlayer(x, y);
     }
 
     public void handleEnemyElimination(EnemyModel enemyModel) {
@@ -410,6 +429,22 @@ public class GameAreaView extends Pane {
     public ImageView getPowerGuidance(){
         return powerGuidance;
     }
+
+    public void clearFogAroundPlayer(int playerX, int playerY) {
+        int radius = 2;
+        int tileX = playerX / TILE_SIZE;
+        int tileY = playerY / TILE_SIZE;
+
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                if (tileY + i >= 0 && tileY + i < fogTiles.length &&
+                        tileX + j >= 0 && tileX + j < fogTiles[tileY + i].length) {
+                    getChildren().remove(fogTiles[tileY + i][tileX + j]);
+                }
+            }
+        }
+    }
+
 
 
 }
