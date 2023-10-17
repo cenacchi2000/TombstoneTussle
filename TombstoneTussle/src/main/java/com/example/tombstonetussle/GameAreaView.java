@@ -315,6 +315,26 @@ public class GameAreaView extends Pane {
 
     }
 
+    public void updateEnemyImage(EnemyModel enemyModel, String newType) {
+        ImageView enemyImageView = getEnemyImageViewForModel(enemyModel);
+        if (enemyImageView != null) {
+            Image newImage;
+            switch (newType) {
+                case "police":
+                    newImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police-pistol.png"));
+                    break;
+                case "zombie":
+                    newImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieOriginal.png")); // ad esempio
+                    break;
+
+                default:
+                    newImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police-pistol.png")); // un'immagine di default
+                    break;
+            }
+            enemyImageView.setImage(newImage);
+        }
+    }
+
     public void updateHeartIcons() {
         int currentLives = gameAreaModel.getLives();
         for (int i = 0; i < heartIcons.size(); i++) {
