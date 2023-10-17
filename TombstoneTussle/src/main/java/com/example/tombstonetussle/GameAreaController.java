@@ -1,6 +1,7 @@
 package com.example.tombstonetussle;
 
 import javafx.animation.*;
+import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.control.Alert;
@@ -41,9 +42,20 @@ public class GameAreaController {
     private Set<Integer> passedBloodStains = new HashSet<>();
     private Timeline timerTimeline;
 
-    private boolean isShieldVisible = false;
     private List<Bullet> bullets = new ArrayList<>();
     private final long shootTimeInterval = 2000000000L; // 2 seconds in nanoseconds
+
+    private long lastSpaceBarClickTime = 0;
+
+    private boolean isSpaceBarClicked = false;
+
+    private boolean isShieldToggled = false; // Track whether the shield is toggled
+
+
+    private final Object lock = new Object();
+
+    private static final long SPACE_BAR_CLICK_THRESHOLD = 500; // Define the threshold time in milliseconds
+
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
         this.gameAreaView = view;
@@ -53,13 +65,10 @@ public class GameAreaController {
         this.maze = model.getMaze1().getMaze();
         this.size = model.getSize(); // Initialize the size variable with the appropriate value
 
-
         startEnemyMovement();
         setupKeyListeners();
         setupBackArrowListener();
         //setupGuidance();
-
-
 
         //Listener to fast double click
         gameAreaView.setOnMouseClicked(event -> {
@@ -117,6 +126,44 @@ public class GameAreaController {
             }
         });
 
+        gameAreaView.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                long currentTime = System.currentTimeMillis();
+
+                synchronized (lock) {
+                    if (currentTime - lastSpaceBarClickTime <= SPACE_BAR_CLICK_THRESHOLD) {
+                        if (!isSpaceBarClicked) {
+                            toggleShield(); // Toggle the shield for each space bar press within the threshold
+                            isSpaceBarClicked = true;
+
+                            // Start a thread to handle spam-click checking
+                            new Thread(() -> {
+                                while (true) {
+                                    long newTime = System.currentTimeMillis();
+                                    synchronized (lock) {
+                                        if (newTime - lastSpaceBarClickTime > SPACE_BAR_CLICK_THRESHOLD) {
+                                            isSpaceBarClicked = false;
+                                            toggleShield(); // Untoggle the shield
+                                            break; // Exit the while loop and end the thread
+                                        }
+                                    }
+                                    try {
+                                        Thread.sleep(50); // Sleep for a short duration before checking again
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
+                        }
+                    }
+                    lastSpaceBarClickTime = currentTime;
+                }
+            }
+        });
+
+        gameAreaView.requestFocus(); // Ensure that the view has focus to capture key events
+
+
 
         // Listener on OnDragDropped
         // Activated when mouse drops the object
@@ -164,22 +211,15 @@ public class GameAreaController {
 
         });
 
-
-
-
         for (int i = 0; i < 4; i++) {
             enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
         }
         System.out.println("Numero di nemici: " + enemyModels.size());
 
-
-
         startTimer();
         // Update the player's position to ensure it's correctly positioned at the start
         gameAreaView.updatePlayerPosition(model.getX(), model.getY());
     }
-
-
 
     private void setupKeyListeners() {
         gameAreaView.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyInput);
@@ -202,12 +242,9 @@ public class GameAreaController {
             case D:
                 gameAreaModel.moveRight();
                 break;
-            case SPACE:
-                toggleShield(); // Handle the spacebar press
-                break;
 
             default:
-                return; // If it's not one of the movement keys, exit early.
+                return;// If it's not one of the movement keys, exit early.
         }
 
         int currentX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
@@ -274,31 +311,6 @@ public class GameAreaController {
         gameAreaView.toggleShieldVisibility();
     }
 
-
-
-    // Create a method to animate cursor movement
-    private void animateCursorAroundCharacter(double centerX, double centerY) {
-        Cursor originalCursor = gameAreaView.getCursor();
-        ImageCursor imageCursor = new ImageCursor(new Image(getClass().getResourceAsStream("cursor_image.png")));
-
-        int radius = 50; // Set the desired radius of the circular movement
-        int durationMillis = 2000; // Set the desired duration of the animation
-
-        // Create a Timeline for cursor animation
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(gameAreaView.cursorProperty(), originalCursor)),
-                new KeyFrame(Duration.millis(durationMillis), event -> gameAreaView.setCursor(originalCursor))
-        );
-
-        timeline.setCycleCount(Timeline.INDEFINITE);
-
-        // Animate cursor movement along a circular path
-        timeline.setOnFinished(event -> gameAreaView.setCursor(originalCursor));
-        gameAreaView.setCursor(imageCursor);
-
-        // Start the animation
-        timeline.play();
-    }
 
     private void handleDoubleClick(double x, double y) {
         int tileX = (int) x / GameAreaView.TILE_SIZE;

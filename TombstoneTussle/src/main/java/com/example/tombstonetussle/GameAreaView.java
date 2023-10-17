@@ -1,11 +1,14 @@
 
 package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -15,6 +18,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class GameAreaView extends Pane {
 
@@ -26,7 +30,7 @@ public class GameAreaView extends Pane {
     public static final int W = 800;
     public static final int H = 800;
     private Rectangle[][] tiles;
-    private ImageView enemyImageView;
+   
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
@@ -37,6 +41,7 @@ public class GameAreaView extends Pane {
     private ImageView questionMark = new ImageView();
     private ImageView keyGuidance = new ImageView();
     private ImageView powerGuidance = new ImageView();
+
 
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
@@ -108,6 +113,7 @@ public class GameAreaView extends Pane {
             }
         }
 
+
         // Initialize the enemyImageViews based on the enemyModels
         for (EnemyModel enemyModel : enemyModels) {
             ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
@@ -138,6 +144,7 @@ public class GameAreaView extends Pane {
         // Bind the shieldImageView's position to the playerImageView's position
         shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());
         shieldImageView.translateYProperty().bind(playerImageView.translateYProperty());
+        shieldImageView.setVisible(false);
 
         // Add the shieldImageView to the scene
         getChildren().add(shieldImageView);
