@@ -7,8 +7,7 @@ import java.util.Random;
 public class EnemyModel {
     private int x;
     private int y;
-    private int lastX;
-    private int lastY;
+
     private final int tileSize;
     private Maze1 maze1;
     private List<Bullet> bullets;

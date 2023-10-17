@@ -22,22 +22,17 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-
 public class GameAreaController {
     private char[][] maze;  // Add a field for the maze
-
     private int size; // Add the size variable
-
     private GameAreaView gameAreaView;
     private GameAreaModel gameAreaModel;
     private GameController gameController;
     private GameAreaModel playerModel;
-    private MenuAreaController menuAreaController = new MenuAreaController();
+    private StringBuilder keySequence = new StringBuilder();
     private long lastClickTime = 0;
     private EnemyModel enemyModel;
     private List<EnemyModel> enemyModels = new ArrayList<>();
-
-    private boolean isFollowingBloodTrace = false;
 
     private Set<Integer> passedBloodStains = new HashSet<>();
     private Timeline timerTimeline;
@@ -48,9 +43,6 @@ public class GameAreaController {
     private long lastSpaceBarClickTime = 0;
 
     private boolean isSpaceBarClicked = false;
-
-    private boolean isShieldToggled = false; // Track whether the shield is toggled
-
 
     private final Object lock = new Object();
 
@@ -163,8 +155,6 @@ public class GameAreaController {
 
         gameAreaView.requestFocus(); // Ensure that the view has focus to capture key events
 
-
-
         // Listener on OnDragDropped
         // Activated when mouse drops the object
         // Then set the wall/trap according to the passed string
@@ -229,6 +219,9 @@ public class GameAreaController {
     private void handleKeyInput(KeyEvent event) {
         int prevX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
         int prevY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
+
+        int playerX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
+        int playerY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
         switch (event.getCode()) {
             case W:
                 gameAreaModel.moveUp();
@@ -242,32 +235,73 @@ public class GameAreaController {
             case D:
                 gameAreaModel.moveRight();
                 break;
-
+            case F:
+                if (keySequence.length() == 0) {
+                    keySequence.append("F");
+                }
+                break;
+            case G:
+                if (keySequence.toString().equals("F")) {
+                    keySequence.append("G");
+                } else {
+                    keySequence.setLength(0); // Reset if sequence is broken
+                }
+                break;
+            case H:
+                if (keySequence.toString().equals("FG")) {
+                    keySequence.append("H");
+                    // Check if the character and enemy are in the same cell
+                    for (EnemyModel enemyModel : enemyModels) {
+                        int enemyX = enemyModel.getX() / GameAreaView.TILE_SIZE;
+                        int enemyY = enemyModel.getY() / GameAreaView.TILE_SIZE;
+                        if (playerX == enemyX && playerY == enemyY) {
+                            // Character and enemy are in the same cell, eliminate the enemy
+                            handleEnemyElimination(enemyModel, enemyModels.iterator());
+                        }
+                    }
+                    keySequence.setLength(0); // Reset after successful elimination
+                } else {
+                    keySequence.setLength(0); // Reset if sequence is broken
+                }
+                break;
             default:
-                return;// If it's not one of the movement keys, exit early.
+                return; // If it's not one of the valid keys, exit early.
+        }
+
+        boolean playerNearEnemy = false;
+
+        for (EnemyModel enemyModel : enemyModels) {
+            int enemyX = enemyModel.getX() / GameAreaView.TILE_SIZE;
+            int enemyY = enemyModel.getY() / GameAreaView.TILE_SIZE;
+            if (Math.abs(playerX - enemyX) <= 1 && Math.abs(playerY - enemyY) <= 1) {
+                playerNearEnemy = true;
+                break;
+            }
+        }
+
+        if (playerNearEnemy) {
+            gameAreaView.showKeyGuidance(true);
+        } else {
+            gameAreaView.showKeyGuidance(false);
         }
 
         int currentX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
         int currentY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
 
-        // Check if player actually moved
         if (prevX != currentX || prevY != currentY) {
             gameAreaModel.getMaze1().getBloodTrace()[prevY][prevX] = true;
             gameAreaView.updatePlayerPosition(gameAreaModel.getX(), gameAreaModel.getY());
         }
 
-        if(gameAreaModel.getLives()<=0) {
+        if (gameAreaModel.getLives() <= 0) {
             showFailureMessage();
         }
 
         if (enemyModels.isEmpty()) {
-            // All enemies are eliminated, show the win message
             stopTimer();
             showWinMessage();
         }
 
-
-        // Check for collision with enemies
         Iterator<EnemyModel> iterator = enemyModels.iterator();
         while (iterator.hasNext()) {
             EnemyModel enemyModel = iterator.next();

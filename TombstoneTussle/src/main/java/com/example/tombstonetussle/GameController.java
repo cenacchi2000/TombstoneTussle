@@ -24,14 +24,10 @@ public class GameController extends Application {
     private GameAreaController gameAreaController;
     private DrawingModel drawingModel;
     private DrawingView drawingView;
-    private MenuAreaController menuAreaController;
-    private AnchorPane menu;
     private char[][] maze;
     private int rows;
     private int columns;
 
-    // Declare playerModel field
-    private GameAreaModel playerModel;
 
 
 

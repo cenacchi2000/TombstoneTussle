@@ -1,36 +1,28 @@
 
 package com.example.tombstonetussle;
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class GameAreaView extends Pane {
-
     private ImageView playerImageView; // Assuming you have a property to hold the player's ImageView
-
     private GameAreaModel playerModel; // Define a playerModel field
-
     public static final int TILE_SIZE = 40;
     public static final int W = 800;
     public static final int H = 800;
     private Rectangle[][] tiles;
-   
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
     private static final double BULLET_SIZE = 10; // Adjust the size as needed
@@ -43,11 +35,8 @@ public class GameAreaView extends Pane {
     private ImageView powerGuidance = new ImageView();
     private Rectangle[][] fogTiles;
 
-
-
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
         this.playerModel = playerModel; // Set the playerModel through the constructor
-
 
         // Set pane's size
         setPrefSize(W, H);
@@ -81,8 +70,6 @@ public class GameAreaView extends Pane {
         this.questionMark.setLayoutX(1100);
         this.questionMark.setLayoutY(100);
         getChildren().add(this.questionMark);
-
-
 
         // Draw the maze
         char[][] maze = selectedMaze;
@@ -137,7 +124,6 @@ public class GameAreaView extends Pane {
             }
         }
 
-        
         // Create and position the player image view
         playerImageView = new ImageView(avatar);
         playerImageView.setFitWidth(TILE_SIZE);
@@ -161,7 +147,14 @@ public class GameAreaView extends Pane {
         getChildren().add(shieldImageView);
 
         setupGuidance();
+
     }
+
+    public void showKeyGuidance(boolean show) {
+        keyGuidance.setVisible(show);
+        System.out.println("carota");
+    }
+
 
     public void toggleShieldVisibility() {
         shieldImageView.setVisible(!shieldImageView.isVisible());
@@ -172,22 +165,6 @@ public class GameAreaView extends Pane {
             return true;
         }
         else return false;
-    }
-
-    public void deactivateShield() {
-        boolean shieldVisible = false;
-
-    }
-
-
-    public boolean hasBloodTrace(int x, int y) {
-        int tileX = x / TILE_SIZE;
-        int tileY = y / TILE_SIZE;
-        return gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX];
-    }
-
-    public GameAreaModel getGameAreaModel() {
-        return gameAreaModel;
     }
 
     public void updatePlayerPosition(int x, int y) {
@@ -254,8 +231,6 @@ public class GameAreaView extends Pane {
             fadeOut.play();
         }
     }
-
-
     private ImageView getEnemyImageViewForModel(EnemyModel enemyModel) {
         for (ImageView enemyImageView : enemyImageViews) {
             if (enemyImageView.getTranslateX() == enemyModel.getX() && enemyImageView.getTranslateY() == enemyModel.getY()) {
@@ -264,8 +239,6 @@ public class GameAreaView extends Pane {
         }
         return null; // Return null if the ImageView is not found
     }
-
-
     public void removeBloodTrace(int tileX, int tileY) {
         ImageView bloodTraceToRemove = null;
         for (Node node : getChildren()) {
@@ -282,7 +255,6 @@ public class GameAreaView extends Pane {
             getChildren().remove(bloodTraceToRemove);
         }
     }
-
     public void updateEnemyPosition(int x, int y, int index) {
         // Update the position of the enemy ImageView
         if (index >= 0 && index < enemyImageViews.size()) {
@@ -291,7 +263,6 @@ public class GameAreaView extends Pane {
             enemyImageView.setTranslateY(y);
         }
     }
-
     public void removeEnemyView(EnemyModel enemyModel) {
         // Get the enemy's ImageView
         ImageView enemyView = getEnemyImageViewForModel(enemyModel);
@@ -341,7 +312,6 @@ public class GameAreaView extends Pane {
             heartIcon.setMouseTransparent(true);
             heartIcons.add(heartIcon);
         }
-        //this.getChildren().addAll(this.heartIcons);
 
     }
 
@@ -399,23 +369,21 @@ public class GameAreaView extends Pane {
     }
 
     public void setupGuidance(){
-        Image keyImg = new Image(getClass().getResourceAsStream("keyCommand.png"));
-        Image powerImg = new Image(getClass().getResourceAsStream("powerCommand.png"));
+        Image keyImg = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Keycommands.png"));
 
         keyGuidance = new ImageView(keyImg);
-        powerGuidance = new ImageView(powerImg);
-        keyGuidance.setFitHeight(400);
-        keyGuidance.setFitWidth(400);
-        powerGuidance.setFitWidth(400);
-        powerGuidance.setFitHeight(400);
 
-        keyGuidance.setLayoutX(100);
-        keyGuidance.setLayoutY(100);
-        powerGuidance.setLayoutX(600);
-        powerGuidance.setLayoutY(100);
-        getChildren().addAll(keyGuidance,powerGuidance);
+        keyGuidance.setFitHeight(200);
+        keyGuidance.setFitWidth(400);
+
+        keyGuidance.setLayoutX(0);
+        keyGuidance.setLayoutY(0);
+
+        getChildren().addAll(keyGuidance);
         keyGuidance.setVisible(false);
-        powerGuidance.setVisible(false);
+
+        System.out.println("cipolla");
+
     }
 
     public ImageView getQM(){
