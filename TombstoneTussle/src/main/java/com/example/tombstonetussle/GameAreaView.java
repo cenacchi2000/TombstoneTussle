@@ -53,7 +53,7 @@ public class GameAreaView extends Pane {
         // Create and position the player
         this.gameAreaModel = model;
         // Position and style the timer label
-        timerLabel.setLayoutX(1050); // Adjust as needed
+        timerLabel.setLayoutX(1200); // Adjust as needed
         timerLabel.setLayoutY(-60); // Adjust as needed
         //timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
         getChildren().add(timerLabel);
