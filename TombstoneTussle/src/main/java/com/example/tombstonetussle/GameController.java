@@ -51,7 +51,7 @@ public class GameController extends Application {
 
 
         // Set up the stage
-        Scene scene = new Scene(gameView.getRoot(), 1500, 1000);
+        Scene scene = new Scene(gameView.getRoot(), 1500, 900);
         scene.getStylesheets().addAll(this.getClass().getResource("gameMenu.css").toExternalForm());
         primaryStage.setTitle("Tombstone Tussle");
         primaryStage.setScene(scene);

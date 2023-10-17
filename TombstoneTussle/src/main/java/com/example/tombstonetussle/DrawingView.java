@@ -2,6 +2,7 @@
 package com.example.tombstonetussle;
 
 // Importing necessary JavaFX classes for UI components, layout, and image processing
+import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -26,7 +27,7 @@ public class DrawingView extends BorderPane {
     private ToggleButton eraseButton; // Button for activating the erasing mode
     private Button saveButton; // Button to save the drawing
     private Image zombieImage; // Image of the zombie
-    private Label backArrowLabel; // Label to represent a back arrow for navigation
+    private Button backArrowLabel; // Label to represent a back arrow for navigation
     private DrawingModel drawingModel; // Reference to the model that contains the business logic related to drawing
 
     // Constructor to initialize the view with the drawing model and game controller
@@ -35,8 +36,11 @@ public class DrawingView extends BorderPane {
         this.gameController = gameController;
 
         // Setting up the back arrow for navigation
-        backArrowLabel = new Label("⬅️");
-        backArrowLabel.setFont(new Font(24));
+        //backArrowLabel = new Label("<");
+        backArrowLabel = new Button("<");
+        backArrowLabel.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 30;");
+        backArrowLabel.setPadding(new Insets(0,10,0,10));
+        //backArrowLabel.setFont(new Font(24));
         backArrowLabel.setId("backArrow");
         // Adding an event handler to handle the back navigation when the back arrow is clicked
         backArrowLabel.setOnMouseClicked(event -> gameController.handleBackFromDrawing());
@@ -44,6 +48,7 @@ public class DrawingView extends BorderPane {
 
         // Initializing the color picker with a default value
         colorPicker = new ColorPicker();
+        colorPicker.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20;");
         colorPicker.setValue(Color.BLACK);
 
         // Initializing the canvases
@@ -73,10 +78,14 @@ public class DrawingView extends BorderPane {
 
         // Initializing the draw and erase buttons
         drawButton = new ToggleButton("✎");
+        drawButton.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20;");
+
         eraseButton = new ToggleButton("Eraser");
+        eraseButton.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20;-fx-font-weight: bold;");
 
         // Initializing the save button and creating a VBox for the right side controls
         saveButton = new Button("Save");
+        saveButton.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;-fx-font-size: 20;-fx-font-weight: bold;");
         VBox rightControls = new VBox(10, colorPicker, drawButton, eraseButton, saveButton);
         setRight(rightControls);
 
