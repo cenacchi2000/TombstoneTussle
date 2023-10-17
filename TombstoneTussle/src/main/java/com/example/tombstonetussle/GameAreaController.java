@@ -304,17 +304,15 @@ public class GameAreaController {
         int tileX = (int) x / GameAreaView.TILE_SIZE;
         int tileY = (int) y / GameAreaView.TILE_SIZE;
 
-        try {
+        if (tileX >= 0 && tileX < gameAreaModel.getMaze1().getMaze()[0].length &&
+                tileY >= 0 && tileY < gameAreaModel.getMaze1().getMaze().length) {
             if (gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX]) {
                 gameAreaModel.getMaze1().getBloodTrace()[tileY][tileX] = false;
                 gameAreaView.removeBloodTrace(tileX, tileY);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-        // Usa getBloodTrace() per verificare la presenza di una traccia di sangue
-
     }
+
 
     private void startTimer() {
         timerTimeline = new Timeline(
