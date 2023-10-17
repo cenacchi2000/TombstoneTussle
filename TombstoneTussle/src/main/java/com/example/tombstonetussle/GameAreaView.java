@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -82,14 +83,18 @@ public class GameAreaView extends Pane {
             for (int j = 0; j < maze[i].length; j++) {
                 Rectangle rect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 this.tiles[i][j] = rect;
+                Image greyWall = new Image(getClass().getResourceAsStream("darkwall.jpg"));
+                Image floor = new Image(getClass().getResourceAsStream("mug.png"));
 
                 //Rectangle rect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 switch (maze[i][j]) {
                     case '#':
-                        this.tiles[i][j].setFill(javafx.scene.paint.Color.DARKGREY); // Wall color
+                        this.tiles[i][j].setFill(new ImagePattern(greyWall)); // Wall image
+                        //this.tiles[i][j].setFill(javafx.scene.paint.Color.DARKGREY); // Wall color
                         break;
                     case ' ':
-                        this.tiles[i][j].setFill(javafx.scene.paint.Color.LIGHTGRAY); // Path color
+                        this.tiles[i][j].setFill(new ImagePattern(floor)); // Path image
+                        //this.tiles[i][j].setFill(javafx.scene.paint.Color.LIGHTGRAY); // Path color
                         break;
                     case 'S':
                         this.tiles[i][j].setFill(javafx.scene.paint.Color.GREEN); // Start color

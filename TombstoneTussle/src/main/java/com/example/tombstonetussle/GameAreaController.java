@@ -78,13 +78,14 @@ public class GameAreaController {
             int prevX = (int)e.getX() / GameAreaView.TILE_SIZE;
             int prevY = (int)e.getY() / GameAreaView.TILE_SIZE;
             Rectangle[][] tiles = gameAreaView.getTiles();
+            Image floor = new Image(getClass().getResourceAsStream("mug.png")); // Import the path image
 
             gameAreaView.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.M) {
 //                    System.out.println("'M' is pressed");
 //                    System.out.println("The coordinates:("+prevY+","+prevX+")");
                     if (tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
-                        tiles[prevY][prevX].setFill(Color.LIGHTGRAY);
+                        tiles[prevY][prevX].setFill(new ImagePattern(floor)); // Set the tile into path
                         gameAreaModel.getMaze1().changeType(prevY, prevX, ' ');
                     }
 
@@ -109,7 +110,7 @@ public class GameAreaController {
         // To set the cursor correspond to the power-up//
         gameAreaView.setOnDragEntered(e->{
             if(e.getDragboard().getString().equals("W")){
-                Image wallImg = new Image(getClass().getResourceAsStream("wall.jpg"));
+                Image wallImg = new Image(getClass().getResourceAsStream("brickwall.jpg"));
                 gameAreaView.getScene().setCursor(new ImageCursor(wallImg));
             }
             else if(e.getDragboard().getString().equals("T")){
@@ -166,19 +167,21 @@ public class GameAreaController {
             Rectangle[][] tiles = gameAreaView.getTiles();
             char originalType;
 
+            if((type == 'W') && (maze[prevY][prevX] != 'T')){
+                originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                Image wall = new Image(getClass().getResourceAsStream("brickwall.jpg"));
+                tiles[prevY][prevX].setFill(new ImagePattern(wall));
+
+            }
+            else if ((type == 'T') && (maze[prevY][prevX] != 'W')) {
+                originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
+                Image trap = new Image(getClass().getResourceAsStream("trap.png"));
+                tiles[prevY][prevX].setFill(new ImagePattern(trap));
+            }
+
             // To avoid putting the power-up on the one exists.
             if(!tiles[prevY][prevX].getFill().getClass().getSimpleName().equals("ImagePattern")){
-                if(type == 'W'){
-                    originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
-                    Image wall = new Image(getClass().getResourceAsStream("wall.jpg"));
-                    tiles[prevY][prevX].setFill(new ImagePattern(wall));
 
-                }
-                else if (type == 'T') {
-                    originalType = gameAreaModel.getMaze1().changeType(prevY,prevX,type);
-                    Image trap = new Image(getClass().getResourceAsStream("trap.png"));
-                    tiles[prevY][prevX].setFill(new ImagePattern(trap));
-                }
             }
 
             // Set the cursor back to default as the dropping completed

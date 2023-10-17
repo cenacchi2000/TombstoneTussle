@@ -54,7 +54,7 @@ public class MenuAreaController implements Initializable {
     // Activated when the wall on the menu bar is dragged
     public void addWall(){
 
-        Image wallImg = new Image(getClass().getResourceAsStream("wall.jpg"));
+        Image wallImg = new Image(getClass().getResourceAsStream("brickwall.jpg"));
         wall.getScene().setCursor(new ImageCursor(wallImg));
         Dragboard db = wall.startDragAndDrop(TransferMode.ANY);
         ClipboardContent cb = new ClipboardContent();
