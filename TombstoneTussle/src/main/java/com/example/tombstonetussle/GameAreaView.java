@@ -41,6 +41,8 @@ public class GameAreaView extends Pane {
     private ImageView questionMark = new ImageView();
     private ImageView keyGuidance = new ImageView();
     private ImageView powerGuidance = new ImageView();
+    private Rectangle[][] fogTiles;
+
 
 
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
@@ -113,7 +115,6 @@ public class GameAreaView extends Pane {
             }
         }
 
-
         // Initialize the enemyImageViews based on the enemyModels
         for (EnemyModel enemyModel : enemyModels) {
             ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png")));
@@ -124,6 +125,16 @@ public class GameAreaView extends Pane {
             getChildren().add(enemyImageView);
             enemyImageViews.add(enemyImageView);
             System.out.println("Numero di ImageView dei nemici: " + enemyImageViews.size());
+        }
+
+        this.fogTiles = new Rectangle[maze.length][maze[maze.length-1].length];
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                Rectangle fogRect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                fogRect.setFill(new Color(0, 0, 0, 0.9));  // semi-transparent gray
+                this.fogTiles[i][j] = fogRect;
+                getChildren().add(fogRect);
+            }
         }
 
         
@@ -217,6 +228,7 @@ public class GameAreaView extends Pane {
         gameAreaModel.updateLastPosition(playerX, playerY); // Update lastX and lastY
         gameAreaModel.setX((int) playerX);
         gameAreaModel.setY((int) playerY);
+        clearFogAroundPlayer(x, y);
     }
 
     public void handleEnemyElimination(EnemyModel enemyModel) {
@@ -417,6 +429,22 @@ public class GameAreaView extends Pane {
     public ImageView getPowerGuidance(){
         return powerGuidance;
     }
+
+    public void clearFogAroundPlayer(int playerX, int playerY) {
+        int radius = 2;
+        int tileX = playerX / TILE_SIZE;
+        int tileY = playerY / TILE_SIZE;
+
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                if (tileY + i >= 0 && tileY + i < fogTiles.length &&
+                        tileX + j >= 0 && tileX + j < fogTiles[tileY + i].length) {
+                    getChildren().remove(fogTiles[tileY + i][tileX + j]);
+                }
+            }
+        }
+    }
+
 
 
 }
