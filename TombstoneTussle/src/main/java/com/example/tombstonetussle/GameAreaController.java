@@ -432,12 +432,7 @@ public class GameAreaController {
         return x >= 0 && y >= 0 && x < mazeWidth && y < mazeHeight;
     }
 
-    /**
-     * Handle the elimination of an enemy based on its proximity to the player.
-     *
-     * @param enemyModel The enemy model to be checked for elimination.
-     * @param iterator The iterator for the collection of enemy models.
-     */
+    //Handle the elimination of an enemy based on its proximity to the player.
     private void handleEnemyElimination(EnemyModel enemyModel, Iterator<EnemyModel> iterator) {
         // Get the enemy's X and Y position
         int enemyX = enemyModel.getX();
@@ -463,9 +458,7 @@ public class GameAreaController {
         }
     }
 
-    /**
-     * Start the movement of enemies and periodically update their positions.
-     */
+    //Start the movement of enemies and periodically update their positions.
     private void startEnemyMovement() {
         // Store the last update time. It's wrapped in an array to make it effectively final and mutable inside the lambda
         final long[] lastUpdateTime = {System.nanoTime()};
@@ -500,9 +493,7 @@ public class GameAreaController {
         startEnemyShooting(); // Begin enemy shooting sequence
     }
 
-    /**
-     * Start the enemy shooting mechanism.
-     */
+    //Start the enemy shooting mechanism.
     private void startEnemyShooting() {
         // Store the last shoot time. It's wrapped in an array to make it effectively final and mutable inside the lambda
         final long[] lastShootTime = {System.nanoTime()};
