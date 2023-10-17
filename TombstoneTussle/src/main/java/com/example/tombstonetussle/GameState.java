@@ -37,9 +37,7 @@ public class GameState {
     }
 
     // Variable to track the current state
-    private State currentState;
-    // Variable to track the previous state
-    private State previousState = State.MENU;
+    private State currentState = State.MENU;
 
     public State getCurrentState() {
         return currentState;
@@ -49,13 +47,11 @@ public class GameState {
 
 
     public void goToMenu() {
-        previousState = currentState;
         currentState = State.MENU;
         executeStateAction();
     }
 
     public void startDrawing() {
-        previousState = currentState;
         currentState = State.DRAWING;
         executeStateAction();
     }
@@ -63,37 +59,27 @@ public class GameState {
     public void startPlaying() {
 
         selectedMaze.generateMazeDesign();
-        previousState = currentState;
         currentState = State.PLAYING;
         executeStateAction();
     }
 
     public void pauseGame() {
-        previousState = currentState;
         currentState = State.PAUSED;
         executeStateAction();
     }
 
     public void resumeGame() {
-        previousState = currentState;
         currentState = State.PLAYING;
         executeStateAction();
     }
 
     public void gameOver() {
-        previousState = currentState;
         currentState = State.GAME_OVER;
         executeStateAction();
     }
 
     public void winGame() {
-        previousState = currentState;
         currentState = State.WIN;
-        executeStateAction();
-    }
-
-    public void goToPreviousState() {
-        currentState = previousState;
         executeStateAction();
     }
 
