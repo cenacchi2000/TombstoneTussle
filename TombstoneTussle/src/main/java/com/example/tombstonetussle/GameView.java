@@ -209,7 +209,7 @@ public class GameView {
 //                "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
 //                "    -fx-text-fill: linear-gradient(white, #faf9f9);\n" +
 //                "    -fx-padding: 10 20 10 20;");
-        newGameButton.setStyle("-fx-background-color:rgba(10,49,18,0.65),linear-gradient(#6c9d68, #204917); -fx-text-fill: white;");
+        newGameButton.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;");
         newGameButton.setFont(Font.font("Impact",30));
         newGameButton.setTranslateY(-100);
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
