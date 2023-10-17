@@ -5,6 +5,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -46,11 +50,6 @@ public class GameView {
         //npcImageView = new ImageView(npcImage);
         //root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
 
-        // Game title
-        //Label gameTitle = new Label("Tombstone Tussle");
-
-
-        //gameTitle.setStyle("-fx-font-size: 24px;");
         root.setTop(gameTitle);
 
         try {
@@ -75,7 +74,47 @@ public class GameView {
 
             Text text = new Text(name);
             text.setFill(Color.WHITE);
-            text.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 50));
+            text.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 60));
+            Blend blend = new Blend();
+            blend.setMode(BlendMode.MULTIPLY);
+
+            DropShadow ds = new DropShadow();
+            ds.setColor(Color.rgb(254, 235, 66, 0.3));
+            ds.setOffsetX(5);
+            ds.setOffsetY(5);
+            ds.setRadius(5);
+            ds.setSpread(0.2);
+
+            blend.setBottomInput(ds);
+
+            DropShadow ds1 = new DropShadow();
+            ds1.setColor(Color.web("#f13a00"));
+            ds1.setRadius(20);
+            ds1.setSpread(0.2);
+
+            Blend blend2 = new Blend();
+            blend2.setMode(BlendMode.MULTIPLY);
+
+            InnerShadow is = new InnerShadow();
+            is.setColor(Color.web("#feeb42"));
+            is.setRadius(9);
+            is.setChoke(0.8);
+            blend2.setBottomInput(is);
+
+            InnerShadow is1 = new InnerShadow();
+            is1.setColor(Color.web("#f13a00"));
+            is1.setRadius(5);
+            is1.setChoke(0.4);
+            blend2.setTopInput(is1);
+
+            Blend blend1 = new Blend();
+            blend1.setMode(BlendMode.MULTIPLY);
+            blend1.setBottomInput(ds1);
+            blend1.setTopInput(blend2);
+
+            blend.setTopInput(blend1);
+
+            text.setEffect(blend);
 
             setAlignment(Pos.CENTER);
             getChildren().addAll(text);
@@ -110,15 +149,16 @@ public class GameView {
     // Create the main menu layout
     public void setupMainMenu() {
         // Center Box for selections
-        VBox centerBox = new VBox(50);
+        VBox centerBox = new VBox(100);
         centerBox.setAlignment(Pos.CENTER);
+        centerBox.setTranslateX(100);
 
         // Character and Setting selection
-        HBox selectionBox = new HBox(50);
+        HBox selectionBox = new HBox(10);
         selectionBox.setAlignment(Pos.CENTER);
 
         // Character selection
-        VBox characterBox = new VBox(10);
+        VBox characterBox = new VBox(100);
         Button leftArrowChar = new Button("<");
         leftArrowChar.setOnAction(event -> gameController.previousCharacter());
         Button rightArrowChar = new Button(">");
@@ -127,11 +167,14 @@ public class GameView {
             editButton = new Button("✎"); // Pencil emoticon button
         }
         characterImageView = new ImageView();
-        characterImageView.setFitWidth(100); // Imposta la larghezza desiderata
-        characterImageView.setFitHeight(100); // Imposta l'altezza desiderata
+        characterImageView.setFitWidth(200); // Imposta la larghezza desiderata
+        characterImageView.setFitHeight(200); // Imposta l'altezza desiderata
         HBox characterControls = new HBox(10, editButton, leftArrowChar, characterImageView, rightArrowChar);
         characterControls.setAlignment(Pos.CENTER);
-        Label character = new Label("Character");
+        Label character = new Label("Create your own character:");
+        character.setFont(Font.font("Impact",30));
+        DropShadow shadow = new DropShadow();
+        character.setEffect(shadow);
         character.setTextFill(Color.WHITE);
         characterBox.getChildren().addAll(character, characterControls);
 
@@ -152,10 +195,23 @@ public class GameView {
         root.setCenter(centerBox);
 
         // New Game button
-        HBox buttonBox = new HBox(20);
+        HBox buttonBox = new HBox(40);
         if (newGameButton == null) {
             newGameButton = new Button("New Game");
         }
+//        newGameButton.setStyle("-fx-background-color: \n" +
+//                "        #b9d1ff,\n" +
+//                "        linear-gradient(#dde9f1 0%, #c8d4e1 20%, #396ba6 100%),\n" +
+//                "        linear-gradient(#a4d6ff, #63a4ff),\n" +
+//                "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
+//                "    -fx-background-radius: 5,4,3,5;\n" +
+//                "    -fx-background-insets: 0,1,2,0;\n" +
+//                "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
+//                "    -fx-text-fill: linear-gradient(white, #faf9f9);\n" +
+//                "    -fx-padding: 10 20 10 20;");
+        newGameButton.setStyle("-fx-background-color:rgba(246,115,34,0.65),linear-gradient(#efb686, #cb6003); -fx-text-fill: white;");
+        newGameButton.setFont(Font.font("Impact",30));
+        newGameButton.setTranslateY(-100);
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
         buttonBox.getChildren().addAll(newGameButton);
         buttonBox.setAlignment(Pos.CENTER);
