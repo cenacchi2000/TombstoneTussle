@@ -511,13 +511,13 @@ public class GameAreaController {
 
         if (distance <= eliminationThreshold) {
             // The enemy is within the elimination threshold, perform elimination actions
-            // You can add your elimination logic here, such as reducing player health or ending the game.
-            // For example:
+
             System.out.println("Enemy eliminated!");
-            gameAreaView.removeEnemyView(enemyModel);
+            //gameAreaView.removeEnemyView(enemyModel);
+            enemyModel.setZombified(true);
 
             // Remove the enemy model from the list of enemyModels
-            iterator.remove();
+            //iterator.remove();
 
             // You can also perform other actions here based on your game's logic.
         }
