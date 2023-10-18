@@ -116,7 +116,6 @@ public class GameAreaView extends Pane {
             enemyImageView.setTranslateY(enemyModel.getY());
             getChildren().add(enemyImageView);
             enemyImageViews.add(enemyImageView);
-            System.out.println("Numero di ImageView dei nemici: " + enemyImageViews.size());
         }
 
         this.fogTiles = new Rectangle[maze.length][maze[maze.length-1].length];
@@ -157,7 +156,7 @@ public class GameAreaView extends Pane {
 
     public void showKeyGuidance(boolean show) {
         keyGuidance.setVisible(show);
-        System.out.println("carota");
+
     }
 
 
