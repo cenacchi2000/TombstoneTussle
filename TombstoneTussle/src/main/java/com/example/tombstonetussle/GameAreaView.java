@@ -156,6 +156,16 @@ public class GameAreaView extends Pane {
     }
 
     /**
+     * Shows or hides the power up guidance image on the game area.
+     *
+     * @param show If true, shows the key guidance; otherwise, hides it.
+     */
+    public void showPowerGuidance(boolean show){
+        powerGuidance.setVisible(show);
+        powerGuidance.toFront();
+    }
+
+    /**
      * Toggles the visibility of the player's shield image.
      */
     public void toggleShieldVisibility() {
@@ -449,18 +459,26 @@ public class GameAreaView extends Pane {
      * Sets up the key guidance image on the game area.
      */
     public void setupGuidance(){
-        Image keyImg = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Keycommands.png"));
+        Image keyImg = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/keyCommand.png"));
+        Image powerUp = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Keycommands.png"));
 
         keyGuidance = new ImageView(keyImg);
+        powerGuidance = new ImageView(powerUp);
 
         keyGuidance.setFitHeight(200);
         keyGuidance.setFitWidth(400);
+        powerGuidance.setFitHeight(200);
+        powerGuidance.setFitWidth(400);
 
-        keyGuidance.setLayoutX(0);
-        keyGuidance.setLayoutY(0);
+        keyGuidance.setLayoutX(1050);
+        keyGuidance.setLayoutY(400);
+        powerGuidance.setLayoutX(1050);
+        powerGuidance.setLayoutY(400);
 
         getChildren().addAll(keyGuidance);
         keyGuidance.setVisible(false);
+        getChildren().addAll(powerGuidance);
+        powerGuidance.setVisible(false);
     }
 
     /**

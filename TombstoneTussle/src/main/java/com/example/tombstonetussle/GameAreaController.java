@@ -200,10 +200,7 @@ public class GameAreaController {
         // Re-click the question mark to close the guidance
         gameAreaView.getQM().setOnMouseClicked(e->{
             ImageView keyGuidance = gameAreaView.getKeyGuidance();
-            ImageView powerGuidance = gameAreaView.getPowerGuidance();
-
             keyGuidance.setVisible(!keyGuidance.isVisible());
-            powerGuidance.setVisible(!powerGuidance.isVisible());
 
         });
 
@@ -276,9 +273,9 @@ public class GameAreaController {
         }
 
         if (playerNearEnemy) {
-            gameAreaView.showKeyGuidance(true);
+            gameAreaView.showPowerGuidance(true);
         } else {
-            gameAreaView.showKeyGuidance(false);
+            gameAreaView.showPowerGuidance(false);
         }
 
         int currentX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
