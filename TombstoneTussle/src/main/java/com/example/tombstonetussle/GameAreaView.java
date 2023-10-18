@@ -1,5 +1,6 @@
-
 package com.example.tombstonetussle;
+
+// Import necessary JavaFX classes and utilities
 import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -16,17 +17,19 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-
+// Class that represents the visual game area in JavaFX
 public class GameAreaView extends Pane {
-    private ImageView playerImageView; // Assuming you have a property to hold the player's ImageView
-    private GameAreaModel playerModel; // Define a playerModel field
+
+    // Variables for the game's components
+    private ImageView playerImageView;
+    private GameAreaModel playerModel;
     public static final int TILE_SIZE = 40;
     public static final int W = 800;
     public static final int H = 800;
     private Rectangle[][] tiles;
     private GameAreaModel gameAreaModel;
     private List<ImageView> enemyImageViews = new ArrayList<>();
-    private static final double BULLET_SIZE = 10; // Adjust the size as needed
+    private static final double BULLET_SIZE = 10;
     private List<ImageView> heartIcons = new ArrayList<>();
     private Label timerLabel = new Label("00:00");
     private List<Rectangle> bulletViews = new ArrayList<>();
@@ -36,34 +39,34 @@ public class GameAreaView extends Pane {
     private ImageView powerGuidance = new ImageView();
     private Rectangle[][] fogTiles;
 
+    // Constructor for the GameAreaView class
     public GameAreaView(GameAreaModel model, WritableImage avatar, char[][] selectedMaze, List<EnemyModel> enemyModels) {
-        this.playerModel = playerModel; // Set the playerModel through the constructor
+        this.playerModel = playerModel; // Initialize player model
 
-        // Set pane's size
+        // Configure pane size and style
         setPrefSize(W, H);
-        this.setStyle("-fx-background-color: white;");  // Set a background color
+        this.setStyle("-fx-background-color: white;");
 
-        // Adding a back arrow (emoticon) to the top left
-        javafx.scene.control.Label arrowLabel = new javafx.scene.control.Label();
+        // Create a back arrow label with an image
+        Label arrowLabel = new Label();
         Image arrow = new Image(getClass().getResourceAsStream("arrowback.png"));
         ImageView view = new ImageView(arrow);
         arrowLabel.setGraphic(view);
-        arrowLabel.setId("backArrow"); // Setting an ID for easier access later
-        // Set its position
-        arrowLabel.setLayoutY(-50);  // This sets the top margin to 20 pixels
-        // Create and position the player
+        arrowLabel.setId("backArrow");
+        arrowLabel.setLayoutY(-50);
+
+        // Initialize game model and set timer label position and style
         this.gameAreaModel = model;
-        // Position and style the timer label
-        timerLabel.setLayoutX(1200); // Adjust as needed
-        timerLabel.setLayoutY(-60); // Adjust as needed
-        //timerLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: white;"); // Adjust styling as needed
+        timerLabel.setLayoutX(1200);
+        timerLabel.setLayoutY(-60);
         getChildren().add(timerLabel);
         timerLabel.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 45));
         timerLabel.setTextFill(Color.WHITE);
-        //Player's life
+
+        // Initialize the player's life icons
         initializeHeartIcons();
 
-        // Put the question mark behind the COMMAND
+        // Add a question mark image behind the COMMAND
         Image qmImg = new Image(getClass().getResourceAsStream("qm.png"));
         this.questionMark.setImage(qmImg);
         this.questionMark.setFitWidth(50);
@@ -72,12 +75,8 @@ public class GameAreaView extends Pane {
         this.questionMark.setLayoutY(100);
         getChildren().add(this.questionMark);
 
-        // Draw the maze
-        char[][] maze = selectedMaze;
-        maze = model.getMaze1().getMaze();
-
-        // use an array to contain the tile
-        // In order to easily change these rectangles later
+        // Load and display the maze
+        char[][] maze = model.getMaze1().getMaze();
         this.tiles = new Rectangle[maze.length][maze[maze.length-1].length];
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
@@ -85,29 +84,25 @@ public class GameAreaView extends Pane {
                 this.tiles[i][j] = rect;
                 Image greyWall = new Image(getClass().getResourceAsStream("darkwall.jpg"));
                 Image floor = new Image(getClass().getResourceAsStream("mug.png"));
-
-                //Rectangle rect = new Rectangle(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 switch (maze[i][j]) {
                     case '#':
                         this.tiles[i][j].setFill(new ImagePattern(greyWall)); // Wall image
-                        //this.tiles[i][j].setFill(javafx.scene.paint.Color.DARKGREY); // Wall color
                         break;
                     case ' ':
                         this.tiles[i][j].setFill(new ImagePattern(floor)); // Path image
-                        //this.tiles[i][j].setFill(javafx.scene.paint.Color.LIGHTGRAY); // Path color
                         break;
                     case 'S':
-                        this.tiles[i][j].setFill(javafx.scene.paint.Color.GREEN); // Start color
+                        this.tiles[i][j].setFill(Color.GREEN); // Start color
                         break;
                     case 'E':
-                        this.tiles[i][j].setFill(javafx.scene.paint.Color.RED); // End color
+                        this.tiles[i][j].setFill(Color.RED); // End color
                         break;
                 }
                 getChildren().add(this.tiles[i][j]);
             }
         }
 
-        // Initialize the enemyImageViews based on the enemyModels
+        // Initialize enemy views
         for (EnemyModel enemyModel : enemyModels) {
             ImageView enemyImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police-pistol.png")));
             enemyImageView.setFitWidth(TILE_SIZE);
@@ -116,9 +111,9 @@ public class GameAreaView extends Pane {
             enemyImageView.setTranslateY(enemyModel.getY());
             getChildren().add(enemyImageView);
             enemyImageViews.add(enemyImageView);
-            System.out.println("Numero di ImageView dei nemici: " + enemyImageViews.size());
         }
 
+        // Initialize fog tiles that obscure the player's view
         this.fogTiles = new Rectangle[maze.length][maze[maze.length-1].length];
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
@@ -129,7 +124,7 @@ public class GameAreaView extends Pane {
             }
         }
 
-        // Create and position the player image view
+        // Create and position the player's image view
         playerImageView = new ImageView(avatar);
         playerImageView.setFitWidth(TILE_SIZE);
         playerImageView.setFitHeight(TILE_SIZE);
@@ -138,33 +133,40 @@ public class GameAreaView extends Pane {
         getChildren().add(playerImageView);
         getChildren().addAll(arrowLabel);
 
-        // Create the shieldImageView
+        // Create the shield image view and bind its position to the player's
         shieldImageView = new ImageView(new Image(getClass().getResourceAsStream("shield.png")));
         shieldImageView.setFitWidth(TILE_SIZE);
         shieldImageView.setFitHeight(TILE_SIZE);
-
-        // Bind the shieldImageView's position to the playerImageView's position
         shieldImageView.translateXProperty().bind(playerImageView.translateXProperty());
         shieldImageView.translateYProperty().bind(playerImageView.translateYProperty());
         shieldImageView.setVisible(false);
-
-        // Add the shieldImageView to the scene
         getChildren().add(shieldImageView);
 
+        // Initialize game guidance imagery
         setupGuidance();
-
     }
 
+    /**
+     * Shows or hides the key guidance image on the game area.
+     *
+     * @param show If true, shows the key guidance; otherwise, hides it.
+     */
     public void showKeyGuidance(boolean show) {
         keyGuidance.setVisible(show);
-        System.out.println("carota");
     }
 
-
+    /**
+     * Toggles the visibility of the player's shield image.
+     */
     public void toggleShieldVisibility() {
         shieldImageView.setVisible(!shieldImageView.isVisible());
     }
 
+    /**
+     * Checks if the player's shield is currently visible (active).
+     *
+     * @return True if the shield is active, false otherwise.
+     */
     public boolean isShieldOn(){
         if(shieldImageView.isVisible()){
             return true;
@@ -172,6 +174,12 @@ public class GameAreaView extends Pane {
         else return false;
     }
 
+    /**
+     * Updates the player's position on the game area.
+     *
+     * @param x The new X-coordinate of the player.
+     * @param y The new Y-coordinate of the player.
+     */
     public void updatePlayerPosition(int x, int y) {
         double playerX = gameAreaModel.getX();
         double playerY = gameAreaModel.getY();
@@ -201,8 +209,6 @@ public class GameAreaView extends Pane {
             }
         }
 
-
-
         playerImageView.setTranslateX(playerX);
         playerImageView.setTranslateY(playerY);
 
@@ -213,29 +219,12 @@ public class GameAreaView extends Pane {
         clearFogAroundPlayer(x, y);
     }
 
-    public void handleEnemyElimination(EnemyModel enemyModel) {
-        // Get the enemy's ImageView
-        ImageView enemyImageView = getEnemyImageViewForModel(enemyModel);
-
-        if (enemyImageView != null) {
-            // Reduce the character's life count
-            gameAreaModel.setLives(gameAreaModel.getLives() - 1);
-
-            // Create a FadeTransition to make the enemy fade out over a specified duration
-            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImageView);
-            fadeOut.setToValue(0); // Fade to fully transparent
-
-            // Define an event handler to be executed when the animation is finished
-            fadeOut.setOnFinished(event -> {
-                // Perform actions after the animation (e.g., remove from the scene)
-                getChildren().remove(enemyImageView);
-                enemyImageViews.remove(enemyImageView); // Remove from the list
-            });
-
-            // Start the fade-out animation
-            fadeOut.play();
-        }
-    }
+    /**
+     * Retrieves the image view corresponding to a given enemy model.
+     *
+     * @param enemyModel The enemy model to get the image view for.
+     * @return The corresponding ImageView of the enemy, or null if not found.
+     */
     private ImageView getEnemyImageViewForModel(EnemyModel enemyModel) {
         for (ImageView enemyImageView : enemyImageViews) {
             if (enemyImageView.getTranslateX() == enemyModel.getX() && enemyImageView.getTranslateY() == enemyModel.getY()) {
@@ -244,6 +233,13 @@ public class GameAreaView extends Pane {
         }
         return null; // Return null if the ImageView is not found
     }
+
+    /**
+     * Removes the blood trace image at the specified tile position.
+     *
+     * @param tileX The X-coordinate of the tile.
+     * @param tileY The Y-coordinate of the tile.
+     */
     public void removeBloodTrace(int tileX, int tileY) {
         ImageView bloodTraceToRemove = null;
         for (Node node : getChildren()) {
@@ -260,6 +256,14 @@ public class GameAreaView extends Pane {
             getChildren().remove(bloodTraceToRemove);
         }
     }
+
+    /**
+     * Updates the position of a specific enemy on the game area.
+     *
+     * @param x The new X-coordinate of the enemy.
+     * @param y The new Y-coordinate of the enemy.
+     * @param index The index of the enemy in the list of enemy image views.
+     */
     public void updateEnemyPosition(int x, int y, int index) {
         // Update the position of the enemy ImageView
         if (index >= 0 && index < enemyImageViews.size()) {
@@ -268,6 +272,12 @@ public class GameAreaView extends Pane {
             enemyImageView.setTranslateY(y);
         }
     }
+
+    /**
+     * Removes the image view of a specified enemy from the game area.
+     *
+     * @param enemyModel The enemy model to remove the view for.
+     */
     public void removeEnemyView(EnemyModel enemyModel) {
         // Get the enemy's ImageView
         ImageView enemyView = getEnemyImageViewForModel(enemyModel);
@@ -288,6 +298,9 @@ public class GameAreaView extends Pane {
         }
     }
 
+    /**
+     * Removes the player's image view from the game area.
+     */
     public void removePlayerView() {
         // Create a FadeTransition to make the player fade out over a specified duration
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), playerImageView);
@@ -303,14 +316,17 @@ public class GameAreaView extends Pane {
         fadeOut.play();
     }
 
+    /**
+     * Initializes the heart icons on the game area based on the player's lives.
+     */
     private void initializeHeartIcons() {
         for (int i = 0; i < gameAreaModel.getLives(); i++) {
             ImageView heartIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/heart.png")));
-            heartIcon.setFitWidth(30);  // Dimensione desiderata per l'icona
-            heartIcon.setFitHeight(30); // Dimensione desiderata per l'icona
+            heartIcon.setFitWidth(30);
+            heartIcon.setFitHeight(30);
             int offsetX = -500;
-            heartIcon.setLayoutX(W - (i+1) * 40 + offsetX); // Posizione orizzontale (spostato di 40px per ogni cuore)
-            heartIcon.setLayoutY(-45); // Posizione verticale
+            heartIcon.setLayoutX(W - (i+1) * 40 + offsetX);
+            heartIcon.setLayoutY(-45);
             getChildren().add(heartIcon);
             heartIcon.toBack();
             heartIcon.setPickOnBounds(false);
@@ -320,6 +336,12 @@ public class GameAreaView extends Pane {
 
     }
 
+    /**
+     * Updates the enemy's image view based on a specified type.
+     *
+     * @param enemyModel The enemy model to update the view for.
+     * @param newType The new type of the enemy (e.g., "police", "zombie").
+     */
     public void updateEnemyImage(EnemyModel enemyModel, String newType) {
         ImageView enemyImageView = getEnemyImageViewForModel(enemyModel);
         if (enemyImageView != null) {
@@ -340,6 +362,9 @@ public class GameAreaView extends Pane {
         }
     }
 
+    /**
+     * Updates the visibility of heart icons based on the player's current lives.
+     */
     public void updateHeartIcons() {
         int currentLives = gameAreaModel.getLives();
         for (int i = 0; i < heartIcons.size(); i++) {
@@ -351,16 +376,31 @@ public class GameAreaView extends Pane {
         }
     }
 
+    /**
+     * Updates the game timer displayed on the game area.
+     *
+     * @param elapsedSeconds The total elapsed seconds since the game started.
+     */
     public void updateTimer(int elapsedSeconds) {
         int minutes = elapsedSeconds / 60;
         int seconds = elapsedSeconds % 60;
         timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
+    /**
+     * Retrieves the tiles of the game area.
+     *
+     * @return A 2D array of Rectangle representing the tiles.
+     */
     public Rectangle[][] getTiles() {
         return this.tiles;
     }
 
+    /**
+     * Adds a bullet view to the game area.
+     *
+     * @param bullet The bullet to add the view for.
+     */
     public void addBulletView(Bullet bullet) {
         Rectangle bulletView = new Rectangle(bullet.getX(), bullet.getY(), BULLET_SIZE, BULLET_SIZE);
         bulletView.setFill(Color.BLACK);  // Or any color you want for the bullet
@@ -368,6 +408,11 @@ public class GameAreaView extends Pane {
         bulletViews.add(bulletView);
     }
 
+    /**
+     * Removes a bullet view from the game area.
+     *
+     * @param bullet The bullet to remove the view for.
+     */
     public void removeBulletView(Bullet bullet) {
         Rectangle bulletViewToRemove = null;
         for (Rectangle bulletView : bulletViews) {
@@ -383,6 +428,13 @@ public class GameAreaView extends Pane {
         }
     }
 
+    /**
+     * Updates the position of a bullet view on the game area.
+     *
+     * @param bullet The bullet to update the position for.
+     * @param newX The new X-coordinate of the bullet.
+     * @param newY The new Y-coordinate of the bullet.
+     */
     public void updateBulletPosition(Bullet bullet, double newX, double newY) {
         for (Rectangle bulletView : bulletViews) {
             if (bulletView.getX() != newX && bulletView.getY() != newY) {
@@ -393,6 +445,9 @@ public class GameAreaView extends Pane {
         }
     }
 
+    /**
+     * Sets up the key guidance image on the game area.
+     */
     public void setupGuidance(){
         Image keyImg = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Keycommands.png"));
 
@@ -411,18 +466,39 @@ public class GameAreaView extends Pane {
 
     }
 
+    /**
+     * Retrieves the question mark image view.
+     *
+     * @return The ImageView representing the question mark.
+     */
     public ImageView getQM(){
         return questionMark;
     }
 
+    /**
+     * Retrieves the key guidance image view.
+     *
+     * @return The ImageView representing the key guidance.
+     */
     public ImageView getKeyGuidance(){
         return keyGuidance;
     }
 
+    /**
+     * Retrieves the power guidance image view.
+     *
+     * @return The ImageView representing the power guidance.
+     */
     public ImageView getPowerGuidance(){
         return powerGuidance;
     }
 
+    /**
+     * Clears the fog around the player's current position.
+     *
+     * @param playerX The X-coordinate of the player.
+     * @param playerY The Y-coordinate of the player.
+     */
     public void clearFogAroundPlayer(int playerX, int playerY) {
         int radius = 2;
         int tileX = playerX / TILE_SIZE;
@@ -437,7 +513,4 @@ public class GameAreaView extends Pane {
             }
         }
     }
-
-
-
 }
