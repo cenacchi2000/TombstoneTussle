@@ -398,8 +398,8 @@ public class GameAreaView extends Pane {
 
         keyGuidance = new ImageView(keyImg);
 
-        keyGuidance.setFitHeight(200);
-        keyGuidance.setFitWidth(400);
+        keyGuidance.setFitHeight(300);
+        keyGuidance.setFitWidth(300);
 
         keyGuidance.setLayoutX(0);
         keyGuidance.setLayoutY(0);
