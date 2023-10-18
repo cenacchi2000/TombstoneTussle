@@ -21,37 +21,47 @@ import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
-
+// Class representing the game view
 public class GameView {
 
-    private BorderPane root; // The main layout
-    private Button editButton; // The pencil emoticon button
-
+    // Main layout container for the game view
+    private BorderPane root;
+    // Button for editing character design
+    private Button editButton;
+    // Image view to display NPCs
     private ImageView npcImageView;
-    private Button newGameButton; // The button to start a new game
-    private GameController gameController; // Reference to the game controller
+    // Button to start a new game
+    private Button newGameButton;
+    // Reference to the game controller
+    private GameController gameController;
+    // Controller for the menu area
     private MenuAreaController menuAreaController;
+    // Image view to display the player's character
     private ImageView characterImageView;
+    // Game title displayed at the top
     private Title gameTitle = new Title("TOMBSTONE TUSSLE");
+    // Menu container
     private AnchorPane menu;
 
+    // Constructor to initialize the game view
     public GameView(GameController controller){
         this.gameController = controller;
 
-        // Main layout
+        // Initialize the main layout
         root = new BorderPane();
         root.setPadding(new Insets(20, 20, 20, 20));
         root.setId("root");
 
-        // Load NPC image (adjust the path as needed)
-       // Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
+        // Load and position the NPC image (path might need adjustment)
+        // Commented out for now
+        // Image npcImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police.png"));
+        // npcImageView = new ImageView(npcImage);
+        // root.getChildren().add(npcImageView);
 
-        // Create the NPC ImageView
-        //npcImageView = new ImageView(npcImage);
-        //root.getChildren().add(npcImageView); // Add NPC to the scene (initial position may need adjustment)
-
+        // Set the game title to the top of the layout
         root.setTop(gameTitle);
 
+        // Load the menu area from an external FXML file
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menuArea.fxml"));
             this.menu = fxmlLoader.load();
@@ -64,17 +74,14 @@ public class GameView {
         BorderPane.setAlignment(gameTitle, Pos.CENTER);
     }
 
-    // Style for Game title
+    // Inner class to style and display the game title
     private static class Title extends StackPane{
         public Title(String name) {
-//            Rectangle bg = new Rectangle(425, 80);
-//            bg.setStroke(Color.WHITE);
-//            bg.setStrokeWidth(2);
-//            bg.setFill(null);
-
             Text text = new Text(name);
             text.setFill(Color.WHITE);
             text.setFont(Font.font("Impact", FontWeight.SEMI_BOLD, 60));
+
+            // Set text effects
             Blend blend = new Blend();
             blend.setMode(BlendMode.MULTIPLY);
 
@@ -121,15 +128,18 @@ public class GameView {
         }
     }
 
+    // Update NPC's position on the screen
     public void updateNPCPosition(double x, double y) {
         npcImageView.setX(x);
         npcImageView.setY(y);
     }
 
+    // Get the main layout
     public BorderPane getRoot() {
         return root;
     }
 
+    // Getters for various UI components
     public Button getEditButton() {
         return editButton;
     }
@@ -138,13 +148,10 @@ public class GameView {
         return newGameButton;
     }
 
-
+    // Update the visibility of the "New Game" button based on game state
     public void updateButtonVisibility() {
         newGameButton.setVisible(gameController.isNewGameButtonVisible());
     }
-//    public void updateTitleVisibility(){
-//        gameTitle.setVisible(false);
-//    }
 
     // Create the main menu layout
     public void setupMainMenu() {
@@ -240,13 +247,13 @@ public class GameView {
         Image defaultCharacter = getDefaultCharacterImage();
         characterImageView.setImage(defaultCharacter);
     }
+    // Get the menu container
     public AnchorPane getMenu(){
         return menu;
     }
 
+    // Reset the menu, e.g., after a game is over
     public void resetMenu(){
         menuAreaController.resetPowerup();
     }
-
-
 }

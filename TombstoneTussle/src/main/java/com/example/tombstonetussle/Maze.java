@@ -4,13 +4,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-public class Maze {
-    private char[][] maze;
-    private int startRow;
-    private int startCol;
-    private int npcRow;
-    private int npcCol;
 
+// Class representing a Maze with methods to generate and manage its design
+public class Maze {
+
+    private char[][] maze; // 2D array representing the maze grid
+    private int startRow;  // Row index of the starting position
+    private int startCol;  // Column index of the starting position
+    private int npcRow;    // Row index of the NPC position
+    private int npcCol;    // Column index of the NPC position
+
+    // Method to generate the maze design
     public void generateMazeDesign() {
         int rows = 10; // Number of rows in the maze
         int cols = 10; // Number of columns in the maze
@@ -23,24 +27,24 @@ public class Maze {
             }
         }
 
-        // Set the start position
+        // Randomly set the start position
         Random random = new Random();
         int startRow = random.nextInt(rows);
         int startCol = random.nextInt(cols);
-        maze[startRow][startCol] = 'S';
+        maze[startRow][startCol] = 'S';  // 'S' denotes the start position
 
-        // Set the NPC position
+        // Randomly set the NPC position
         int npcRow = random.nextInt(rows);
         int npcCol = random.nextInt(cols);
-        maze[npcRow][npcCol] = 'N';
+        maze[npcRow][npcCol] = 'N';  // 'N' denotes the NPC position
 
         // Generate the maze design using a basic algorithm
         generateMaze(maze, startRow, startCol);
 
-        // Set the end position
+        // Randomly set the end position
         int endRow = random.nextInt(rows);
         int endCol = random.nextInt(cols);
-        maze[endRow][endCol] = 'E';
+        maze[endRow][endCol] = 'E';  // 'E' denotes the end position
 
         // Update the maze design of the current instance
         setMaze(maze);
@@ -50,6 +54,7 @@ public class Maze {
         setNpcCol(npcCol);
     }
 
+    // Setters for the maze and its properties
     public void setMaze(char[][] maze) {
         this.maze = maze;
     }
