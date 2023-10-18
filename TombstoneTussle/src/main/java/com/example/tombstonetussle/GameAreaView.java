@@ -461,9 +461,6 @@ public class GameAreaView extends Pane {
 
         getChildren().addAll(keyGuidance);
         keyGuidance.setVisible(false);
-
-        System.out.println("cipolla");
-
     }
 
     /**
