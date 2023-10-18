@@ -10,63 +10,66 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
+// Class that controls the game logic and interactions
 public class GameController extends Application {
+    // Index of the currently selected character for drawing
     private int currentCharacterIndex = 0;
+    // Singleton instance for tracking the game's state
     GameState gameState = GameState.getInstance();
+    // View for the game
     private GameView gameView;
     private int m= 10;
     private int n= 10;
+    // Controller for drawing characters
     private DrawingController drawingController;
 
-    // Reference to GameArea's MVC classes
+    // References to GameArea's MVC classes
     private GameAreaModel gameAreaModel;
     private GameAreaView gameAreaView;
     private GameAreaController gameAreaController;
+    // MVC references for drawing functionality
     private DrawingModel drawingModel;
     private DrawingView drawingView;
+    // 2D char array to represent the maze
     private char[][] maze;
+    // Number of rows and columns for the maze
     private int rows;
     private int columns;
 
-
-
-
+    // Constructor for GameController
     public GameController() {
         this.drawingModel = new DrawingModel();
         int startX = 8;
         int startY = 9;
 
-        // Set the reference to this GameController in the GameView constructor
+        // Initialize the game view with this controller as a reference
         gameView = new GameView(this);
     }
 
-
-
+    // Start method called when the application is launched
     @Override
     public void start(Stage primaryStage) {
-        gameView = new GameView(this);   // Initialize the game view
+        // Initialize the game view with this controller as a reference
+        gameView = new GameView(this);
 
-        gameView.setupMainMenu(); // Set up the main menu
-        setupEventHandlers(); // Set up the event handlers
+        // Set up the main menu and event handlers
+        gameView.setupMainMenu();
+        setupEventHandlers();
 
-
-        // Set up the stage
+        // Configure and display the primary stage
         Scene scene = new Scene(gameView.getRoot(), 1500, 900);
         scene.getStylesheets().addAll(this.getClass().getResource("gameMenu.css").toExternalForm());
         primaryStage.setTitle("Tombstone Tussle");
         primaryStage.setScene(scene);
-        //primaryStage.setMaximized(true); // Start the window maximized
-        // Temporarily set
-        primaryStage.setResizable(false); // Prevent the player from resizing the window
+        primaryStage.setResizable(false);
         primaryStage.show();
-
     }
 
-    // Switch to the drawing screen
+    // Method to switch to the drawing screen
     public void switchToDrawingScreen() {
         if (gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED) {
-            gameState.startDrawing(); // Update the game state to DRAWING
-            gameView.updateButtonVisibility(); // Update button visibility based on the new state
+            gameState.startDrawing();
+            gameView.updateButtonVisibility();
             if (drawingView == null) {
                 drawingView = new DrawingView(drawingModel, this);
                 drawingController = new DrawingController(drawingModel, drawingView, this);
@@ -75,60 +78,50 @@ public class GameController extends Application {
         }
     }
 
-    // Method to handle starting the GameArea
+    // Method to initialize a new GameArea
     private void startNewGameArea() {
         if (gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED) {
-            gameState.startPlaying(); // Update the game state to PLAYING
+            gameState.startPlaying();
 
             gameAreaModel = new GameAreaModel(GameAreaView.TILE_SIZE, GameAreaView.W, GameAreaView.H);
             WritableImage selectedCharacter = gameView.getCharacterImage();
-            // Inizialize enemyModel prima di creare gameAreaView
+
             List<EnemyModel> enemyModels = new ArrayList<>();
             for(int i = 0; i < 4; i++) {
                 enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, gameAreaModel.getMaze1()));
             }
             gameAreaView = new GameAreaView(gameAreaModel, selectedCharacter, maze, enemyModels);
-            // Pass the maze to GameAreaView
             gameAreaController = new GameAreaController(gameAreaView, gameAreaModel, this);
 
-            //AnchorPane menu = null;
-//            try {
-//                this.menu = FXMLLoader.load(getClass().getResource("menuArea.fxml"));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
             gameView.getRoot().getRight().setVisible(true);
 
-            gameView.getRoot().setCenter(gameAreaView); // change the center of the borderpane to the maze
-            gameAreaView.requestFocus(); // Request focus for the GameAreaView
-            gameView.updateButtonVisibility(); // Update button visibility based on the new state
+            gameView.getRoot().setCenter(gameAreaView);
+            gameAreaView.requestFocus();
+            gameView.updateButtonVisibility();
         }
     }
 
+    // Set up event handlers for buttons
     private void setupEventHandlers() {
         gameView.getEditButton().setOnAction(event -> switchToDrawingScreen());
         gameView.getNewGameButton().setOnAction(event -> startNewGameArea());
     }
 
+    // Check if the new game button should be visible
     public boolean isNewGameButtonVisible() {
         return gameState.getCurrentState() == GameState.State.MENU || gameState.getCurrentState() == GameState.State.PAUSED;
     }
 
-    public boolean isContinueButtonVisible() {
-        return gameState.getCurrentState() == GameState.State.PAUSED;
-    }
 
-    // Method to handle back action from GameArea and return to main menu
+    // Method to handle going back to the main menu
     public void handleBackToMainMenu() {
         gameState.pauseGame();
         gameView.setupMainMenu();
-        // Hide the menu bar when getting back to the main menu
         gameView.getMenu().setVisible(false);
-        // Reset the power-ups
         gameView.resetMenu();
-        //menu.setVisible(false);
     }
 
+    // Handle back action from Drawing and return to main menu
     public void handleBackFromDrawing(){
         gameState.goToMenu();
         gameView.setupMainMenu();
@@ -136,11 +129,12 @@ public class GameController extends Application {
             WritableImage currentCharacter = drawingModel.getCharacter(currentCharacterIndex);
             gameView.setCharacterImage(currentCharacter);
         } else {
-            gameView.setDefaultCharacterImage();  // If no custom characters, set the default one
+            gameView.setDefaultCharacterImage();
         }
-        drawingView.clearCanvas();  // Clear the drawing canvas when going back
+        drawingView.clearCanvas();
     }
 
+    // Switch to the previous character in the drawing model
     public void previousCharacter() {
         if (currentCharacterIndex > 0) {
             currentCharacterIndex--;
@@ -148,6 +142,7 @@ public class GameController extends Application {
         }
     }
 
+    // Switch to the next character in the drawing model
     public void nextCharacter() {
         if (currentCharacterIndex < drawingModel.getAllCharacters().size() - 1) {
             currentCharacterIndex++;
@@ -155,50 +150,26 @@ public class GameController extends Application {
         }
     }
 
+    // Update the character displayed in the view
     private void updateCharacterView() {
         WritableImage currentCharacter;
         if (currentCharacterIndex >= 0 && currentCharacterIndex < drawingModel.getAllCharacters().size()) {
             currentCharacter = drawingModel.getCharacter(currentCharacterIndex);
         } else {
-            currentCharacter = gameView.getDefaultCharacterImage();  // Get the default character image from GameView
+            currentCharacter = gameView.getDefaultCharacterImage();
         }
         gameView.setCharacterImage(currentCharacter);
     }
 
+    // Set the current character index
     public void setCurrentCharacterIndex(int index) {
         this.currentCharacterIndex = index;
     }
 
-
-    public void selectMaze(String mazeName) {
-        if (mazeName.equals("maze1")) {
-            Maze1 maze1 = new Maze1();
-            maze1.generateMazeDesign();
-            maze = maze1.getMaze();
-        }
-        startNewGameArea();
-    }
-
-
-    public void MazeGenerator(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
-        this.maze = new char[rows][columns];
-    }
-
-
-    private void initializeMaze() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                maze[i][j] = '#'; // Wall
-            }
-        }
-    }
-
+    // Recursive method to generate the maze
     private void generate(int row, int column) {
-        maze[row][column] = '.'; // Passage
+        maze[row][column] = '.';
 
-        // Get a random order of directions
         List<Direction> directions = Arrays.asList(Direction.values());
         Collections.shuffle(directions);
 
@@ -209,22 +180,25 @@ public class GameController extends Application {
             if (isValid(newRow, newColumn) && maze[newRow][newColumn] == '#') {
                 int wallRow = row + direction.getRowOffset() / 2;
                 int wallColumn = column + direction.getColumnOffset() / 2;
-                maze[wallRow][wallColumn] = '.'; // Passage
+                maze[wallRow][wallColumn] = '.';
 
                 generate(newRow, newColumn);
             }
         }
     }
 
+    // Check if a given row and column is valid for maze generation
     private boolean isValid(int row, int column) {
         return row >= 0 && row < rows && column >= 0 && column < columns;
     }
 
+    // Get the scene for the game (currently returns null)
     public Node getScene() {
         Node o = null;
         return o;
     }
 
+    // Enum for possible directions in maze generation
     private enum Direction {
         UP(-1, 0),
         DOWN(1, 0),
@@ -248,6 +222,7 @@ public class GameController extends Application {
         }
     }
 
+    // Main method to launch the game application
     public static void main(String[] args) {
         launch(args);
     }
