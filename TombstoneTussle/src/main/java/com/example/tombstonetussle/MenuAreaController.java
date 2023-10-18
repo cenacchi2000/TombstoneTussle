@@ -93,7 +93,7 @@ public class MenuAreaController implements Initializable {
     public void resetPowerup(){
         wallNum = 8;
         wallNumText.setText("X"+wallNum);
-        trapNum = 8;
+        trapNum = 3;
         trapNumText.setText("X"+trapNum);
     }
 
