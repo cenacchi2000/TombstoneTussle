@@ -33,7 +33,7 @@ public class MenuAreaController implements Initializable {
     @FXML
     private Label trapNumText;
     private int wallNum = 8;
-    private int trapNum = 8;
+    private int trapNum = 3;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
