@@ -207,10 +207,10 @@ public class GameAreaController {
 
         });
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
         }
-        System.out.println("Numero di nemici: " + enemyModels.size());
+        System.out.println("Number of enemies: " + enemyModels.size());
 
         startTimer();
         // Update the player's position to ensure it's correctly positioned at the start
@@ -220,7 +220,6 @@ public class GameAreaController {
     private void setupKeyListeners() {
         gameAreaView.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyInput);
     }
-
 
     private void handleKeyInput(KeyEvent event) {
         int prevX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
@@ -294,9 +293,11 @@ public class GameAreaController {
             showFailureMessage();
         }
 
-        if (enemyModels.isEmpty()) {
+        if (enemyModels.isEmpty() || enemyModels.stream().allMatch(EnemyModel::isZombified)) {
             stopTimer();
             showWinMessage();
+            GameState gamestate = GameState.getInstance();
+            gamestate.winGame();
         }
 
         List<EnemyModel> enemiesToRemove = new ArrayList<>();
@@ -333,8 +334,6 @@ public class GameAreaController {
 
         enemyModels.removeAll(enemiesToRemove);
     }
-
-
 
 
 
