@@ -77,12 +77,6 @@ public class GameState {
         executeStateAction();
     }
 
-    // Transition to the WIN state when the player wins the game
-    public void winGame() {
-        currentState = State.WIN;
-        executeStateAction();
-    }
-
     // Execute logic/actions based on the current game state
     private void executeStateAction() {
         System.out.println("State changed to: " + currentState);

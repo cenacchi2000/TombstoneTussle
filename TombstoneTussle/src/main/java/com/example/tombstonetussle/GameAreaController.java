@@ -294,7 +294,6 @@ public class GameAreaController {
             stopTimer();
             showWinMessage();
             GameState gamestate = GameState.getInstance();
-            gamestate.winGame();
         }
 
         List<EnemyModel> enemiesToRemove = new ArrayList<>();
