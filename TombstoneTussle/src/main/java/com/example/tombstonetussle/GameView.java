@@ -194,8 +194,6 @@ public class GameView {
 
         settingBox.getChildren().addAll(settingControls);
 
-
-
         selectionBox.getChildren().addAll(characterBox, settingBox);
         centerBox.getChildren().add(selectionBox);
         root.setCenter(centerBox);

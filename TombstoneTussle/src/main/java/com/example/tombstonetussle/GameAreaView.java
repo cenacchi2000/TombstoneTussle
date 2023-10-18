@@ -200,8 +200,6 @@ public class GameAreaView extends Pane {
             }
         }
 
-
-
         playerImageView.setTranslateX(playerX);
         playerImageView.setTranslateY(playerY);
 

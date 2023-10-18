@@ -207,7 +207,7 @@ public class GameAreaController {
 
         });
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             enemyModels.add(new EnemyModel(GameAreaView.TILE_SIZE, model.getMaze1()));
         }
         System.out.println("Numero di nemici: " + enemyModels.size());
@@ -511,8 +511,6 @@ public class GameAreaController {
 
         return closestIndex;
     }
-
-
 
     private boolean isValidCell(int x, int y) {
         int mazeWidth = gameAreaModel.getMaze1().getMaze()[0].length;
