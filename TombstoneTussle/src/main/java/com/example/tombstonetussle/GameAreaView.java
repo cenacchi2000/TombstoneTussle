@@ -329,7 +329,7 @@ public class GameAreaView extends Pane {
                     newImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/Police-pistol.png"));
                     break;
                 case "zombie":
-                    newImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieTransformed.png")); // ad esempio
+                    newImage = new Image(getClass().getResourceAsStream("/com/example/tombstonetussle/zombieTransformed.png"));
                     break;
 
                 default:

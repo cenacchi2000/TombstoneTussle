@@ -47,6 +47,9 @@ public class GameAreaController {
     private final Object lock = new Object();
 
     private static final long SPACE_BAR_CLICK_THRESHOLD = 500; // Define the threshold time in milliseconds
+    private Timeline keySequenceTimer;
+    private static final int KEY_SEQUENCE_DURATION = 1000; // 1 second
+
 
 
     public GameAreaController(GameAreaView view, GameAreaModel model, GameController gameController) {
@@ -225,6 +228,7 @@ public class GameAreaController {
 
         int playerX = gameAreaModel.getX() / GameAreaView.TILE_SIZE;
         int playerY = gameAreaModel.getY() / GameAreaView.TILE_SIZE;
+
         switch (event.getCode()) {
             case W:
                 gameAreaModel.moveUp();
@@ -253,16 +257,6 @@ public class GameAreaController {
             case H:
                 if (keySequence.toString().equals("FG")) {
                     keySequence.append("H");
-                    // Check if the character and enemy are in the same cell
-                    for (EnemyModel enemyModel : enemyModels) {
-                        int enemyX = enemyModel.getX() / GameAreaView.TILE_SIZE;
-                        int enemyY = enemyModel.getY() / GameAreaView.TILE_SIZE;
-                        if (playerX == enemyX && playerY == enemyY) {
-                            // Character and enemy are in the same cell, eliminate the enemy
-                            handleEnemyElimination(enemyModel, enemyModels.iterator());
-                        }
-                    }
-                    keySequence.setLength(0); // Reset after successful elimination
                 } else {
                     keySequence.setLength(0); // Reset if sequence is broken
                 }
@@ -305,14 +299,43 @@ public class GameAreaController {
             showWinMessage();
         }
 
-        Iterator<EnemyModel> iterator = enemyModels.iterator();
-        while (iterator.hasNext()) {
-            EnemyModel enemyModel = iterator.next();
+        List<EnemyModel> enemiesToRemove = new ArrayList<>();
+
+        for (EnemyModel enemyModel : enemyModels) {
             if (enemyModel.getX() == gameAreaModel.getX() && enemyModel.getY() == gameAreaModel.getY()) {
-                handleEnemyElimination(enemyModel, iterator);
+                if (keySequence.toString().equals("FGH")) {
+                    if(enemyModel.isZombified()==true){
+                        gameAreaModel.setLives(5);
+                        gameAreaView.updateHeartIcons();
+                        handleEnemyElimination(enemyModel);
+                    }
+                    else {
+                        handleEnemyZombification(enemyModel);
+                    }
+                    if (keySequenceTimer != null) {
+                        keySequenceTimer.stop();
+                    }
+                    keySequence.setLength(0); // Reset the sequence
+                } else {
+                    if (keySequenceTimer == null || !keySequenceTimer.getStatus().equals(Animation.Status.RUNNING)) {
+                        keySequenceTimer = new Timeline(new KeyFrame(Duration.millis(KEY_SEQUENCE_DURATION), ae -> {
+                            if (!keySequence.toString().equals("FGH")) {
+                                handleEnemyElimination(enemyModel);
+                                enemiesToRemove.add(enemyModel);
+                            }
+                            keySequence.setLength(0); // Reset key sequence
+                        }));
+                        keySequenceTimer.play();
+                    }
+                }
             }
         }
+
+        enemyModels.removeAll(enemiesToRemove);
     }
+
+
+
 
 
     private void showFailureMessage() {
@@ -497,32 +520,16 @@ public class GameAreaController {
         return x >= 0 && y >= 0 && x < mazeWidth && y < mazeHeight;
     }
 
-    private void handleEnemyElimination(EnemyModel enemyModel, Iterator<EnemyModel> iterator) {
-        // Get the enemy's position
-        int enemyX = enemyModel.getX();
-        int enemyY = enemyModel.getY();
-
-        // Get the player's position
-        int playerX = gameAreaModel.getX();
-        int playerY = gameAreaModel.getY();
-
-        // Calculate the distance between the player and the enemy
-        int distance = Math.abs(playerX - enemyX) + Math.abs(playerY - enemyY);
-
-        // Define a threshold for elimination (e.g., distance less than or equal to 1)
-        int eliminationThreshold = 1;
-
-        if (distance <= eliminationThreshold) {
-            // The enemy is within the elimination threshold, perform elimination actions
-
-            System.out.println("Enemy eliminated!");
-            //gameAreaView.removeEnemyView(enemyModel);
-            enemyModel.setZombified(true);
-            gameAreaView.updateEnemyImage(enemyModel, "zombie");
-
-
-        }
+    private void handleEnemyZombification(EnemyModel enemyModel) {
+        enemyModel.setZombified(true);
+        gameAreaView.updateEnemyImage(enemyModel, "zombie");
     }
+
+    private void handleEnemyElimination(EnemyModel enemyModel) {
+        enemyModels.remove(enemyModel);
+        gameAreaView.removeEnemyView(enemyModel);
+    }
+
 
 
     private void startEnemyMovement() {
